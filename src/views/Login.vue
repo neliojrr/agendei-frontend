@@ -51,7 +51,7 @@ export default {
   },
   "pt-br": {
     "title": "Faça seu login no agendei",
-    "subtitle": "Digite com seu email e senha para entrar",
+    "subtitle": "Digite seu email e senha para entrar",
     "email-placeholder": "seuemail@exemplo.com",
     "password": "Senha",
     "sign-in": "Entrar",
