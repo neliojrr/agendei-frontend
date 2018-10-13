@@ -2,7 +2,9 @@
   <div id="app">
     <NavApp />
     <Menu />
-    <router-view/>
+    <section class="app-content">
+      <router-view />
+    </section>
   </div>
 </template>
 
@@ -29,6 +31,7 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
 #nav {
   padding: 30px;
   a {
@@ -38,5 +41,20 @@ export default {
       color: #42b983;
     }
   }
+}
+
+.app-content {
+  margin-top: 50px;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
+select::-ms-expand {
+  display: none;
 }
 </style>

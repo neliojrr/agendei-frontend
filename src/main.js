@@ -9,7 +9,9 @@ import {
   faUsersCog,
   faCut,
   faSprayCan,
-  faFileInvoiceDollar
+  faFileInvoiceDollar,
+  faSignOutAlt,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import App from './App.vue';
@@ -18,12 +20,17 @@ import store from './store';
 import './registerServiceWorker';
 import './assets/evie/sass/style.scss';
 
+/* Icons used */
 library.add(faCalendarAlt);
 library.add(faUsers);
 library.add(faUsersCog);
 library.add(faSprayCan);
 library.add(faFileInvoiceDollar);
 library.add(faCut);
+library.add(faUser);
+library.add(faSignOutAlt);
+/* end icons */
+
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.config.productionTip = false;
