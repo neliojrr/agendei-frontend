@@ -22,7 +22,7 @@
         </router-link>
       </div>
     </div>
-    <div class="navbar-menu" v-bind:class="{ 'is-active': isOpen }">
+    <div class="navbar-menu is-hidden-desktop" v-bind:class="{ 'is-active': isOpen }">
       <div class="navbar-start">
         <router-link
           v-bind:to="item.path"
@@ -48,11 +48,8 @@ export default {
       isOpen: false,
       title: {
         calendar: 'Calendário',
-      }
+      },
     };
-  },
-  created() {
-    console.log(this.$route.name);
   },
   methods: {
     toggleBurgerMenu() {
@@ -63,10 +60,17 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../assets/sass/variables";
+
 .navbar {
   position: absolute;
   top: 0;
   left: 0;
+
+  @media screen and (min-width: 1024px) {
+    margin-left: $side-menu-size;
+    width: calc(100% - #{$side-menu-size}) !important;
+  }
 }
 
 .navbar-brand {
@@ -102,13 +106,13 @@ export default {
     a {
       position: absolute;
       right: 0;
-      margin-right: 65px;
+      margin-right: 55px;
       font-size: 20px;
       color: #FFFFFF;
     }
 
     a + a {
-      margin-right: 25px;
+      margin-right: 15px;
     }
   }
 }

@@ -1,17 +1,64 @@
 <template>
   <aside class="menu is-hidden-mobile is-hidden-tablet-only">
+    <p class="menu-label">
+      Menu
+    </p>
     <ul class="menu-list">
-      <li><a>Calendário</a></li>
-      <li><a>Clientes</a></li>
-      <li><a>Serviços</a></li>
-      <li><a>Produtos</a></li>
-      <li><a>Vendas</a></li>
+      <li v-for="item in items" class="navbar-item" v-bind:key="item.id">
+        <router-link v-bind:to="item.path">
+          <font-awesome-icon v-bind:icon="item.icon" />
+          <span class="menu-title">{{ item.title }}</span>
+        </router-link>
+      </li>
     </ul>
   </aside>
 </template>
 
 <script>
+import menuItems from '../utils/menuItems';
+
+export default {
+  data() {
+    return {
+      items: menuItems,
+    };
+  },
+};
 </script>
 
 <style lang="scss">
+@import "../assets/sass/variables";
+
+.menu {
+  position: absolute;
+  background-color: #333c44;
+  height: 100vh;
+  width: $side-menu-size;
+  top: 0;
+
+  .menu-label {
+    margin-top: 20px;
+  }
+
+  .menu-list {
+
+    li {
+      text-align: left;
+
+      a {
+        width: 100%;
+        font-size: 18px;
+        color: white;
+
+        svg {
+          margin-right: 5px;
+        }
+
+        span {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+}
 </style>

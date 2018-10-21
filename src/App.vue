@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <NavApp />
     <Menu />
+    <NavApp />
     <section class="app-content">
       <router-view />
     </section>
@@ -24,6 +24,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "assets/sass/variables";
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -45,16 +47,9 @@ export default {
 
 .app-content {
   margin-top: 50px;
-}
 
-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  text-indent: 1px;
-  text-overflow: '';
-}
-
-select::-ms-expand {
-  display: none;
+  @media screen and (min-width: 1024px) {
+    margin-left: $side-menu-size;
+  }
 }
 </style>
