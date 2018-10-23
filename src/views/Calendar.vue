@@ -1,63 +1,31 @@
 <template>
   <div class="calendar">
-    <div class="menu-header">
-      <div class="options columns is-mobile is-variable is-1">
-        <div class="column is-3">
-          <div class="field">
-            <div class="control has-icons-left">
-              <div class="select is-medium">
-                <select class="no-padding-left">
-                  <option></option>
-                  <option>Staff</option>
-                  <option v-for="u in staff" :value="u.user" :key="u.user">
-                    {{ u.name }}
-                  </option>
-                </select>
-              </div>
-              <div class="icon is-medium is-left">
-                <font-awesome-icon icon="user" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="column">
-          <div class="field">
-            <div class="control is-medium">
-              <Datepicker
-                input-class="input is-medium date-picker"
-                calendar-class="date-picker-calendar"
-                :language="ptBR"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="column is-3">
-          <div class="field">
-            <div class="control has-icons-left">
-              <div class="select is-medium">
-                <select class="no-padding-left">
-                  <option value=''></option>
-                  <option>Semana</option>
-                  <option>Dia</option>
-                </select>
-              </div>
-              <div class="icon is-medium is-left">
-                <font-awesome-icon icon="calendar-alt" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="calendar-header">
+    <CalendarHeader
+      :employeeSelected="employeeSelected"
+      :staff="staff"
+      :daySelected="daySelected"
+      :showStaffOnHeader="showStaffOnHeader"
+      @change-date="changeDate"
+      @toggle-staff-on-header="toggleStaffOnHeader"
+      @employee-change="employeeChange"
+    />
+    <a class="button is-link new-appointment-button">Novo Apontamento</a>
+    <div class="agenda-header">
       <div
         v-if="showStaffOnHeader"
         class="header columns is-mobile is-side-gapless"
       >
         <div class="column is-1-and-half"></div>
-        <div v-for="s in staff" :key="s.user" class="column">
-          {{ s.name }}
-        </div>
+        <template v-if="employeeSelected">
+          <div class="column">
+            {{ employeeSelected.name }}
+          </div>
+        </template>
+        <template v-else>
+          <div v-for="s in staff" :key="s.user" class="column">
+            {{ s.name }}
+          </div>
+        </template>
       </div>
       <div v-else class="header columns is-mobile is-side-gapless">
         <div class="column is-1-and-half"></div>
@@ -66,7 +34,7 @@
         </div>
       </div>
     </div>
-    <div class="calendar-body">
+    <div class="agenda-body">
       <div
         class="appointments columns is-mobile is-side-gapless"
         v-for="n in timeRows"
@@ -75,18 +43,78 @@
         <div class="column is-1-and-half" v-bind:class="{ 'full-hour': isFullHour(n) }">
           <span v-if="isFullHour(n)">{{ fullHour(n) }}h</span>
         </div>
-        <div
-          class="column"
-          v-bind:class="{
-            'is-booked': isBooked(n, s.user),
-            'is-booking-type': !isBooked(n, s.user),
-            'full-hour': isFullHour(n)
-          }"
-          v-for="(s, index) in (showStaffOnHeader ? staff : daysOfWeek)"
-          :key="index"
-        >
-          &nbsp;
-        </div>
+        <template v-if="showStaffOnHeader">
+          <template v-if="employeeSelected">
+            <div
+              class="column is-booking-type"
+              :class="{
+                'full-hour': isFullHour(n),
+                'is-booked': columnsBooked.indexOf(getColumnId(n, daySelected, employeeSelected)) !== -1
+              }"
+            >
+              <span
+                class="booking-description has-text-white has-text-weight-semibold"
+              >
+                <template
+                  v-if="columnsBooked.indexOf(getColumnId(n, daySelected, employeeSelected)) !== -1"
+                >
+                  {{ bookingInfo[getColumnId(n, daySelected, employeeSelected)] }}&nbsp;
+                </template>
+                <template v-else>
+                  &nbsp;
+                </template>
+              </span>
+            </div>
+          </template>
+          <template v-else>
+            <div
+              v-for="s in staff"
+              :key="s.id"
+              class="column is-booking-type"
+              :class="{
+                'full-hour': isFullHour(n),
+                'is-booked': columnsBooked.indexOf(getColumnId(n, daySelected, s)) !== -1
+              }"
+            >
+              <span
+                class="booking-description has-text-white has-text-weight-semibold"
+              >
+                <template
+                  v-if="columnsBooked.indexOf(getColumnId(n, daySelected, s)) !== -1"
+                >
+                  {{ bookingInfo[getColumnId(n, daySelected, s)] }}&nbsp;
+                </template>
+                <template v-else>
+                  &nbsp;
+                </template>
+              </span>
+            </div>
+          </template>
+        </template>
+        <template v-else>
+          <div
+            class="column is-booking-type"
+            v-bind:class="{
+              'full-hour': isFullHour(n),
+              'is-booked': columnsBooked.indexOf(getColumnId(n, d)) !== -1
+            }"
+            v-for="d in daysOfWeek"
+            :key="getColumnId(n, d)"
+          >
+            <span
+              class="booking-description has-text-white has-text-weight-semibold"
+            >
+              <template
+                v-if="columnsBooked.indexOf(getColumnId(n, d)) !== -1"
+              >
+                {{ bookingInfo[getColumnId(n, d)] || '' }}&nbsp;
+              </template>
+              <template v-else>
+                &nbsp;
+              </template>
+            </span>
+          </div>
+        </template>
       </div>
       <div class="bottom columns is-mobile"></div>
     </div>
@@ -94,9 +122,9 @@
 </template>
 
 <script>
-import {ptBR} from 'vuejs-datepicker/dist/locale';
 import moment from 'moment';
-import Datepicker from 'vuejs-datepicker';
+import CalendarHeader from '../components/calendar/CalendarHeader.vue';
+import log from '../mixins/log';
 
 moment.updateLocale('en', {
   weekdays: [
@@ -108,75 +136,110 @@ moment.updateLocale('en', {
 export default {
   data() {
     return {
-      ptBR,
       start: 7,
       end: 24,
       timeRows: (24 - 7) * 4,
-      showStaffOnHeader: true,
+      showStaffOnHeader: false,
+      daySelected: moment(),
+      employeeSelected: null,
+      bookingLineSequence: 0,
       staff: [
         {
-          user: 'nelio',
+          id: 1,
+          email: 'nelio@agendei.io',
           name: 'Nelio',
         },
         {
-          user: 'gustavo',
+          id: 2,
+          email: 'gustavo@agendei.io',
           name: 'Gustavo',
         },
         {
-          user: 'salviano',
+          id: 3,
+          email: 'salviano@agendei.io',
           name: 'Salviano',
         },
       ],
       daysOfWeek: [],
       bookings: [
         {
-          user: 'nelio',
-          start: '2018-10-20 9:45',
-          end: '2018-10-20 11:15',
+          employee: {
+            id: 1,
+            email: 'nelio@agendei.io',
+            name: 'Nelio',
+          },
+          client: {
+            name: 'João',
+          },
+          service: {
+            title: 'Corte de cabelo',
+          },
+          start: '2018-10-23 09:45',
+          end: '2018-10-23 11:15',
         },
         {
-          user: 'nelio',
-          start: '2018-10-20 7:00',
-          end: '2018-10-20 8:00',
+          employee: {
+            id: 1,
+            email: 'nelio@agendei.io',
+            name: 'Nelio',
+          },
+          client: {
+            name: 'João',
+          },
+          service: {
+            title: 'Sobrancelha',
+          },
+          start: '2018-10-23 07:00',
+          end: '2018-10-23 08:00',
         },
         {
-          user: 'salviano',
-          start: '2018-10-20 14:00',
-          end: '2018-10-20 15:15',
+          employee: {
+            id: 3,
+            email: 'salviano@agendei.io',
+            name: 'Salviano',
+          },
+          client: {
+            name: 'João',
+          },
+          service: {
+            title: 'Manicure',
+          },
+          start: '2018-10-23 14:00',
+          end: '2018-10-23 15:15',
         },
         {
-          user: 'gustavo',
-          start: '2018-10-20 10:30',
-          end: '2018-10-20 12:15',
+          employee: {
+            id: 2,
+            email: 'gustavo@agendei.io',
+            name: 'Gustavo',
+          },
+          client: {
+            name: 'João',
+          },
+          service: {
+            title: 'Corte de cabelo',
+          },
+          start: '2018-10-23 10:30',
+          end: '2018-10-23 12:15',
         },
       ],
+      columnsBooked: [],
+      bookingInfo: {},
     };
   },
   components: {
-    Datepicker,
+    CalendarHeader,
   },
   created() {
     this.fillWeekDays();
   },
+  mounted() {
+    this.fillColumnsBooked();
+  },
+  mixins: [log],
   methods: {
-    isFullHour(n) {
-      return ((n - 1) * 15) % 4 === 0;
-    },
-    fullHour(n) {
-      return parseInt(((n - 1) / 4) + this.start, 10);
-    },
-    isBooked(n, user) {
-      const quarter = ((n - 1) * 15) % 4;
-      const minute = quarter > 0 ? 60 - (quarter * 15) : 0;
-      const hour = this.fullHour(n);
-      const time = moment().hour(hour).minute(minute); // current date
-      const checkBooking = this.bookings.findIndex((book) => {
-        if (user === book.user) {
-          return time.isBetween(book.start, book.end, null, '[)');
-        }
-        return false;
-      });
-      return checkBooking > -1;
+    moment(date) {
+      return moment(date);
     },
     fillWeekDays(currentDay = moment()) {
       const startOfWeek = moment(currentDay).startOf('week');
@@ -186,6 +249,75 @@ export default {
         this.daysOfWeek.push(moment(day));
         day.add(1, 'day');
       }
+    },
+    changeDate(date) {
+      this.daySelected = moment(date);
+      this.showStaffOnHeader = true;
+      this.fillColumnsBooked();
+    },
+    toggleStaffOnHeader() {
+      this.showStaffOnHeader = !this.showStaffOnHeader;
+      this.fillColumnsBooked();
+    },
+    employeeChange(value) {
+      this.employeeSelected = this.staff.find(s => s.id === Number(value));
+      this.fillColumnsBooked();
+    },
+    isFullHour(rowTime) {
+      return ((rowTime - 1) * 15) % 4 === 0;
+    },
+    fullHour(rowTime) {
+      return parseInt(((rowTime - 1) / 4) + this.start, 10);
+    },
+    fullMinute(rowTime) {
+      const quarter = ((rowTime - 1) * 15) % 4;
+      return quarter > 0 ? 60 - (quarter * 15) : 0;
+    },
+    getColumnId(rowTime, header, employee) {
+      if (employee) {
+        return `${employee.id}_${moment(header).format('MM_DD')}_${this.fullHour(rowTime)}_${this.fullMinute(rowTime)}`;
+      }
+      return `${moment(header).format('MM_DD')}_${this.fullHour(rowTime)}_${this.fullMinute(rowTime)}`;
+    },
+    fillColumnsBooked() {
+      let { bookings } = this;
+      const { employeeSelected, showStaffOnHeader } = this;
+      const columnsBooked = [];
+      const bookingInfo = {};
+      if (employeeSelected) {
+        bookings = this.bookings
+          .filter(book => book.employee.id === this.employeeSelected.id);
+      }
+      bookings.forEach((book) => {
+        const start = moment(book.start);
+        const end = moment(book.end);
+        let infoOrder = 0;
+        while (start.isBefore(end)) {
+          const ref = showStaffOnHeader
+            ? `${book.employee.id}_${start.format('MM_DD_H_m')}`
+            : start.format('MM_DD_H_m');
+          bookingInfo[ref] = this.fillBookingInfo(infoOrder, book);
+          if (columnsBooked.indexOf(ref) === -1) {
+            columnsBooked.push(ref);
+          }
+          start.add(15, 'm');
+          infoOrder += 1;
+        }
+      });
+      this.columnsBooked = columnsBooked;
+      this.bookingInfo = bookingInfo;
+    },
+    fillBookingInfo(order, book) {
+      if (order === 0) {
+        return `${moment(book.start).format('h:mm')} - ${moment(book.end).format('h:mm')}`;
+      }
+      if (order === 1) {
+        return book.client.name;
+      }
+      if (order === 2) {
+        return book.service.title;
+      }
+      return null;
     },
   },
 };
@@ -207,14 +339,6 @@ export default {
   }
 }
 
-.menu-header {
-  padding: 10px;
-
-  .column {
-    border: 0 !important;
-  }
-}
-
 .header {
   margin-bottom: 0 !important; // how i'm going to remove this
   margin-top: 5px;
@@ -226,7 +350,7 @@ export default {
   }
 }
 
-.calendar-body {
+.agenda-body {
   height: calc(100vh - 150px);
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
@@ -264,9 +388,14 @@ export default {
 }
 
 .is-booked {
-  background-color: blue;
+  background-color: #23d160 !important;
+  background-image: none !important;
+  border-left: 2px solid green !important;
   border-bottom: 0 !important;
   border-top: 0 !important;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .is-side-gapless {
@@ -279,32 +408,22 @@ export default {
   width: 12.5%;
 }
 
-.options {
-
-  .select {
-    width: 100%;
-
-    select.no-padding-left {
-      @media screen and (max-width: 1023px) {
-        padding-left: 0;
-      }
-    }
-  }
+.new-appointment-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 }
 
-// Overwriting datepicker input default styles
-.date-picker {
-  background-color: white !important;
-  border-radius: 4px !important;
-  margin-bottom: 0 !important;
-  padding: 10px !important;
-  text-align: center;
-  color: #2c3e50;
-}
+.booking-description {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  text-align: left;
 
-.date-picker-calendar {
-  @media screen and (max-width: 1023px) {
-    left: -35%;
+  @media screen and (max-width: 768px) {
+    font-size: 11px;
   }
 }
 </style>

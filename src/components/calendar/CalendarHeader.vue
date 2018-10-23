@@ -6,12 +6,12 @@
           <div class="control has-icons-left">
             <div class="select is-medium">
               <select
-                v-bind:value="employeeSelected ? employeeSelected.email : ''"
+                v-bind:value="employeeSelected ? employeeSelected.id : ''"
                 v-on:change="$emit('employee-change', $event.target.value)"
                 class="no-padding-left"
               >
                 <option value=''>Staff</option>
-                <option v-for="u in staff" :value="u.email" :key="u.email">
+                <option v-for="u in staff" :value="u.id" :key="u.id">
                   {{ u.name }}
                 </option>
               </select>
