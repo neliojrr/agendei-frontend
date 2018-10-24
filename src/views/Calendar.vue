@@ -9,7 +9,9 @@
       @toggle-staff-on-header="toggleStaffOnHeader"
       @employee-change="employeeChange"
     />
-    <a class="button is-link new-appointment-button">Novo Apontamento</a>
+    <a class="button is-link new-appointment-button" title="Novo agendamento">
+      <font-awesome-icon icon="plus" />
+    </a>
     <div class="agenda-header">
       <div
         v-if="showStaffOnHeader"
@@ -49,21 +51,28 @@
               class="column is-booking-type"
               :class="{
                 'full-hour': isFullHour(n),
-                'is-booked': columnsBooked.indexOf(getColumnId(n, daySelected, employeeSelected)) !== -1
+                'is-booked': columnsBooked[getColumnId(n, daySelected, employeeSelected)]
               }"
+              :style="!!columnsBooked[getColumnId(n, daySelected, employeeSelected)]
+                ? {
+                    backgroundColor: columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.color,
+                    borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.borderColor}`,
+                  }
+                : {}
+              "
             >
-              <span
-                class="booking-description has-text-white has-text-weight-semibold"
+              <template
+                v-if="!!columnsBooked[getColumnId(n, daySelected, employeeSelected)]"
               >
-                <template
-                  v-if="columnsBooked.indexOf(getColumnId(n, daySelected, employeeSelected)) !== -1"
+                <span
+                  class="booking-description has-text-white has-text-weight-semibold"
                 >
                   {{ bookingInfo[getColumnId(n, daySelected, employeeSelected)] }}&nbsp;
-                </template>
-                <template v-else>
-                  &nbsp;
-                </template>
-              </span>
+                </span>
+              </template>
+              <template v-else>
+                <span>&nbsp;</span>
+              </template>
             </div>
           </template>
           <template v-else>
@@ -73,21 +82,28 @@
               class="column is-booking-type"
               :class="{
                 'full-hour': isFullHour(n),
-                'is-booked': columnsBooked.indexOf(getColumnId(n, daySelected, s)) !== -1
+                'is-booked': !!columnsBooked[getColumnId(n, daySelected, s)]
               }"
+              :style="!!columnsBooked[getColumnId(n, daySelected, s)]
+              ? {
+                  backgroundColor: columnsBooked[getColumnId(n, daySelected, s)].employee.color,
+                  borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, s)].employee.borderColor}`,
+                }
+              : {}
+            "
             >
-              <span
-                class="booking-description has-text-white has-text-weight-semibold"
+              <template
+                v-if="columnsBooked[getColumnId(n, daySelected, s)]"
               >
-                <template
-                  v-if="columnsBooked.indexOf(getColumnId(n, daySelected, s)) !== -1"
+                <span
+                  class="booking-description has-text-white has-text-weight-semibold"
                 >
                   {{ bookingInfo[getColumnId(n, daySelected, s)] }}&nbsp;
-                </template>
-                <template v-else>
-                  &nbsp;
-                </template>
-              </span>
+                </span>
+              </template>
+              <template v-else>
+                <span>&nbsp;</span>
+              </template>
             </div>
           </template>
         </template>
@@ -96,23 +112,30 @@
             class="column is-booking-type"
             v-bind:class="{
               'full-hour': isFullHour(n),
-              'is-booked': columnsBooked.indexOf(getColumnId(n, d)) !== -1
+              'is-booked': !!columnsBooked[getColumnId(n, d)]
             }"
             v-for="d in daysOfWeek"
             :key="getColumnId(n, d)"
+            :style="!!columnsBooked[getColumnId(n, d)]
+              ? {
+                  backgroundColor: columnsBooked[getColumnId(n, d)].employee.color,
+                  borderLeft: `2px solid ${columnsBooked[getColumnId(n, d)].employee.borderColor}`,
+                }
+              : {}
+            "
           >
-            <span
-              class="booking-description has-text-white has-text-weight-semibold"
+            <template
+              v-if="!!columnsBooked[getColumnId(n, d)]"
             >
-              <template
-                v-if="columnsBooked.indexOf(getColumnId(n, d)) !== -1"
+              <span
+                class="booking-description has-text-white has-text-weight-semibold"
               >
                 {{ bookingInfo[getColumnId(n, d)] || '' }}&nbsp;
-              </template>
-              <template v-else>
-                &nbsp;
-              </template>
-            </span>
+              </span>
+            </template>
+            <template v-else>
+              <span>&nbsp;</span>
+            </template>
           </div>
         </template>
       </div>
@@ -148,16 +171,22 @@ export default {
           id: 1,
           email: 'nelio@agendei.io',
           name: 'Nelio',
+          color: 'hsl(141, 71%, 48%)',
+          borderColor: 'hsl(141, 71%, 28%)',
         },
         {
           id: 2,
           email: 'gustavo@agendei.io',
           name: 'Gustavo',
+          color: 'hsl(171, 100%, 41%)',
+          borderColor: 'hsl(171, 100%, 21%)',
         },
         {
           id: 3,
           email: 'salviano@agendei.io',
           name: 'Salviano',
+          color: 'hsl(47, 95%, 69%)',
+          borderColor: 'hsl(47, 95%, 49%)',
         },
       ],
       daysOfWeek: [],
@@ -167,6 +196,8 @@ export default {
             id: 1,
             email: 'nelio@agendei.io',
             name: 'Nelio',
+            color: '#23d160',
+            borderColor: 'hsl(141, 71%, 28%)',
           },
           client: {
             name: 'João',
@@ -182,6 +213,8 @@ export default {
             id: 1,
             email: 'nelio@agendei.io',
             name: 'Nelio',
+            color: '#23d160',
+            borderColor: 'hsl(141, 71%, 28%)',
           },
           client: {
             name: 'João',
@@ -197,6 +230,8 @@ export default {
             id: 3,
             email: 'salviano@agendei.io',
             name: 'Salviano',
+            color: 'hsl(47, 95%, 69%)',
+            borderColor: 'hsl(47, 95%, 49%)',
           },
           client: {
             name: 'João',
@@ -212,6 +247,8 @@ export default {
             id: 2,
             email: 'gustavo@agendei.io',
             name: 'Gustavo',
+            color: 'hsl(171, 100%, 41%)',
+            borderColor: 'hsl(171, 100%, 21%)',
           },
           client: {
             name: 'João',
@@ -223,7 +260,7 @@ export default {
           end: '2018-10-23 12:15',
         },
       ],
-      columnsBooked: [],
+      columnsBooked: {},
       bookingInfo: {},
     };
   },
@@ -282,11 +319,11 @@ export default {
     fillColumnsBooked() {
       let { bookings } = this;
       const { employeeSelected, showStaffOnHeader } = this;
-      const columnsBooked = [];
+      const columnsBooked = {};
       const bookingInfo = {};
       if (employeeSelected) {
-        bookings = this.bookings
-          .filter(book => book.employee.id === this.employeeSelected.id);
+        bookings = bookings
+          .filter(book => book.employee.id === employeeSelected.id);
       }
       bookings.forEach((book) => {
         const start = moment(book.start);
@@ -297,9 +334,7 @@ export default {
             ? `${book.employee.id}_${start.format('MM_DD_H_m')}`
             : start.format('MM_DD_H_m');
           bookingInfo[ref] = this.fillBookingInfo(infoOrder, book);
-          if (columnsBooked.indexOf(ref) === -1) {
-            columnsBooked.push(ref);
-          }
+          columnsBooked[ref] = book;
           start.add(15, 'm');
           infoOrder += 1;
         }
@@ -309,7 +344,7 @@ export default {
     },
     fillBookingInfo(order, book) {
       if (order === 0) {
-        return `${moment(book.start).format('h:mm')} - ${moment(book.end).format('h:mm')}`;
+        return `${moment(book.start).format('H:mm')} - ${moment(book.end).format('H:mm')}`;
       }
       if (order === 1) {
         return book.client.name;
@@ -351,7 +386,7 @@ export default {
 }
 
 .agenda-body {
-  height: calc(100vh - 150px);
+  height: calc(100vh - 170px);
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
   overflow-x: hidden;
@@ -388,9 +423,7 @@ export default {
 }
 
 .is-booked {
-  background-color: #23d160 !important;
   background-image: none !important;
-  border-left: 2px solid green !important;
   border-bottom: 0 !important;
   border-top: 0 !important;
   overflow: hidden;
@@ -408,10 +441,19 @@ export default {
   width: 12.5%;
 }
 
-.new-appointment-button {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
+.calendar {
+
+  .new-appointment-button {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    height: 45px;
+    width: 45px;
+    padding: 0;
+    display: flex;
+    border-radius: 50%;
+    z-index: 10;
+  }
 }
 
 .booking-description {
