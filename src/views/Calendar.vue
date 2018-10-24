@@ -12,160 +12,36 @@
     <a class="button is-link new-appointment-button" title="Novo agendamento">
       <font-awesome-icon icon="plus" />
     </a>
-    <div class="agenda-header">
-      <div
-        v-if="showStaffOnHeader"
-        class="header columns is-mobile is-side-gapless"
-      >
-        <div class="column is-1-and-half"></div>
-        <template v-if="employeeSelected">
-          <div class="column">
-            {{ employeeSelected.name }}
-          </div>
-        </template>
-        <template v-else>
-          <div v-for="s in staff" :key="s.user" class="column">
-            {{ s.name }}
-          </div>
-        </template>
-      </div>
-      <div v-else class="header columns is-mobile is-side-gapless">
-        <div class="column is-1-and-half"></div>
-        <div v-for="d in daysOfWeek" :key="d.format()" class="column">
-          {{ d.format('ddd DD') }}
-        </div>
-      </div>
-    </div>
-    <div class="agenda-body">
-      <div
-        class="appointments columns is-mobile is-side-gapless"
-        v-for="n in timeRows"
-        :key="n"
-      >
-        <div class="column is-1-and-half" v-bind:class="{ 'full-hour': isFullHour(n) }">
-          <span v-if="isFullHour(n)">{{ fullHour(n) }}h</span>
-        </div>
-        <template v-if="showStaffOnHeader">
-          <template v-if="employeeSelected">
-            <div
-              class="column is-booking-type"
-              :class="{
-                'full-hour': isFullHour(n),
-                'is-booked': columnsBooked[getColumnId(n, daySelected, employeeSelected)]
-              }"
-              :style="!!columnsBooked[getColumnId(n, daySelected, employeeSelected)]
-                ? {
-                    backgroundColor: columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.color,
-                    borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.borderColor}`,
-                  }
-                : {}
-              "
-            >
-              <template
-                v-if="!!columnsBooked[getColumnId(n, daySelected, employeeSelected)]"
-              >
-                <span
-                  class="booking-description has-text-white has-text-weight-semibold"
-                >
-                  {{ bookingInfo[getColumnId(n, daySelected, employeeSelected)] }}&nbsp;
-                </span>
-              </template>
-              <template v-else>
-                <span>&nbsp;</span>
-              </template>
-            </div>
-          </template>
-          <template v-else>
-            <div
-              v-for="s in staff"
-              :key="s.id"
-              class="column is-booking-type"
-              :class="{
-                'full-hour': isFullHour(n),
-                'is-booked': !!columnsBooked[getColumnId(n, daySelected, s)]
-              }"
-              :style="!!columnsBooked[getColumnId(n, daySelected, s)]
-              ? {
-                  backgroundColor: columnsBooked[getColumnId(n, daySelected, s)].employee.color,
-                  borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, s)].employee.borderColor}`,
-                }
-              : {}
-            "
-            >
-              <template
-                v-if="columnsBooked[getColumnId(n, daySelected, s)]"
-              >
-                <span
-                  class="booking-description has-text-white has-text-weight-semibold"
-                >
-                  {{ bookingInfo[getColumnId(n, daySelected, s)] }}&nbsp;
-                </span>
-              </template>
-              <template v-else>
-                <span>&nbsp;</span>
-              </template>
-            </div>
-          </template>
-        </template>
-        <template v-else>
-          <div
-            class="column is-booking-type"
-            v-bind:class="{
-              'full-hour': isFullHour(n),
-              'is-booked': !!columnsBooked[getColumnId(n, d)]
-            }"
-            v-for="d in daysOfWeek"
-            :key="getColumnId(n, d)"
-            :style="!!columnsBooked[getColumnId(n, d)]
-              ? {
-                  backgroundColor: columnsBooked[getColumnId(n, d)].employee.color,
-                  borderLeft: `2px solid ${columnsBooked[getColumnId(n, d)].employee.borderColor}`,
-                }
-              : {}
-            "
-          >
-            <template
-              v-if="!!columnsBooked[getColumnId(n, d)]"
-            >
-              <span
-                class="booking-description has-text-white has-text-weight-semibold"
-              >
-                {{ bookingInfo[getColumnId(n, d)] || '' }}&nbsp;
-              </span>
-            </template>
-            <template v-else>
-              <span>&nbsp;</span>
-            </template>
-          </div>
-        </template>
-      </div>
-      <div class="bottom columns is-mobile"></div>
-    </div>
+    <Agenda
+      :employeeSelected="employeeSelected"
+      :staff="staff"
+      :daySelected="daySelected"
+      :showStaffOnHeader="showStaffOnHeader"
+      :appointments="appointments"
+      :columnsBooked="columnsBooked"
+      :bookingInfo="bookingInfo"
+      :start="start"
+      :end="end"
+    />
   </div>
 </template>
 
 <script>
 import moment from 'moment';
 import CalendarHeader from '../components/calendar/CalendarHeader.vue';
+import Agenda from '../components/calendar/Agenda.vue';
 import log from '../mixins/log';
-
-moment.updateLocale('en', {
-  weekdays: [
-    'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado',
-  ],
-  weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
-});
 
 export default {
   data() {
     return {
       start: 7,
       end: 24,
-      timeRows: (24 - 7) * 4,
       showStaffOnHeader: false,
       daySelected: moment(),
       employeeSelected: null,
-      bookingLineSequence: 0,
+      columnsBooked: {},
+      bookingInfo: {},
       staff: [
         {
           id: 1,
@@ -189,8 +65,7 @@ export default {
           borderColor: 'hsl(47, 95%, 49%)',
         },
       ],
-      daysOfWeek: [],
-      bookings: [
+      appointments: [
         {
           employee: {
             id: 1,
@@ -260,32 +135,19 @@ export default {
           end: '2018-10-23 12:15',
         },
       ],
-      columnsBooked: {},
-      bookingInfo: {},
     };
   },
   components: {
     CalendarHeader,
+    Agenda,
   },
-  created() {
-    this.fillWeekDays();
-  },
+  mixins: [log],
   mounted() {
     this.fillColumnsBooked();
   },
-  mixins: [log],
   methods: {
     moment(date) {
       return moment(date);
-    },
-    fillWeekDays(currentDay = moment()) {
-      const startOfWeek = moment(currentDay).startOf('week');
-      const endOfWeek = moment(currentDay).endOf('week');
-      const day = moment(startOfWeek);
-      while (day.isSameOrBefore(endOfWeek, 'day')) {
-        this.daysOfWeek.push(moment(day));
-        day.add(1, 'day');
-      }
     },
     changeDate(date) {
       this.daySelected = moment(date);
@@ -300,32 +162,16 @@ export default {
       this.employeeSelected = this.staff.find(s => s.id === Number(value));
       this.fillColumnsBooked();
     },
-    isFullHour(rowTime) {
-      return ((rowTime - 1) * 15) % 4 === 0;
-    },
-    fullHour(rowTime) {
-      return parseInt(((rowTime - 1) / 4) + this.start, 10);
-    },
-    fullMinute(rowTime) {
-      const quarter = ((rowTime - 1) * 15) % 4;
-      return quarter > 0 ? 60 - (quarter * 15) : 0;
-    },
-    getColumnId(rowTime, header, employee) {
-      if (employee) {
-        return `${employee.id}_${moment(header).format('MM_DD')}_${this.fullHour(rowTime)}_${this.fullMinute(rowTime)}`;
-      }
-      return `${moment(header).format('MM_DD')}_${this.fullHour(rowTime)}_${this.fullMinute(rowTime)}`;
-    },
     fillColumnsBooked() {
-      let { bookings } = this;
+      let { appointments } = this;
       const { employeeSelected, showStaffOnHeader } = this;
       const columnsBooked = {};
       const bookingInfo = {};
       if (employeeSelected) {
-        bookings = bookings
+        appointments = appointments
           .filter(book => book.employee.id === employeeSelected.id);
       }
-      bookings.forEach((book) => {
+      appointments.forEach((book) => {
         const start = moment(book.start);
         const end = moment(book.end);
         let infoOrder = 0;
@@ -360,87 +206,6 @@ export default {
 </script>
 
 <style lang="scss">
-.columns {
-
-  .column {
-    border: 1px solid #cccccc;
-    border-right: 0;
-    border-bottom: 0;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-  .column:last-child {
-    border-right: 1px solid #cccccc;
-  }
-}
-
-.header {
-  margin-bottom: 0 !important; // how i'm going to remove this
-  margin-top: 5px;
-
-  .column {
-    border-bottom: 1px solid #cccccc;
-    font-size: 13px;
-    font-weight: bold;
-  }
-}
-
-.agenda-body {
-  height: calc(100vh - 170px);
-  -webkit-overflow-scrolling: touch;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-top: 10px;
-
-  .columns:last-child {
-    margin-bottom: calc(1.5rem - 0.75rem);
-  }
-
-  .columns {
-
-    .column {
-      padding-top: 3px;
-      padding-bottom: 3px;
-    }
-
-    .is-booking-type {
-      background-size: 8px 8px;
-      background-image: linear-gradient(45deg, transparent 46%, rgba(36, 51, 74, .2) 49%, rgba(36, 51, 74, .2) 51%, transparent 55%);
-      background-color: #EEF0F2;
-    }
-  }
-}
-
-.full-hour {
-  border-top: 2px solid #cccccc !important;
-  font-size: 13px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.bottom {
-  border-bottom: 1px solid #cccccc;
-}
-
-.is-booked {
-  background-image: none !important;
-  border-bottom: 0 !important;
-  border-top: 0 !important;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-}
-
-.is-side-gapless {
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.is-1-and-half {
-  flex: none;
-  width: 12.5%;
-}
-
 .calendar {
 
   .new-appointment-button {
@@ -453,19 +218,6 @@ export default {
     display: flex;
     border-radius: 50%;
     z-index: 10;
-  }
-}
-
-.booking-description {
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: bold;
-  text-align: left;
-
-  @media screen and (max-width: 768px) {
-    font-size: 11px;
   }
 }
 </style>
