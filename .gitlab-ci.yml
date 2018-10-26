@@ -1,10 +1,9 @@
+image: node:8.12.0
+
 stages:
   - deploy
 
 before_script:
-  - wget -qO- https://deb.nodesource.com/setup_8.x | sudo -E bash -
-  - apt-get install -y nodejs
-  - apt-get install -y build-essential
   - npm i
   - npm run build
 
