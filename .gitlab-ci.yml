@@ -12,4 +12,4 @@ job_deploy:
     - ssh-copy-id -i ~/.ssh/deploy_rsa.pub $SERVER_USER@agendei.io
     - rsync -avuz $CI_PROJECT_DIR/dist/ $SERVER_USER@agendei.io:/home/$SERVER_USER/beauty
   only:
-    master
+    - master
