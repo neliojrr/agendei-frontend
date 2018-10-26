@@ -12,8 +12,6 @@ job_deploy:
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY_2" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh-keyscan -H agendei.io >> ~/.ssh/known_hosts
-    - ssh-copy-id -i ~/.ssh/deploy_rsa.pub $SERVER_USER@agendei.io
     - rsync -avuz $CI_PROJECT_DIR/dist/ $SERVER_USER@agendei.io:/home/$SERVER_USER/beauty
   only:
     - master
