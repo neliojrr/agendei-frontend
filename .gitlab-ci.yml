@@ -10,10 +10,8 @@ before_script:
 job_deploy:
   stage: deploy
   script:
-    - ssh-keygen -t rsa -b 4096 -C '' -f ~/.ssh/deploy_rsa
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - sshpass -e $SSH_PRIVATE_KEY
     - ssh-keyscan -H agendei.io >> ~/.ssh/known_hosts
     - ssh-copy-id -i ~/.ssh/deploy_rsa.pub $SERVER_USER@agendei.io
     - rsync -avuz $CI_PROJECT_DIR/dist/ $SERVER_USER@agendei.io:/home/$SERVER_USER/beauty
