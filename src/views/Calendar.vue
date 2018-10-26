@@ -1,33 +1,39 @@
 <template>
-  <div class="calendar">
-    <CalendarHeader
-      :employeeSelected="employeeSelected"
-      :staff="staff"
-      :daySelected="daySelected"
-      :showStaffOnHeader="showStaffOnHeader"
-      @change-date="changeDate"
-      @toggle-staff-on-header="toggleStaffOnHeader"
-      @employee-change="employeeChange"
-    />
-    <a class="button is-link new-appointment-button" title="Novo agendamento">
-      <font-awesome-icon icon="plus" />
-    </a>
-    <Agenda
-      :employeeSelected="employeeSelected"
-      :staff="staff"
-      :daySelected="daySelected"
-      :showStaffOnHeader="showStaffOnHeader"
-      :appointments="appointments"
-      :columnsBooked="columnsBooked"
-      :bookingInfo="bookingInfo"
-      :start="start"
-      :end="end"
-    />
+  <div>
+    <Menu />
+    <NavApp />
+    <div class="calendar app-content">
+      <CalendarHeader
+        :employeeSelected="employeeSelected"
+        :staff="staff"
+        :daySelected="daySelected"
+        :showStaffOnHeader="showStaffOnHeader"
+        @change-date="changeDate"
+        @toggle-staff-on-header="toggleStaffOnHeader"
+        @employee-change="employeeChange"
+      />
+      <a class="button is-link new-appointment-button" title="Novo agendamento">
+        <font-awesome-icon icon="plus" />
+      </a>
+      <Agenda
+        :employeeSelected="employeeSelected"
+        :staff="staff"
+        :daySelected="daySelected"
+        :showStaffOnHeader="showStaffOnHeader"
+        :appointments="appointments"
+        :columnsBooked="columnsBooked"
+        :bookingInfo="bookingInfo"
+        :start="start"
+        :end="end"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+import Menu from '../components/Menu.vue';
+import NavApp from '../components/NavApp.vue';
 import CalendarHeader from '../components/calendar/CalendarHeader.vue';
 import Agenda from '../components/calendar/Agenda.vue';
 import log from '../mixins/log';
@@ -138,6 +144,8 @@ export default {
     };
   },
   components: {
+    Menu,
+    NavApp,
     CalendarHeader,
     Agenda,
   },

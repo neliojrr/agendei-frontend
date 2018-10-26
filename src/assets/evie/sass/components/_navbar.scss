@@ -1,4 +1,4 @@
-.navbar{
+.navbar-web{
 	position: fixed;
 	z-index: 100;
 	width: 100%;
@@ -61,12 +61,12 @@
 			&:after {
 				display:block;
 				content: '';
-				border-bottom: solid 1px #fff;  
-				transform: scaleX(0);  
+				border-bottom: solid 1px #fff;
+				transform: scaleX(0);
 				transition: transform 250ms ease-in-out;
 			}
 
-			&:hover:after { transform: scaleX(1); }	
+			&:hover:after { transform: scaleX(1); }
 		}
 	}
 }
@@ -86,8 +86,8 @@
 /*--- Extended and transparent version ---*/
 .navbar--extended{
 	background-color: transparent;
-	
-	.navbar__inner{
+
+	.navbar-web__inner{
 		height: $navbar-height;
 		color: $hero-color; // Since this is transparent whatever color is used in the hero, fits here
 	}

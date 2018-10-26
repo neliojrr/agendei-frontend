@@ -1,24 +1,16 @@
 <template>
   <div id="app">
-    <Menu />
-    <NavApp />
-    <section class="app-content">
+    <section>
       <router-view />
     </section>
   </div>
 </template>
 
 <script>
-import Menu from './components/Menu.vue';
-import NavApp from './components/NavApp.vue';
 
 export default {
   data() {
     return {};
-  },
-  components: {
-    Menu,
-    NavApp,
   },
 };
 </script>

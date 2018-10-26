@@ -1,5 +1,5 @@
 <template>
-  <header class="navbar">
+  <header class="navbar-web navbar">
     <div class="navbar-brand">
       <a
         class="navbar-burger"
