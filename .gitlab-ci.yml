@@ -16,6 +16,7 @@ job_deploy:
     - chmod 700 ~/.ssh
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
+    - apt-get update -y
     - apt-get -y install rsync
     - rsync -avuz $CI_PROJECT_DIR/dist/ $SERVER_USER@agendei.io:/home/$SERVER_USER/beauty
   only:
