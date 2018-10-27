@@ -12,6 +12,10 @@ job_deploy:
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY_2" | tr -d '\r' | ssh-add - > /dev/null
-    - rsync --rsync-path=~/bin/rsync -avuz $CI_PROJECT_DIR/dist/ $SERVER_USER@agendei.io:/home/$SERVER_USER/beauty
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - rsync -avuz $CI_PROJECT_DIR/dist/ $SERVER_USER@agendei.io:/home/$SERVER_USER/beauty
   only:
     - master
