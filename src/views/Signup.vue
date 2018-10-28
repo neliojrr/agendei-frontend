@@ -96,6 +96,7 @@
 <script>
 import Nav from '@/components/Nav.vue';
 import api from '@/utils/api-connect';
+import validate from '@/mixins/validate';
 
 export default {
   name: 'signup',
@@ -112,6 +113,7 @@ export default {
   components: {
     Nav,
   },
+  mixins: [validate],
   methods: {
     register() {
       if (this.validateFields()) {
@@ -160,10 +162,6 @@ export default {
         return false;
       }
       return true;
-    },
-    validateEmail(email) {
-      const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(email);
     },
   },
 };
