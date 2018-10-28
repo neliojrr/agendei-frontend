@@ -59,10 +59,17 @@ export default {
 .navbar {
   background-color: $primary;
 
-  .logo {
-    color: #FFFFFF;
-    font-size: 20px;
-    font-weight: bold;
+  .navbar-brand {
+
+    .navbar-burger {
+      color: #FFFFFF;
+    }
+
+    .logo {
+      color: #FFFFFF;
+      font-size: 20px;
+      font-weight: bold;
+    }
   }
 }
 

@@ -174,7 +174,7 @@ export default {
   height: calc(100vh - 55px);
 
   @media screen and (max-width: 768px) {
-  height: calc(100vh - 75px);
+    height: calc(100vh - 75px);
     margin-top: 20px;
   }
 
@@ -183,6 +183,19 @@ export default {
     align-items: center;
 
     .column {
+
+      .title {
+        @media screen and (max-width: 768px) {
+          font-size: 1.75rem;
+        }
+      }
+
+
+      .subtitle {
+        @media screen and (max-width: 768px) {
+          font-size: 1rem;
+        }
+      }
 
       img {
         max-height: 400px;
