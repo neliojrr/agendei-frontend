@@ -18,11 +18,11 @@
             <div class="field">
               <label class="label">{{ $t('name') }}</label>
               <div class="control">
-                <input 
-                  class="input" 
+                <input
+                  class="input"
                   :class="{ 'is-danger': !!errors[name] }"
-                  type="text" 
-                  placeholder="Joao da Silva" 
+                  type="text"
+                  placeholder="Joao da Silva"
                   name="name"
                   v-model="name"
                 />
@@ -34,9 +34,9 @@
             <div class="field">
               <label class="label">Email</label>
               <div class="control">
-                <input 
-                  class="input" 
-                  type="text" 
+                <input
+                  class="input"
+                  type="text"
                   :placeholder="$t('email-placeholder')"
                   name="email"
                   v-model="email"
@@ -49,9 +49,9 @@
             <div class="field">
               <label class="label">{{ $t('password') }}</label>
               <div class="control">
-                <input 
-                  class="input" 
-                  type="password" 
+                <input
+                  class="input"
+                  type="password"
                   name="password"
                   v-model="password"
                 />
@@ -63,9 +63,9 @@
             <div class="field">
               <label class="label">{{ $t('password-confirmation') }}</label>
               <div class="control">
-                <input 
-                  class="input" 
-                  type="password" 
+                <input
+                  class="input"
+                  type="password"
                   name="password-confirmation"
                   v-model="passwordConfirmation"
                 />
@@ -176,7 +176,7 @@ export default {
   @media screen and (max-width: 768px) {
   height: calc(100vh - 75px);
     margin-top: 20px;
-  } 
+  }
 
   .columns {
     height: 100%;
@@ -189,7 +189,7 @@ export default {
 
         @media screen and (max-width: 768px) {
           max-height: 150px;
-        } 
+        }
       }
     }
   }
@@ -199,7 +199,7 @@ export default {
 
     @media screen and (max-width: 768px) {
       padding: 0 32px;
-    } 
+    }
   }
 }
 </style>
