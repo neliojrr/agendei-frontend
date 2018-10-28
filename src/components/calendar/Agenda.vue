@@ -204,97 +204,99 @@ export default {
 </script>
 
 <style lang="scss">
-.columns {
-
-  .column {
-    border: 1px solid #cccccc;
-    border-right: 0;
-    border-bottom: 0;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-  .column:last-child {
-    border-right: 1px solid #cccccc;
-  }
-}
-
-.header {
-  margin-bottom: 0 !important; // how i'm going to remove this
-  margin-top: 5px;
-
-  .column {
-    border-bottom: 1px solid #cccccc;
-    font-size: 13px;
-    font-weight: bold;
-  }
-}
-
-.agenda-body {
-  height: calc(100vh - 170px);
-  -webkit-overflow-scrolling: touch;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-top: 10px;
-
-  .columns:last-child {
-    margin-bottom: calc(1.5rem - 0.75rem);
-  }
-
+.agenda {
   .columns {
 
     .column {
-      padding-top: 3px;
-      padding-bottom: 3px;
+      border: 1px solid #cccccc;
+      border-right: 0;
+      border-bottom: 0;
+      padding-left: 5px;
+      padding-right: 5px;
     }
-
-    .is-booking-type {
-      background-size: 8px 8px;
-      background-image: linear-gradient(45deg, transparent 46%, rgba(36, 51, 74, .2) 49%, rgba(36, 51, 74, .2) 51%, transparent 55%);
-      background-color: #EEF0F2;
+    .column:last-child {
+      border-right: 1px solid #cccccc;
     }
   }
-}
 
-.full-hour {
-  border-top: 2px solid #cccccc !important;
-  font-size: 13px;
-  font-weight: bold;
-  text-align: center;
-}
+  .header {
+    margin-bottom: 0 !important; // how i'm going to remove this
+    margin-top: 5px;
 
-.bottom {
-  border-bottom: 1px solid #cccccc;
-}
+    .column {
+      border-bottom: 1px solid #cccccc;
+      font-size: 13px;
+      font-weight: bold;
+    }
+  }
 
-.is-booked {
-  background-image: none !important;
-  border-bottom: 0 !important;
-  border-top: 0 !important;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-}
+  .agenda-body {
+    height: calc(100vh - 170px);
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 10px;
 
-.is-side-gapless {
-  margin-left: 0;
-  margin-right: 0;
-}
+    .columns:last-child {
+      margin-bottom: calc(1.5rem - 0.75rem);
+    }
 
-.is-1-and-half {
-  flex: none;
-  width: 12.5%;
-}
+    .columns {
 
-.booking-description {
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: bold;
-  text-align: left;
+      .column {
+        padding-top: 3px;
+        padding-bottom: 3px;
+      }
 
-  @media screen and (max-width: 768px) {
-    font-size: 11px;
+      .is-booking-type {
+        background-size: 8px 8px;
+        background-image: linear-gradient(45deg, transparent 46%, rgba(36, 51, 74, .2) 49%, rgba(36, 51, 74, .2) 51%, transparent 55%);
+        background-color: #EEF0F2;
+      }
+    }
+  }
+
+  .full-hour {
+    border-top: 2px solid #cccccc !important;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .bottom {
+    border-bottom: 1px solid #cccccc;
+  }
+
+  .is-booked {
+    background-image: none !important;
+    border-bottom: 0 !important;
+    border-top: 0 !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .is-side-gapless {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .is-1-and-half {
+    flex: none;
+    width: 12.5%;
+  }
+
+  .booking-description {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    text-align: left;
+
+    @media screen and (max-width: 768px) {
+      font-size: 11px;
+    }
   }
 }
 </style>

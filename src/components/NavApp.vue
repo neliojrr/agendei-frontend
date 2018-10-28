@@ -1,5 +1,5 @@
 <template>
-  <header class="navbar-web navbar">
+  <header class="navbar-app navbar">
     <div class="navbar-brand">
       <a
         class="navbar-burger"
@@ -62,74 +62,74 @@ export default {
 <style lang="scss">
 @import "../assets/sass/variables";
 
-.navbar {
+.navbar-app {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
 
   @media screen and (min-width: 1024px) {
     margin-left: $side-menu-size;
     width: calc(100% - #{$side-menu-size}) !important;
   }
-}
 
-.navbar-brand {
+  .navbar-brand {
 
-  .navbar-burger {
-    color: white;
-    margin-left: initial;
-    z-index: 99;
-  }
-
-  .navbar-burger:hover {
-    color: #FFFFFF;
-  }
-
-  .navbar-burger:active {
-    color: #FFFFFF;
-  }
-
-  .navbar-title {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    h2 {
-      color: #FFFFFF;
-      margin: 0;
-      font-size: 24px;
+    .navbar-burger {
+      color: white;
+      margin-left: initial;
+      z-index: 99;
     }
 
-    a {
+    .navbar-burger:hover {
+      color: #FFFFFF;
+    }
+
+    .navbar-burger:active {
+      color: #FFFFFF;
+    }
+
+    .navbar-title {
       position: absolute;
-      right: 0;
-      margin-right: 55px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      h2 {
+        color: #FFFFFF;
+        margin: 0;
+        font-size: 24px;
+      }
+
+      a {
+        position: absolute;
+        right: 0;
+        margin-right: 55px;
+        font-size: 20px;
+        color: #FFFFFF;
+      }
+
+      a + a {
+        margin-right: 15px;
+      }
+    }
+  }
+
+  .navbar-menu {
+
+    .navbar-item {
+      width: 50%;
+      margin: auto;
+      align-items: center;
       font-size: 20px;
-      color: #FFFFFF;
-    }
 
-    a + a {
-      margin-right: 15px;
-    }
-  }
-}
-
-.navbar-menu {
-
-  .navbar-item {
-    width: 50%;
-    margin: auto;
-    align-items: center;
-    font-size: 20px;
-
-    svg {
-      width: 30%;
+      svg {
+        width: 30%;
+      }
     }
   }
 }
-
 </style>
 

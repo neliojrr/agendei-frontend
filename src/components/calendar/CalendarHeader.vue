@@ -96,6 +96,8 @@ export default {
     width: 100%;
 
     select {
+      width: 100%;
+
       @media screen and (max-width: 1023px) {
         color: transparent;
       }
