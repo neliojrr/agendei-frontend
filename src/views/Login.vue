@@ -9,6 +9,15 @@
         <div class="column">
           <h1 class="title">{{ $t('title') }}</h1>
           <h2 class="subtitle">{{ $t('subtitle') }}</h2>
+          <div
+            v-if="errors.length > 0"
+            class="notification is-danger"
+          >
+            <button @click="deleteMessage" class="delete"></button>
+            <span v-for="message in errors" :key="message">
+              {{ message }}
+            </span>
+          </div>
           <form
             role="presentation"
             class="form"
@@ -23,6 +32,7 @@
                   :placeholder="$t('email-placeholder')"
                   name="email"
                   v-model="email"
+                  autofocus
                 />
               </div>
               <p v-if="errors[email]" class="help is-danger">
@@ -45,7 +55,7 @@
             </div>
             <div class="field is-grouped">
               <div class="control">
-                <button class="button is-link">
+                <button class="button is-link" :class="{ 'is-loading': isLoading }">
                   {{ $t('sign-in') }}
                 </button>
               </div>
@@ -73,16 +83,31 @@ export default {
       locale: 'pt-br',
       email: '',
       password: '',
-      errors: {},
+      errors: [],
+      isLoading: false,
     };
   },
+  props: ['open-notification'],
   components: {
     Nav,
   },
   mixins: [validate],
+  created() {
+    const user = JSON.parse(window.sessionStorage.getItem('user')) || {};
+    const salon = JSON.parse(window.sessionStorage.getItem('salon')) || {};
+    if (user.id && salon.id) {
+      this.$emit(
+        'open-notification',
+        'Bem vindo! Você foi logado com sucesso',
+        'is-success',
+      );
+      this.$router.replace('/calendar');
+    }
+  },
   methods: {
     login() {
       if (this.validateFields()) {
+        this.isLoading = true;
         const {
           email,
           password,
@@ -92,10 +117,36 @@ export default {
           password,
         })
           .then((response) => {
-            console.log(response);
+            this.isLoading = false;
+            if (response.status === 200) {
+              const { data, headers } = response;
+              const user = {
+                ...data.user,
+                token: headers['access-token'],
+                client: headers.client,
+              };
+              window.sessionStorage.setItem(
+                'user',
+                JSON.stringify(user),
+              );
+              window.sessionStorage.setItem(
+                'salon',
+                JSON.stringify(user.salon),
+              );
+              this.$emit(
+                'open-notification',
+                'Bem vindo!',
+                'is-success',
+              );
+              this.$router.push('/calendar');
+            }
           })
           .catch((error) => {
-            console.log(error);
+            this.isLoading = false;
+            const { errors } = error.response && error.response.data
+              ? error.response.data
+              : [];
+            this.errors = errors;
           });
       }
     },
@@ -113,6 +164,9 @@ export default {
         return false;
       }
       return true;
+    },
+    deleteMessage() {
+      this.errors = [];
     },
   },
 };

@@ -1,16 +1,41 @@
 <template>
   <div id="app">
     <section>
-      <router-view />
+      <Notification
+        :message="notificationMessage"
+        :type="notificationType"
+        :open="isOpen"
+        @close-notification="closeNotification"
+      />
+      <router-view @open-notification="openNotification" />
     </section>
   </div>
 </template>
 
 <script>
+import Notification from '@/components/Notification.vue';
 
 export default {
   data() {
-    return {};
+    return {
+      isOpen: false,
+      notificationMessage: '',
+      notificationType: 'is-success',
+    };
+  },
+  components: {
+    Notification,
+  },
+  methods: {
+    openNotification(message, type) {
+      console.log('here');
+      this.isOpen = true;
+      this.notificationMessage = message;
+      this.notificationType = type;
+    },
+    closeNotification() {
+      this.isOpen = false;
+    },
   },
 };
 </script>
@@ -38,8 +63,6 @@ export default {
 }
 
 .app-content {
-  margin-top: 50px;
-
   @media screen and (min-width: 1024px) {
     margin-left: $side-menu-size;
   }

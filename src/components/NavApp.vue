@@ -17,9 +17,9 @@
         <router-link to="/profile">
           <font-awesome-icon icon="user" />
         </router-link>
-        <router-link to="/logout">
+        <a class="" @click="logout">
           <font-awesome-icon icon="sign-out-alt" />
-        </router-link>
+        </a>
       </div>
     </div>
     <div class="navbar-menu is-hidden-desktop" v-bind:class="{ 'is-active': isOpen }">
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import api from '@/utils/api-connect';
 import menuItems from '../utils/menuItems';
 
 export default {
@@ -54,6 +55,20 @@ export default {
   methods: {
     toggleBurgerMenu() {
       this.isOpen = !this.isOpen;
+    },
+    logout() {
+      const user = JSON.parse(window.sessionStorage.getItem('user'));
+      const headers = {
+        'access-token': user.token,
+        uid: user.email,
+        client: user.client,
+      };
+      api.delete('/auth/sign_out', { headers })
+        .then(() => {
+          window.sessionStorage.setItem('user', null);
+          window.sessionStorage.setItem('salon', null);
+          this.$router.push('/login');
+        });
     },
   },
 };

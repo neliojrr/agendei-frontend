@@ -45,14 +45,14 @@
               <div class="control">
                 <input
                   class="input"
-                  :class="{ 'is-danger': !!errors.companyName }"
+                  :class="{ 'is-danger': !!errors.salonName }"
                   type="text"
                   placeholder="Estúdio da Estética"
                   name="company-name"
-                  v-model="companyName"
+                  v-model="salonName"
                 />
               </div>
-              <p v-for="message in errors.companyName" :key="message" class="help is-danger">
+              <p v-for="message in errors.salonName" :key="message" class="help is-danger">
                 {{ message }}
               </p>
             </div>
@@ -135,7 +135,7 @@ export default {
     return {
       locale: 'pt-br',
       name: '',
-      companyName: '',
+      salonName: '',
       email: '',
       password: '',
       passwordConfirmation: '',
@@ -155,7 +155,7 @@ export default {
         const {
           name,
           email,
-          companyName,
+          salonName,
           password,
           passwordConfirmation,
         } = this;
@@ -163,12 +163,32 @@ export default {
           name,
           email,
           password,
-          company_name: companyName,
+          salon_name: salonName,
           password_confirmation: passwordConfirmation,
+          is_new_salon: true,
         })
           .then((response) => {
             this.isLoading = false;
             if (response.status === 200) {
+              const { data, headers } = response;
+              const user = {
+                ...data.user,
+                token: headers['access-token'],
+                client: headers.client,
+              };
+              window.sessionStorage.setItem(
+                'user',
+                JSON.stringify(user),
+              );
+              window.sessionStorage.setItem(
+                'salon',
+                JSON.stringify(user.salon),
+              );
+              this.$emit(
+                'open-notification',
+                'Bem vindo!',
+                'is-success',
+              );
               this.$router.push('/calendar');
             }
           })
@@ -178,7 +198,6 @@ export default {
               error.response && error.response.data
                 ? error.response.data
                 : {};
-            console.log(responseErrors);
             const errors = {
               ...responseErrors,
             };
@@ -189,7 +208,7 @@ export default {
     validateFields() {
       const {
         name,
-        companyName,
+        salonName,
         email,
         password,
         passwordConfirmation,
@@ -200,8 +219,8 @@ export default {
         errors.name = ['Ei, você esqueceu seu de colocar seu nome'];
         isValid = false;
       }
-      if (companyName === '') {
-        errors.companyName = ['Você tem de digitar o nome do seu estabelecimento'];
+      if (salonName === '') {
+        errors.salonName = ['Você tem de digitar o nome do seu estabelecimento'];
         isValid = false;
       }
       if (!this.validateEmail(email)) {
