@@ -19,7 +19,7 @@
               <div class="control">
                 <input
                   class="input"
-                  type="text"
+                  type="email"
                   :placeholder="$t('email-placeholder')"
                   name="email"
                   v-model="email"
