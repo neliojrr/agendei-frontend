@@ -9,6 +9,15 @@
         <div class="column">
           <h1 class="title">{{ $t('title') }}</h1>
           <h2 class="subtitle">{{ $t('subtitle') }}</h2>
+          <div
+            v-if="errors.messages"
+            class="notification is-danger"
+          >
+            <button @click="deleteMessage" class="delete"></button>
+            <span v-for="message in errors.messages" :key="message">
+              {{ message }}
+            </span>
+          </div>
           <form
             autocompelete="new-password"
             role="presentation"
@@ -20,15 +29,31 @@
               <div class="control">
                 <input
                   class="input"
-                  :class="{ 'is-danger': !!errors[name] }"
+                  :class="{ 'is-danger': !!errors.name }"
                   type="text"
                   placeholder="Joao da Silva"
                   name="name"
                   v-model="name"
                 />
               </div>
-              <p v-if="errors[name]" class="help is-danger">
-                {{ errors[name] }}
+              <p v-for="message in errors.name" :key="message" class="help is-danger">
+                {{ message }}
+              </p>
+            </div>
+            <div class="field">
+              <label class="label">{{ $t('company-name') }}</label>
+              <div class="control">
+                <input
+                  class="input"
+                  :class="{ 'is-danger': !!errors.companyName }"
+                  type="text"
+                  placeholder="Estúdio da Estética"
+                  name="company-name"
+                  v-model="companyName"
+                />
+              </div>
+              <p v-for="message in errors.companyName" :key="message" class="help is-danger">
+                {{ message }}
               </p>
             </div>
             <div class="field">
@@ -36,14 +61,15 @@
               <div class="control">
                 <input
                   class="input"
-                  type="text"
+                  :class="{ 'is-danger': !!errors.email }"
+                  type="email"
                   :placeholder="$t('email-placeholder')"
                   name="email"
                   v-model="email"
                 />
               </div>
-              <p v-if="errors[email]" class="help is-danger">
-                {{ errors[email] }}
+              <p v-for="message in errors.email" :key="message" class="help is-danger">
+                {{ message }}
               </p>
             </div>
             <div class="field">
@@ -51,13 +77,14 @@
               <div class="control">
                 <input
                   class="input"
+                  :class="{ 'is-danger': !!errors.password }"
                   type="password"
                   name="password"
                   v-model="password"
                 />
               </div>
-              <p v-if="errors[password]" class="help is-danger">
-                {{ errors[password] }}
+              <p v-for="message in errors.password" :key="message" class="help is-danger">
+                {{ message }}
               </p>
             </div>
             <div class="field">
@@ -65,18 +92,23 @@
               <div class="control">
                 <input
                   class="input"
+                  :class="{ 'is-danger': !!errors.passwordConfirmation }"
                   type="password"
                   name="password-confirmation"
                   v-model="passwordConfirmation"
                 />
               </div>
-              <p v-if="errors[passwordConfirmation]" class="help is-danger">
-                {{ errors[passwordConfirmation] }}
+              <p
+                v-for="message in errors.passwordConfirmation"
+                :key="message"
+                class="help is-danger"
+              >
+                {{ message }}
               </p>
             </div>
             <div class="field is-grouped">
               <div class="control">
-                <button class="button is-link">
+                <button class="button is-link" :class="{ 'is-loading': isLoading }">
                   {{ $t('sign-up') }}
                 </button>
               </div>
@@ -99,15 +131,16 @@ import api from '@/utils/api-connect';
 import validate from '@/mixins/validate';
 
 export default {
-  name: 'signup',
   data() {
     return {
       locale: 'pt-br',
       name: '',
+      companyName: '',
       email: '',
       password: '',
       passwordConfirmation: '',
       errors: {},
+      isLoading: false,
     };
   },
   components: {
@@ -116,10 +149,13 @@ export default {
   mixins: [validate],
   methods: {
     register() {
+      this.errors = {};
       if (this.validateFields()) {
+        this.isLoading = true;
         const {
           name,
           email,
+          companyName,
           password,
           passwordConfirmation,
         } = this;
@@ -127,41 +163,70 @@ export default {
           name,
           email,
           password,
+          company_name: companyName,
           password_confirmation: passwordConfirmation,
-          manager: true,
         })
           .then((response) => {
-            console.log(response);
+            this.isLoading = false;
+            if (response.status === 200) {
+              this.$router.push('/calendar');
+            }
           })
           .catch((error) => {
-            console.log(error);
+            this.isLoading = false;
+            const { errors: responseErrors } =
+              error.response && error.response.data
+                ? error.response.data
+                : {};
+            const errors = {
+              ...responseErrors,
+              messages: responseErrors.full_messages,
+              passwordConfirmation: responseErrors.password_confirmation,
+              companyName: responseErrors.salon_name,
+            };
+            this.errors = errors;
           });
       }
     },
     validateFields() {
       const {
         name,
+        companyName,
         email,
         password,
         passwordConfirmation,
       } = this;
+      const errors = {};
+      let isValid = true;
       if (name === '') {
-        this.errors.name = 'Ei, você esqueceu seu de colocar seu nome';
-        return false;
+        errors.name = ['Ei, você esqueceu seu de colocar seu nome'];
+        isValid = false;
+      }
+      if (companyName === '') {
+        errors.companyName = ['Você tem de digitar o nome do seu estabelecimento'];
+        isValid = false;
       }
       if (!this.validateEmail(email)) {
-        this.errors.email = 'Ops! Por favor, digite um email válido';
-        return false;
+        errors.email = ['Ops! Por favor, digite um email válido'];
+        isValid = false;
       }
       if (password === '') {
-        this.errors.password = 'Sua senha deve conter pelo menos 6 caracteres';
-        return false;
+        errors.password = ['Sua senha deve conter pelo menos 6 caracteres'];
+        isValid = false;
       }
       if (password !== passwordConfirmation) {
-        this.errors.passwordConfirmation = 'As senhas digitas devems ser iguais';
-        return false;
+        errors.passwordConfirmation = ['As senhas digitadas devems ser iguais'];
+        isValid = false;
       }
-      return true;
+      this.errors = errors;
+      return isValid;
+    },
+    deleteMessage() {
+      const errors = {
+        ...this.errors,
+        messages: null,
+      };
+      this.errors = errors;
     },
   },
 };
@@ -221,6 +286,7 @@ export default {
     "title": "Register your account",
     "subtitle": "Fill in your data to proceed",
     "name": "Name",
+    "company-name": "Company name",
     "email-placeholder": "you@example.com",
     "password": "Password",
     "password-confirmation": "Password Confirmation",
@@ -232,6 +298,7 @@ export default {
     "title": "Faça seu cadastro",
     "subtitle": "Preencha os dados abaixo",
     "name": "Nome",
+    "company-name": "Nome do estabelecimento",
     "email-placeholder": "seuemail@exemplo.com",
     "password": "Senha",
     "password-confirmation": "Confirme sua senha",
