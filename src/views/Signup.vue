@@ -178,11 +178,9 @@ export default {
               error.response && error.response.data
                 ? error.response.data
                 : {};
+            console.log(responseErrors);
             const errors = {
               ...responseErrors,
-              messages: responseErrors.full_messages,
-              passwordConfirmation: responseErrors.password_confirmation,
-              companyName: responseErrors.salon_name,
             };
             this.errors = errors;
           });
