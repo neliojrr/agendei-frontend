@@ -6,8 +6,8 @@
           <div class="control has-icons-left">
             <div class="select is-medium">
               <select
-                v-bind:value="employeeSelected ? employeeSelected.id : ''"
-                v-on:change="$emit('employee-change', $event.target.value)"
+                :value="employeeSelected ? employeeSelected.id : ''"
+                @change="$emit('employee-change', $event.target.value)"
                 class="no-padding-left"
               >
                 <option value=''>Staff</option>
@@ -39,7 +39,7 @@
         <div class="field">
           <div class="control has-icons-left">
             <div class="select is-medium">
-              <select class="no-padding-left" v-on:change="$emit('toggle-staff-on-header')">
+              <select class="no-padding-left" @change="$emit('toggle-staff-on-header')">
                 <option :selected="!showStaffOnHeader">Semana</option>
                 <option :selected="showStaffOnHeader">Dia</option>
               </select>

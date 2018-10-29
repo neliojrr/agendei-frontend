@@ -30,7 +30,7 @@
         v-for="n in timeRows"
         :key="n"
       >
-        <div class="column is-1-and-half" v-bind:class="{ 'full-hour': isFullHour(n) }">
+        <div class="column is-1-and-half" :class="{ 'full-hour': isFullHour(n) }">
           <span v-if="isFullHour(n)">{{ fullHour(n) }}h</span>
         </div>
         <template v-if="showStaffOnHeader">
@@ -98,7 +98,7 @@
         <template v-else>
           <div
             class="column is-booking-type"
-            v-bind:class="{
+            :class="{
               'full-hour': isFullHour(n),
               'is-booked': !!columnsBooked[getColumnId(n, d)]
             }"
