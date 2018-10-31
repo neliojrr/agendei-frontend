@@ -28,6 +28,7 @@
               <div class="control">
                 <input
                   class="input"
+                  :class="{ 'is-danger': !!errors.email }"
                   type="email"
                   :placeholder="$t('email-placeholder')"
                   name="email"
@@ -35,8 +36,8 @@
                   autofocus
                 />
               </div>
-              <p v-if="errors[email]" class="help is-danger">
-                {{ errors[email] }}
+              <p v-if="errors.email" class="help is-danger">
+                {{ errors.email }}
               </p>
             </div>
             <div class="field">
@@ -44,13 +45,14 @@
               <div class="control">
                 <input
                   class="input"
+                  :class="{ 'is-danger': !!errors.password }"
                   type="password"
                   name="password"
                   v-model="password"
                 />
               </div>
-              <p v-if="errors[password]" class="help is-danger">
-                {{ errors[password] }}
+              <p v-if="errors.password" class="help is-danger">
+                {{ errors.password }}
               </p>
             </div>
             <div class="field is-grouped">
