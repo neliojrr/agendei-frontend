@@ -1,13 +1,10 @@
 import axios from 'axios';
 
+const prodServer = 'https://super.agendei.io/api/';
 const VERSION = 'v1';
 
 const api = axios.create({
-  baseURL: `https://super.agendei.io/api/${VERSION}`,
-  headers: {
-    Authorization: 'Bearer {token}',
-  },
-  withCredentials: true,
+  baseURL: `${prodServer}${VERSION}`,
 });
 
 export default api;

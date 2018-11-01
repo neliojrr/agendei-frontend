@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Signup from './views/Signup.vue';
 import Login from './views/Login.vue';
 import Calendar from './views/Calendar.vue';
+import Staff from './views/Staff.vue';
 
 Vue.use(Router);
 
@@ -42,6 +43,12 @@ export default new Router({
       name: 'calendar',
       component: Calendar,
       props: { title: 'Calendário' },
+    },
+    {
+      path: '/staff',
+      name: 'staff',
+      component: Staff,
+      props: { title: 'Profissionais' },
     },
   ],
 });

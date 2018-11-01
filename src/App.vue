@@ -28,7 +28,6 @@ export default {
   },
   methods: {
     openNotification(message, type) {
-      console.log('here');
       this.isOpen = true;
       this.notificationMessage = message;
       this.notificationType = type;

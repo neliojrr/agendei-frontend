@@ -49,6 +49,7 @@ export default {
       isOpen: false,
       title: {
         calendar: 'Calendário',
+        staff: 'Profissionais',
       },
     };
   },
@@ -57,7 +58,11 @@ export default {
       this.isOpen = !this.isOpen;
     },
     logout() {
-      const user = JSON.parse(window.sessionStorage.getItem('user'));
+      const user = JSON.parse(window.sessionStorage.getItem('user')) || {};
+      if (!user.id) {
+        this.$router.push('/login');
+        return false;
+      }
       const headers = {
         'access-token': user.token,
         uid: user.email,
@@ -69,6 +74,8 @@ export default {
           window.sessionStorage.setItem('salon', null);
           this.$router.push('/login');
         });
+
+      return true;
     },
   },
 };

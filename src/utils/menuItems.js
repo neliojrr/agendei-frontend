@@ -3,38 +3,38 @@ const menuItems = [
     id: 'calendar',
     title: 'Calendário',
     icon: 'calendar-alt',
-    path: '/calendar'
+    path: '/calendar',
   },
   {
     id: 'clients',
     title: 'Clientes',
     icon: 'users',
-    path: '/clients'
+    path: '/clients',
   },
   {
     id: 'staff',
     title: 'Staff',
     icon: 'users-cog',
-    path: '/employees'
+    path: '/staff',
   },
   {
     id: 'services',
     title: 'Serviços',
     icon: 'cut',
-    path: '/services'
+    path: '/services',
   },
   {
     id: 'products',
     title: 'Produtos',
     icon: 'spray-can',
-    path: '/products'
+    path: '/products',
   },
   {
     id: 'sales',
     title: 'Vendas',
     icon: 'file-invoice-dollar',
-    path: '/sales'
-  }
+    path: '/sales',
+  },
 ];
 
 export default menuItems;
