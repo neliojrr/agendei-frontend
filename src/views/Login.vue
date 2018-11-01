@@ -10,12 +10,12 @@
           <h1 class="title">{{ $t('title') }}</h1>
           <h2 class="subtitle">{{ $t('subtitle') }}</h2>
           <div
-            v-if="errors.length > 0"
+            v-if="errors.message"
             class="notification is-danger"
           >
             <button @click="deleteMessage" class="delete"></button>
-            <span v-for="message in errors" :key="message">
-              {{ message }}
+            <span>
+              {{ errors.message }}
             </span>
           </div>
           <form
@@ -85,7 +85,7 @@ export default {
       locale: 'pt-br',
       email: '',
       password: '',
-      errors: [],
+      errors: {},
       isLoading: false,
     };
   },
@@ -145,9 +145,18 @@ export default {
           })
           .catch((error) => {
             this.isLoading = false;
-            const { errors } = error.response && error.response.data
-              ? error.response.data
-              : [];
+            let errors = {};
+            if (error.response) {
+              const { errors: responseErrors } =
+                error.response && error.response.data
+                  ? error.response.data
+                  : {};
+              errors = {
+                message: responseErrors.toString(),
+              };
+            } else {
+              errors.message = error.message;
+            }
             this.errors = errors;
           });
       }
@@ -157,15 +166,18 @@ export default {
         email,
         password,
       } = this;
+      const errors = {};
+      let isValid = true;
       if (!this.validateEmail(email)) {
-        this.errors.email = 'Ops! Por favor, digite um email válido';
-        return false;
+        errors.email = 'Ops! Por favor, digite um email válido';
+        isValid = false;
       }
       if (password === '') {
-        this.errors.password = 'Sua senha deve conter pelo menos 6 caracteres';
-        return false;
+        errors.password = 'Sua senha deve conter pelo menos 6 caracteres';
+        isValid = false;
       }
-      return true;
+      this.errors = errors;
+      return isValid;
     },
     deleteMessage() {
       this.errors = [];
