@@ -1,29 +1,36 @@
 <template>
-  <vuetable
-    ref="stafftable"
-    :api-mode="false"
-    :fields="['name', 'email', 'phone']"
-  >
-  </vuetable>
+  <Table :headers="headers" :data="data" />
 </template>
 
 <script>
-import Vuetable from 'vuetable-2/src/components/Vuetable.vue';
+import Table from '@/components/Table.vue';
 
 export default {
   data() {
     return {
-      salon: {},
+      headers: [
+        {
+          name: 'name',
+          title: 'Nome',
+        }, {
+          name: 'email',
+          title: 'Email',
+        }, {
+          name: 'phone',
+          title: 'Telefone',
+        },
+      ],
     };
   },
-  created() {
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
-    if (!this.salon.id) {
-      this.$router.push('/login');
-    }
-  },
+  props: ['data'],
   components: {
-    Vuetable,
+    Table,
   },
 };
 </script>
+
+<style lang="scss">
+.table {
+  width: 100%;
+}
+</style>

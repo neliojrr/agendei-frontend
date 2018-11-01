@@ -12,7 +12,7 @@
         @toggle-staff-on-header="toggleStaffOnHeader"
         @employee-change="employeeChange"
       />
-      <a class="button is-link new-appointment-button" title="Novo agendamento">
+      <a class="button is-primary new-appointment-button" title="Novo agendamento">
         <font-awesome-icon icon="plus" />
       </a>
       <Agenda

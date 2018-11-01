@@ -58,6 +58,10 @@ export default {
           margin-left: 5px;
         }
       }
+
+      a:hover {
+        color: #3273dc;
+      }
     }
   }
 }
