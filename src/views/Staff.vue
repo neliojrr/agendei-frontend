@@ -4,7 +4,7 @@
     <NavApp />
     <div class="staff app-content">
       <div class="top-actions">
-        <button class="button is-primary">
+        <button class="button is-primary" @click="openModalNewStaff">
           Novo Profissional
         </button>
       </div>
@@ -55,6 +55,11 @@ export default {
     } else {
       this.$router.push('/login');
     }
+  },
+  methods: {
+    openModalNewStaff() {
+      this.$emit('open-modal', 'New Staff');
+    },
   },
 };
 </script>
