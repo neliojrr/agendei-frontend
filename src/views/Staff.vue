@@ -45,8 +45,12 @@ export default {
           const employees = response.data || [];
           this.data = employees;
         })
-        .catch((error) => {
-          console.log(error.response);
+        .catch(() => {
+          this.$emit(
+            'open-notification',
+            'Não foi possível carregar a lista de profissionais. Tente recarregar a página!',
+            'is-danger',
+          );
         });
     } else {
       this.$router.push('/login');

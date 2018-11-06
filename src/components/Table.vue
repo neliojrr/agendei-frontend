@@ -1,20 +1,23 @@
 <template>
-  <div class="table">
-    <div class="table-head">
-      <div class="columns is-side-gapless">
-        <div v-for="h in (headers || defaultHeaders)" :key="h.name" class="column">
+  <table class="table is-hoverable">
+    <thead class="table-head">
+      <tr>
+        <th
+          v-for="h in (headers || defaultHeaders)"
+          :key="h.name"
+        >
           {{ h.title }}
-        </div>
-      </div>
-    </div>
-    <div class="table-body">
-      <div class="columns is-side-gapless" v-for="d in data" :key="d.id">
-        <div v-for="h in (headers || defaultHeaders)" :key="h.name" class="column">
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="d in defaultData" :key="d.id">
+        <td v-for="h in (headers || defaultHeaders)" :key="h.name">
           {{ d[h.name] }}
-        </div>
-      </div>
-    </div>
-  </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <script>
@@ -33,12 +36,12 @@ export default {
       ],
       defaultData: [
         {
-          name: 'name',
-          value: 'Nelio Carneiro',
+          name: 'Nelio Carneiro',
+          email: 'nelio@agendei.io',
         },
         {
-          name: 'email',
-          value: 'nelio@agendei.io',
+          name: 'Nelio Carneiro',
+          email: 'nelio@agendei.io',
         },
       ],
     };
@@ -54,43 +57,13 @@ export default {
 
 <style lang="scss">
 .table {
-  margin-top: 20px;
 
-  .is-side-gapless {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
+  tbody {
 
-  .table-head {
-
-    .column {
-      border-top: 1px solid #CCCCCC;
-      border-left: 1px solid #CCCCCC;
-      border-bottom: 1px solid #CCCCCC;
-      border-right: 0;
-      padding-top: 5px;
-      padding-bottom: 5px;
-    }
-
-    .column + .column {
-      border-right: 1px solid #CCCCCC;
-    }
-  }
-
-  .table-body {
-
-    .column {
-      border-top: 1px solid #CCCCCC;
-      border-left: 1px solid #CCCCCC;
-      border-bottom: 1px solid #CCCCCC;
-      border-right: 0;
-      padding-top: 5px;
-      padding-bottom: 5px;
-    }
-
-    .column + .column {
-      border-right: 1px solid #CCCCCC;
+    td {
+      cursor: pointer;
     }
   }
 }
+
 </style>
