@@ -111,19 +111,20 @@ export default {
 
     .new-client {
       @media screen and (max-width: 1024px) {
-        position: absolute;
-        bottom: 25px;
+        position: fixed;
+        bottom: 21px;
         right: 25px;
       }
 
       button {
         @media screen and (max-width: 1024px) {
-          height: 45px;
-          width: 45px;
+          height: 50px;
+          width: 50px;
           padding: 0;
           display: flex;
           border-radius: 50%;
           z-index: 10;
+          font-size: 18px;
         }
       }
     }
