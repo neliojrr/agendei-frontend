@@ -7,15 +7,15 @@
       </div>
       <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
     </div>
-    <div class="field is-grouped">
-      <div class="control is-expanded">
+    <div class="field columns">
+      <div class="control is-expanded column">
         <label class="label">Email</label>
         <input class="input" type="email" placeholder="email@exemplo.com">
         <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
       </div>
-      <div class="control is-expanded">
+      <div class="control is-expanded column">
         <label class="label">Telefone</label>
-        <input class="input" type="phone" placeholder="64999900000">
+        <input class="input" type="tel" placeholder="64999900000">
         <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
       </div>
     </div>
@@ -39,18 +39,17 @@
     <div class="field colors">
       <label class="label">Cor na agenda</label>
       <div class="control">
-        <ul class="colors-list">
-          <li
+        <div class="columns is-mobile is-multiline colors-list">
+          <div
             v-for="(c, i) in colors"
             :key="c"
-            :style="{ backgroundColor: c }"
-            class="single-color"
+            class="column"
           >
-            <template v-if="i === 0">
-              <font-awesome-icon icon="check" />
-            </template>
-          </li>
-        </ul>
+            <span class="single-color" :style="{ backgroundColor: c }">
+              <font-awesome-icon v-if="i === 0" icon="check" />
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -87,8 +86,20 @@ export default {
 .staff-form {
   text-align: left;
 
+  .columns {
+    margin-bottom: 0;
+    margin-top: 0;
+
+    .column {
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-bottom: 0.75rem;
+    }
+  }
+
   .select-all-services {
     margin-left: 10px;
+    margin-top: 10px;
   }
 
   .colors {
