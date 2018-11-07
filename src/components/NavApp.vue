@@ -50,6 +50,7 @@ export default {
       title: {
         calendar: 'Calendário',
         staff: 'Profissionais',
+        clients: 'Clientes',
       },
     };
   },

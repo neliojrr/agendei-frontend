@@ -11,6 +11,7 @@
         :content="modalContent"
         :title="modalTitle"
         :show="showModal"
+        :buttons="buttons"
         @close="closeModal"
       />
       <router-view @open-notification="openNotification" @open-modal="openModal" />
@@ -31,8 +32,7 @@ export default {
       showModal: false,
       modalContent: null,
       modalTitle: '',
-      saveButtonText: 'Salvar',
-      cancelButtonText: 'Cancelar',
+      buttons: [],
     };
   },
   components: {
@@ -48,17 +48,17 @@ export default {
     closeNotification() {
       this.isOpen = false;
     },
-    openModal(title, content, saveButtonText, cancelButtonText) {
+    openModal(title, content, buttons) {
       this.showModal = true;
       this.modalContent = content;
       this.modalTitle = title;
-      this.saveButtonText = saveButtonText;
-      this.cancelButtonText = cancelButtonText;
+      this.buttons = buttons;
     },
     closeModal() {
       this.showModal = false;
       this.modalContent = null;
       this.modalTitle = '';
+      this.buttons = [];
     },
   },
 };

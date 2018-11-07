@@ -10,7 +10,15 @@
         <component :is="content" />
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success">{{ saveButtonText }}</button>
+        <button
+          v-for="b in buttons"
+          :key="b.title"
+          class="button"
+          :class="b.class"
+          @click="b.action"
+        >
+          {{ b.title }}
+        </button>
         <button class="button" @click="$emit('close')">{{ cancelButtonText }}</button>
       </footer>
     </div>
@@ -31,9 +39,13 @@ export default {
       type: Object,
       default: null,
     },
-    saveButtonText: {
-      type: String,
-      default: 'Salvar',
+    buttons: {
+      type: Array,
+      default: () => [{
+        title: 'Salvar',
+        class: 'is-success',
+        action: () => null,
+      }],
     },
     cancelButtonText: {
       type: String,

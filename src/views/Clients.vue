@@ -2,25 +2,31 @@
   <div>
     <Menu />
     <NavApp />
-    <div class="staff app-content">
-      <div class="top-actions">
-        <div class="column new-staff">
-          <button class="button is-primary" @click="openModalNewStaff">
-            <span class="is-hidden-touch">Novo Profissional</span>
-            <span class="is-hidden-desktop">
-              <font-awesome-icon icon="plus" />
-            </span>
+    <div class="clients app-content">
+      <div class="top-actions columns is-mobile">
+        <div class="field client-search column is-half-desktop">
+          <div class="control has-icons-left">
+            <input class="input" type="text" placeholder="Pesquisar um cliente">
+            <div class="icon is-medium is-left">
+              <font-awesome-icon icon="search" />
+            </div>
+          </div>
+        </div>
+        <div class="column new-client">
+          <button class="button is-primary" @click="openModalNewClient">
+            <span class="is-hidden-touch">Novo Cliente</span>
+            <span class="is-hidden-desktop"><font-awesome-icon icon="plus" /></span>
           </button>
         </div>
       </div>
-      <StaffList :data="data" />
+      <Table :headers="headers" :data="data" />
     </div>
   </div>
 </template>
 
 <script>
-import StaffList from '@/components/staff/StaffList.vue';
-import Form from '@/components/staff/Form.vue';
+import Table from '@/components/Table.vue';
+import Form from '@/components/clients/Form.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
 import api from '@/utils/api-connect';
@@ -30,12 +36,24 @@ export default {
     return {
       salon: {},
       data: [],
+      headers: [
+        {
+          name: 'name',
+          title: 'Nome',
+        }, {
+          name: 'email',
+          title: 'Email',
+        }, {
+          name: 'phone',
+          title: 'Telefone',
+        },
+      ],
     };
   },
   components: {
     Menu,
     NavApp,
-    StaffList,
+    Table,
     Form,
   },
   created() {
@@ -47,7 +65,7 @@ export default {
         uid: this.user.email,
         client: this.user.client,
       };
-      api.get(`/salons/${this.salon.id}/employees`, { headers })
+      api.get(`/salons/${this.salon.id}/clients`, { headers })
         .then((response) => {
           const employees = response.data || [];
           this.data = employees;
@@ -55,7 +73,7 @@ export default {
         .catch(() => {
           this.$emit(
             'open-notification',
-            'Não foi possível carregar a lista de profissionais. Tente recarregar a página!',
+            'Não foi possível carregar a lista de clientes. Tente recarregar a página!',
             'is-danger',
           );
         });
@@ -64,7 +82,7 @@ export default {
     }
   },
   methods: {
-    openModalNewStaff() {
+    openModalNewClient() {
       const buttons = [
         {
           title: 'Salvar',
@@ -76,22 +94,22 @@ export default {
           action: () => confirm('Você tem certeza?'),
         },
       ];
-      this.$emit('open-modal', 'Novo Profissional', Form, buttons);
+      this.$emit('open-modal', 'Novo Cliente', Form, buttons);
     },
   },
 };
 </script>
 
 <style lang="scss">
-.staff {
+.clients {
   height: calc(100vh - 52px);
   padding: 10px;
 
   .top-actions {
+    margin-bottom: 0;
     text-align: right;
 
-    .new-staff {
-      padding: 0;
+    .new-client {
       @media screen and (max-width: 1024px) {
         position: absolute;
         bottom: 25px;

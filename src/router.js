@@ -4,6 +4,7 @@ import Signup from './views/Signup.vue';
 import Login from './views/Login.vue';
 import Calendar from './views/Calendar.vue';
 import Staff from './views/Staff.vue';
+import Clients from './views/Clients.vue';
 
 Vue.use(Router);
 
@@ -49,6 +50,12 @@ export default new Router({
       name: 'staff',
       component: Staff,
       props: { title: 'Profissionais' },
+    },
+    {
+      path: '/clients',
+      name: 'clients',
+      component: Clients,
+      props: { title: 'Clientes' },
     },
   ],
 });
