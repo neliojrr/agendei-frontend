@@ -7,7 +7,7 @@
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
       <section class="modal-card-body">
-        {{ content }}
+        <component :is="content" />
       </section>
       <footer class="modal-card-foot">
         <button class="button is-success">{{ saveButtonText }}</button>

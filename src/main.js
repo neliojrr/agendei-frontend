@@ -13,6 +13,7 @@ import {
   faSignOutAlt,
   faUser,
   faPlus,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import App from './App.vue';
@@ -30,6 +31,7 @@ library.add(faCut);
 library.add(faUser);
 library.add(faSignOutAlt);
 library.add(faPlus);
+library.add(faCheck);
 /* end icons */
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

@@ -15,6 +15,7 @@
 
 <script>
 import StaffList from '@/components/staff/StaffList.vue';
+import Form from '@/components/staff/Form.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
 import api from '@/utils/api-connect';
@@ -30,6 +31,7 @@ export default {
     Menu,
     NavApp,
     StaffList,
+    Form,
   },
   created() {
     this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
@@ -58,7 +60,7 @@ export default {
   },
   methods: {
     openModalNewStaff() {
-      this.$emit('open-modal', 'New Staff');
+      this.$emit('open-modal', 'Adicionar Profissional', Form);
     },
   },
 };
