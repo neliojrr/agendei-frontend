@@ -1,12 +1,6 @@
 <template>
   <div id="app">
     <section>
-      <Notification
-        :message="notificationMessage"
-        :type="notificationType"
-        :open="isOpen"
-        @close-notification="closeNotification"
-      />
       <Modal
         :content="modalContent"
         :title="modalTitle"
@@ -14,21 +8,17 @@
         :buttons="buttons"
         @close="closeModal"
       />
-      <router-view @open-notification="openNotification" @open-modal="openModal" />
+      <router-view @open-modal="openModal" />
     </section>
   </div>
 </template>
 
 <script>
-import Notification from '@/components/Notification.vue';
 import Modal from '@/components/Modal.vue';
 
 export default {
   data() {
     return {
-      isOpen: false,
-      notificationMessage: '',
-      notificationType: 'is-success',
       showModal: false,
       modalContent: null,
       modalTitle: '',
@@ -36,18 +26,9 @@ export default {
     };
   },
   components: {
-    Notification,
     Modal,
   },
   methods: {
-    openNotification(message, type) {
-      this.isOpen = true;
-      this.notificationMessage = message;
-      this.notificationType = type;
-    },
-    closeNotification() {
-      this.isOpen = false;
-    },
     openModal(title, content, buttons) {
       this.showModal = true;
       this.modalContent = content;

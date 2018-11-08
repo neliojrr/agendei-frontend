@@ -5,6 +5,7 @@ import Login from './views/Login.vue';
 import Calendar from './views/Calendar.vue';
 import Staff from './views/Staff.vue';
 import Clients from './views/Clients.vue';
+import ClientView from './views/ClientView.vue';
 
 Vue.use(Router);
 
@@ -37,25 +38,31 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login,
-      props: { default: true, title: 'Login' },
+      props: { default: true, pageTitle: 'Login' },
     },
     {
       path: '/calendar',
       name: 'calendar',
       component: Calendar,
-      props: { title: 'Calendário' },
+      props: { pageTitle: 'Calendário' },
     },
     {
       path: '/staff',
       name: 'staff',
       component: Staff,
-      props: { title: 'Profissionais' },
+      props: { pageTitle: 'Profissionais' },
     },
     {
       path: '/clients',
       name: 'clients',
       component: Clients,
-      props: { title: 'Clientes' },
+      props: { pageTitle: 'Clientes' },
+    },
+    {
+      path: '/clients/:id',
+      name: 'clientView',
+      component: ClientView,
+      props: { pageTitle: 'Cliente' },
     },
   ],
 });

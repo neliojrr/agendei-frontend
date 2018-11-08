@@ -40,7 +40,9 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
-Vue.use(Buefy);
+Vue.use(Buefy, {
+  defaultIconPack: 'fa',
+});
 
 const i18n = new VueI18n({
   locale: 'pt-br',

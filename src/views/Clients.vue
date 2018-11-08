@@ -1,7 +1,7 @@
 <template>
   <div>
     <Menu />
-    <NavApp />
+    <NavApp :title="pageTitle" />
     <div class="clients app-content">
       <div class="top-actions columns is-mobile">
         <div class="field client-search column is-half-desktop">
@@ -50,6 +50,7 @@ export default {
       ],
     };
   },
+  props: ['pageTitle'],
   components: {
     Menu,
     NavApp,
@@ -71,11 +72,10 @@ export default {
           this.data = employees;
         })
         .catch(() => {
-          this.$emit(
-            'open-notification',
-            'Não foi possível carregar a lista de clientes. Tente recarregar a página!',
-            'is-danger',
-          );
+          this.$toast.open({
+            message: 'Não foi possível carregar a lista de clientes. Tente recarregar a página!',
+            type: 'is-danger',
+          });
         });
     } else {
       this.$router.push('/login');

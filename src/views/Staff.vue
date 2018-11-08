@@ -1,7 +1,7 @@
 <template>
   <div>
     <Menu />
-    <NavApp />
+    <NavApp :title="pageTitle" />
     <div class="staff app-content">
       <div class="top-actions">
         <div class="column new-staff">
@@ -32,6 +32,7 @@ export default {
       data: [],
     };
   },
+  props: ['pageTitle'],
   components: {
     Menu,
     NavApp,
@@ -53,11 +54,10 @@ export default {
           this.data = employees;
         })
         .catch(() => {
-          this.$emit(
-            'open-notification',
-            'Não foi possível carregar a lista de profissionais. Tente recarregar a página!',
-            'is-danger',
-          );
+          this.$toast.open({
+            message: 'Não foi possível carregar a lista de profissionais. Tente recarregar a página!',
+            type: 'is-danger',
+          });
         });
     } else {
       this.$router.push('/login');

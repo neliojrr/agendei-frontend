@@ -28,12 +28,11 @@
           </select>
         </div>
       </div>
-      <div class="control is-expanded">
+      <div class="control is-expanded select-all">
         <label class="label">&nbsp;</label>
-        <label class="checkbox select-all-services">
-          <input type="checkbox">
-          &nbsp;Selecionar Todos
-        </label>
+        <b-field>
+          <b-switch>Todos</b-switch>
+        </b-field>
       </div>
     </div>
     <div class="field colors">
@@ -97,9 +96,9 @@ export default {
     }
   }
 
-  .select-all-services {
+  .select-all {
     margin-left: 10px;
-    margin-top: 10px;
+    margin-top: 5px;
   }
 
   .colors {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Menu />
-    <NavApp />
+    <NavApp :title="pageTitle" />
     <div class="calendar app-content">
       <CalendarHeader
         :employeeSelected="employeeSelected"
@@ -143,6 +143,7 @@ export default {
       ],
     };
   },
+  props: ['pageTitle'],
   components: {
     Menu,
     NavApp,

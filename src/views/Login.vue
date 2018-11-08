@@ -89,7 +89,6 @@ export default {
       isLoading: false,
     };
   },
-  props: ['open-notification'],
   components: {
     Nav,
   },
@@ -98,11 +97,10 @@ export default {
     const user = JSON.parse(window.sessionStorage.getItem('user')) || {};
     const salon = JSON.parse(window.sessionStorage.getItem('salon')) || {};
     if (user.id && salon.id) {
-      this.$emit(
-        'open-notification',
-        'Bem vindo! Você foi logado com sucesso',
-        'is-success',
-      );
+      this.$toast.open({
+        message: 'Seja bem vindo!',
+        type: 'is-success',
+      });
       this.$router.replace('/calendar');
     }
   },
@@ -135,11 +133,10 @@ export default {
                 'salon',
                 JSON.stringify(user.salon),
               );
-              this.$emit(
-                'open-notification',
-                'Bem vindo!',
-                'is-success',
-              );
+              this.$toast.open({
+                message: 'Seja bem vindo!',
+                type: 'is-success',
+              });
               this.$router.push('/calendar');
             }
           })

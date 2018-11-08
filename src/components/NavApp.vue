@@ -13,7 +13,7 @@
         <span aria-hidden="true"></span>
       </a>
       <div class="navbar-title">
-        <h2>{{ title[$route.name] }}</h2>
+        <h2>{{ title }}</h2>
         <router-link to="/profile">
           <font-awesome-icon icon="user" />
         </router-link>
@@ -47,13 +47,9 @@ export default {
     return {
       items: menuItems,
       isOpen: false,
-      title: {
-        calendar: 'Calendário',
-        staff: 'Profissionais',
-        clients: 'Clientes',
-      },
     };
   },
+  props: ['title'],
   methods: {
     toggleBurgerMenu() {
       this.isOpen = !this.isOpen;

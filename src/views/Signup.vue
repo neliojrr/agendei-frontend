@@ -184,11 +184,10 @@ export default {
                 'salon',
                 JSON.stringify(user.salon),
               );
-              this.$emit(
-                'open-notification',
-                'Bem vindo!',
-                'is-success',
-              );
+              this.$toast.open({
+                message: 'Seja bem vindo!',
+                type: 'is-success',
+              });
               this.$router.push('/calendar');
             }
           })
