@@ -108,6 +108,8 @@ export default {
 .clients {
   height: calc(100vh - 52px);
   padding: 10px;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
 
   .top-actions {
     margin-bottom: 0;

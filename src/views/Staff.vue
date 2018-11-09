@@ -86,6 +86,8 @@ export default {
 .staff {
   height: calc(100vh - 52px);
   padding: 10px;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
 
   .top-actions {
     text-align: right;
