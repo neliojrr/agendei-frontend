@@ -5,39 +5,39 @@
         <div class="columns is-mobile content top-columns">
           <div class="column">
             <p class="heading is-spaced">Vendas Totais</p>
-            <p class="title is-5">R$ 435,00</p>
+            <p class="subtitle is-5">R$ 435,00</p>
           </div>
           <div class="column">
             <p class="heading is-spaced">Prospecção</p>
-            <p class="title is-5">R$ 135,00</p>
+            <p class="subtitle is-5">R$ 135,00</p>
           </div>
         </div>
         <div class="columns is-mobile content bottom-columns">
           <div class="column">
             <p class="heading is-spaced">Agendamentos</p>
-            <p class="title is-5">8</p>
+            <p class="subtitle is-5">8</p>
           </div>
           <div class="column">
             <p class="heading is-spaced">Finalizados</p>
-            <p class="title is-5">6</p>
+            <p class="subtitle is-5">6</p>
           </div>
           <div class="column is-hidden-touch">
             <p class="heading is-spaced">Cancelados</p>
-            <p class="title is-5">0</p>
+            <p class="subtitle is-5">0</p>
           </div>
           <div class="column is-hidden-touch">
             <p class="heading is-spaced">Não compareceu</p>
-            <p class="title is-5">0</p>
+            <p class="subtitle is-5">0</p>
           </div>
         </div>
         <div class="columns is-mobile content bottom-columns is-hidden-desktop">
           <div class="column">
             <p class="heading is-spaced">Cancelados</p>
-            <p class="title is-5">0</p>
+            <p class="subtitle is-5">0</p>
           </div>
           <div class="column">
             <p class="heading is-spaced">Não compareceu</p>
-            <p class="title is-5">0</p>
+            <p class="subtitle is-5">0</p>
           </div>
         </div>
       </div>
