@@ -24,6 +24,12 @@ const menuItems = [
     path: '/services',
   },
   {
+    id: 'packages',
+    title: 'Pacotes',
+    icon: 'box',
+    path: '/packages',
+  },
+  {
     id: 'products',
     title: 'Produtos',
     icon: 'spray-can',

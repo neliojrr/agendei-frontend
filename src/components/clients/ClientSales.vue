@@ -2,18 +2,43 @@
   <div class="client-sales">
     <div class="card">
       <div class="card-content">
-        <div>
-          <figure class="image is-128x128">
-            <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
-          </figure>
+        <div class="columns is-mobile content top-columns">
+          <div class="column">
+            <p class="heading is-spaced">Vendas Totais</p>
+            <p class="title is-5">R$ 435,00</p>
+          </div>
+          <div class="column">
+            <p class="heading is-spaced">Prospecção</p>
+            <p class="title is-5">R$ 135,00</p>
+          </div>
         </div>
-        <div>
-          <b-tag type="is-info">10 agendamentos</b-tag>
+        <div class="columns is-mobile content bottom-columns">
+          <div class="column">
+            <p class="heading is-spaced">Agendamentos</p>
+            <p class="title is-5">8</p>
+          </div>
+          <div class="column">
+            <p class="heading is-spaced">Finalizados</p>
+            <p class="title is-5">6</p>
+          </div>
+          <div class="column is-hidden-touch">
+            <p class="heading is-spaced">Cancelados</p>
+            <p class="title is-5">0</p>
+          </div>
+          <div class="column is-hidden-touch">
+            <p class="heading is-spaced">Não compareceu</p>
+            <p class="title is-5">0</p>
+          </div>
         </div>
-        <div class="content">
-          <p>Nelio Carneiro Junior</p>
-          <p>nelio10@agendei.io</p>
-          <p>+48 574 092 217</p>
+        <div class="columns is-mobile content bottom-columns is-hidden-desktop">
+          <div class="column">
+            <p class="heading is-spaced">Cancelados</p>
+            <p class="title is-5">0</p>
+          </div>
+          <div class="column">
+            <p class="heading is-spaced">Não compareceu</p>
+            <p class="title is-5">0</p>
+          </div>
         </div>
       </div>
     </div>
@@ -46,19 +71,21 @@ export default {
         margin-bottom: 15px;
       }
 
-      figure {
-        margin: auto;
-      }
-    }
+      .top-columns {
+        border-bottom: 1px solid $grey-lighter;
 
-    .card-footer {
-
-      a.new-appointment {
-        color: $primary;
+        .column:first-child {
+          border-right: 1px solid $grey-lighter;
+        }
       }
 
-      a.delete-client {
-        color: $danger;
+      .bottom-columns {
+        margin-top: 15px;
+        margin-bottom: 0;
+
+        .column {
+          margin-bottom: 0;
+        }
       }
     }
   }

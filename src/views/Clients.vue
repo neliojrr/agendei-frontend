@@ -19,7 +19,7 @@
           </button>
         </div>
       </div>
-      <Table :headers="headers" :data="data" />
+      <Table :headers="headers" :data="data" @row-click="rowClick" />
     </div>
   </div>
 </template>
@@ -41,11 +41,11 @@ export default {
           name: 'name',
           title: 'Nome',
         }, {
-          name: 'email',
-          title: 'Email',
-        }, {
           name: 'phone',
           title: 'Telefone',
+        }, {
+          name: 'email',
+          title: 'Email',
         },
       ],
     };
@@ -95,6 +95,10 @@ export default {
         },
       ];
       this.$emit('open-modal', 'Novo Cliente', Form, buttons);
+    },
+    rowClick(id) {
+      console.log(id);
+      this.$router.push(`/clients/${id}`);
     },
   },
 };

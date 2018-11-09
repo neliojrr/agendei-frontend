@@ -4,11 +4,13 @@
     <NavApp :title="title" />
     <div class="client-view app-content">
       <div class="columns">
-        <div class="column">
+        <div class="column is-one-third">
           <ClientInfo :client="client" />
         </div>
-        <div class="column">
+        <div class="column client-sales-column">
           <ClientSales :client="client" />
+          <br />
+          <ClientHistory :client="client" />
         </div>
       </div>
     </div>
@@ -22,6 +24,7 @@ import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
 import ClientInfo from '@/components/clients/ClientInfo.vue';
 import ClientSales from '@/components/clients/ClientSales.vue';
+import ClientHistory from '@/components/clients/ClientHistory.vue';
 
 export default {
   data() {
@@ -37,6 +40,7 @@ export default {
     Table,
     ClientInfo,
     ClientSales,
+    ClientHistory,
   },
   created() {
     const clientId = this.$route.params.id;
@@ -72,5 +76,8 @@ export default {
 .client-view {
   height: calc(100vh - 52px);
   padding: 10px;
+
+  .client-sales-column {
+  }
 }
 </style>

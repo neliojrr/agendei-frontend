@@ -18,7 +18,7 @@
       </div>
       <footer class="card-footer">
         <a href="#" class="card-footer-item new-appointment">Agendamento</a>
-        <a href="#" class="card-footer-item">Editar</a>
+        <a href="#" class="card-footer-item edit-client">Editar</a>
         <a href="#" class="card-footer-item delete-client">Deletar</a>
       </footer>
     </div>
@@ -66,6 +66,14 @@ export default {
 
       a.delete-client {
         color: $danger;
+      }
+
+      a.edit-client {
+        color: $info;
+      }
+
+      a:hover {
+        text-decoration: underline;
       }
     }
   }
