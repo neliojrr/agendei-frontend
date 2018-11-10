@@ -76,8 +76,9 @@ export default {
 .client-view {
   height: calc(100vh - 52px);
   padding: 10px;
+  overflow-y: scroll;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  overflow-y: auto;
 
   .client-sales-column {
   }

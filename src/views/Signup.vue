@@ -251,6 +251,9 @@ export default {
 <style lang="scss">
 .signup {
   height: calc(100vh - 55px);
+  overflow-x: hidden;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 
   @media screen and (max-width: 768px) {
     height: calc(100vh - 75px);

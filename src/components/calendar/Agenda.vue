@@ -232,9 +232,9 @@ export default {
 
   .agenda-body {
     height: calc(100vh - 170px);
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     padding-top: 10px;
 
     .columns:last-child {
