@@ -1,28 +1,28 @@
 <template>
-  <div class="client-history-appointments">
-    <template v-if="appointments.length > 0">
-      <div class="columns is-mobile" v-for="a in appointments" :key="a.id">
+  <div class="client-history-packages">
+    <template v-if="packages.length > 0">
+      <div class="columns is-mobile" v-for="p in packages" :key="p.id">
         <div class="column date is-narrow">
           <span class="subtitle is-5">
-            {{ moment(a.date).format('DD') }}
+            {{ moment(p.date).format('DD') }}
           </span>
           <div class="subtitle is-5">
-            {{ moment(a.date).format('MMM') }}
+            {{ moment(p.date).format('MMM') }}
           </div>
         </div>
         <div class="column time is-flex is-narrow">
           <span class="subtitle is-6">
-            {{ moment(a.date).format('H:mm') }}
+            {{ moment(p.date).format('H:mm') }}
           </span>
         </div>
         <div class="column service is-flex">
           <span class="subtitle is-6">
-            {{ a.service.name }} com {{ a.employee.name}}
+            {{ p.name }}
           </span>
         </div>
         <div class="column price is-flex is-narrow">
           <span class="subtitle is-5">
-            R$ {{ a.price / 100 }}
+            R$ {{ p.price / 100 }}
           </span>
         </div>
       </div>
@@ -30,10 +30,10 @@
     <template v-else>
       <div class="no-history-message is-centered">
         <p>
-          <font-awesome-icon icon="calendar-alt" />
+          <font-awesome-icon icon="box" />
         </p>
         <p class="subtitle is-5">
-          Sem histórico de agendamento
+          Sem histórico em pacotes
         </p>
       </div>
     </template>
@@ -48,7 +48,7 @@ export default {
     return {};
   },
   props: {
-    appointments: {
+    packages: {
       type: Array,
       default: () => [],
     },
@@ -63,7 +63,7 @@ export default {
 
 <style scoped lang="scss">
 @import "~bulma/sass/utilities/_all";
-.client-history-appointments {
+.client-history-packages {
 
   .columns {
     border-bottom: 1px solid $grey-lighter;
