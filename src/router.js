@@ -6,6 +6,7 @@ import Calendar from './views/Calendar.vue';
 import Staff from './views/Staff.vue';
 import Clients from './views/Clients.vue';
 import ClientView from './views/ClientView.vue';
+import Sales from './views/Sales.vue';
 
 Vue.use(Router);
 
@@ -63,6 +64,12 @@ export default new Router({
       name: 'clientView',
       component: ClientView,
       props: { pageTitle: 'Cliente' },
+    },
+    {
+      path: '/sales',
+      name: 'sales',
+      component: Sales,
+      props: { pageTitle: 'Vendas' },
     },
   ],
 });
