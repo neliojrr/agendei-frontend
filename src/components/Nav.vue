@@ -1,5 +1,8 @@
 <template>
-  <nav class="navbar is-fixed-top">
+  <nav
+    class="navbar is-fixed-top"
+    :style="{ backgroundColor: transparent ? 'transparent' : 'inherited' }"
+  >
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item" href="https://agendei.io">
@@ -39,6 +42,12 @@ export default {
       locale: 'pt-br',
       isOpen: false,
     };
+  },
+  props: {
+    transparent: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     toggleBurgerMenu() {
