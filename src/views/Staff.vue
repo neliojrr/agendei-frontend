@@ -82,7 +82,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .staff {
   height: calc(100vh - 52px);
   padding: 10px;

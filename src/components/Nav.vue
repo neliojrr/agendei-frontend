@@ -1,11 +1,11 @@
 <template>
   <nav
     class="navbar is-fixed-top"
-    :style="{ backgroundColor: transparent ? 'transparent' : 'inherited' }"
+    :class="{ 'navbar-transparent': transparent > -1 && transparent < 10 }"
   >
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item" href="https://agendei.io">
+        <a class="navbar-item" href="/">
           <span class="logo">Agendei</span>
         </a>
         <a
@@ -45,8 +45,8 @@ export default {
   },
   props: {
     transparent: {
-      type: Boolean,
-      default: false,
+      type: Number,
+      default: 20,
     },
   },
   methods: {
@@ -80,6 +80,10 @@ export default {
       font-weight: bold;
     }
   }
+}
+
+.navbar-transparent {
+  background-color: transparent !important;
 }
 
 .navbar-end {

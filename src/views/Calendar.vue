@@ -86,8 +86,8 @@ export default {
           service: {
             title: 'Corte de cabelo',
           },
-          start: '2018-10-23 09:45',
-          end: '2018-10-23 11:15',
+          start: '2018-11-12 07:30',
+          end: '2018-11-12 08:45',
         },
         {
           employee: {
@@ -98,13 +98,13 @@ export default {
             borderColor: 'hsl(141, 71%, 28%)',
           },
           client: {
-            name: 'João',
+            name: 'Lucia',
           },
           service: {
             title: 'Sobrancelha',
           },
-          start: '2018-10-23 07:00',
-          end: '2018-10-23 08:00',
+          start: '2018-11-12 09:00',
+          end: '2018-11-12 10:00',
         },
         {
           employee: {
@@ -115,13 +115,13 @@ export default {
             borderColor: 'hsl(47, 95%, 49%)',
           },
           client: {
-            name: 'João',
+            name: 'Joana',
           },
           service: {
             title: 'Manicure',
           },
-          start: '2018-10-23 14:00',
-          end: '2018-10-23 15:15',
+          start: '2018-11-12 07:00',
+          end: '2018-11-12 08:15',
         },
         {
           employee: {
@@ -132,13 +132,13 @@ export default {
             borderColor: 'hsl(171, 100%, 21%)',
           },
           client: {
-            name: 'João',
+            name: 'Gabriela',
           },
           service: {
             title: 'Corte de cabelo',
           },
-          start: '2018-10-23 10:30',
-          end: '2018-10-23 12:15',
+          start: '2018-11-12 08:15',
+          end: '2018-11-12 09:15',
         },
       ],
     };

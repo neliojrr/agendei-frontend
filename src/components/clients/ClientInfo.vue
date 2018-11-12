@@ -4,16 +4,16 @@
       <div class="card-content">
         <div>
           <figure class="image is-128x128">
-            <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
+            <img class="is-rounded" src="../../assets/images/client_example.jpg">
           </figure>
         </div>
         <div>
           <b-tag type="is-info">10 agendamentos</b-tag>
         </div>
         <div class="content">
-          <p>Nelio Carneiro Junior</p>
-          <p>nelio10@agendei.io</p>
-          <p>+48 574 092 217</p>
+          <p>Joana Guimarães</p>
+          <p>joana@agendei.io</p>
+          <p>+55 64 90000000</p>
         </div>
       </div>
       <footer class="card-footer">
