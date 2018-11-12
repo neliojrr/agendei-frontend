@@ -1,8 +1,11 @@
 <template>
-  <nav class="navbar is-fixed-top">
+  <nav
+    class="navbar is-fixed-top"
+    :class="{ 'navbar-transparent': transparent > -1 && transparent < 10 }"
+  >
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item" href="https://agendei.io">
+        <a class="navbar-item" href="/">
           <span class="logo">Agendei</span>
         </a>
         <a
@@ -40,6 +43,12 @@ export default {
       isOpen: false,
     };
   },
+  props: {
+    transparent: {
+      type: Number,
+      default: 20,
+    },
+  },
   methods: {
     toggleBurgerMenu() {
       this.isOpen = !this.isOpen;
@@ -71,6 +80,10 @@ export default {
       font-weight: bold;
     }
   }
+}
+
+.navbar-transparent {
+  background-color: transparent !important;
 }
 
 .navbar-end {

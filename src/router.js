@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Home from './views/Home.vue';
 import Signup from './views/Signup.vue';
 import Login from './views/Login.vue';
 import Calendar from './views/Calendar.vue';
@@ -15,9 +16,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'login',
-      component: Login,
-      props: { default: true, title: 'Login' },
+      name: 'home',
+      component: Home,
     },
     {
       path: '/about',

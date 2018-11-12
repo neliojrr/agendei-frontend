@@ -104,7 +104,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .clients {
   height: calc(100vh - 52px);
   padding: 10px;

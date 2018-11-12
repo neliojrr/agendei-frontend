@@ -43,11 +43,10 @@ export default {
     ClientHistory,
   },
   created() {
-    const clientId = this.$route.params.id;
-    this.title = `Client ${clientId}`;
+    this.title = 'Joana';
     this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
     this.user = JSON.parse(window.sessionStorage.getItem('user'));
-    if (this.user.id && this.salon.id) {
+    if (this.user && this.salon && this.user.id && this.salon.id) {
       const headers = {
         'access-token': this.user.token,
         uid: this.user.email,
@@ -72,7 +71,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .client-view {
   height: calc(100vh - 52px);
   padding: 10px;
