@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Signup from './views/Signup.vue';
+import Prospect from './views/Prospect.vue';
+import Thanks from './views/Thanks.vue';
 import Login from './views/Login.vue';
 import Calendar from './views/Calendar.vue';
 import Staff from './views/Staff.vue';
@@ -27,6 +29,18 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
       props: { default: true, title: 'About' },
+    },
+    {
+      path: '/contato',
+      name: 'prospect',
+      component: Prospect,
+      props: { default: true, title: 'Prospect' },
+    },
+    {
+      path: '/obrigado',
+      name: 'thanks',
+      component: Thanks,
+      props: { default: true, title: 'Thank you' },
     },
     {
       path: '/signup',

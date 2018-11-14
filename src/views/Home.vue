@@ -78,6 +78,8 @@
       <h3 class="subtitle is-2 is-size-3-touch">
         Tenha todas as informações na palma da sua mão
       </h3>
+      <p>
+      </p>
       <div class="container mockups">
         <img src="../assets/images/mockup_final.png" />
       </div>
@@ -88,7 +90,7 @@
           Cadastre-se e entraremos em contato com você
         </h3>
         <h4 class="subtitle is-5 is-size-6-touch">
-          Teste gratuitamente durante 30 dias. Não pedimos cartão de crédito.
+          Teste gratuitamente por 30 dias. Não pedimos cartão de crédito.
         </h4>
         <p>
           <button class="button is-primary is-large" @click="goToRegister">
@@ -97,20 +99,13 @@
         </p>
       </div>
     </section>
-    <footer class="footer">
-      <div class="content has-text-centered">
-        <p>
-          <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
-          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
-          is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
-        </p>
-      </div>
-    </footer>
+    <Footer />
   </div>
 </template>
 
 <script>
 import Nav from '@/components/Nav.vue';
+import Footer from '@/components/Footer.vue';
 
 export default {
   data() {
@@ -120,6 +115,7 @@ export default {
   },
   components: {
     Nav,
+    Footer,
   },
   created() {
     window.addEventListener('scroll', this.handleScroll);
@@ -130,7 +126,7 @@ export default {
   },
   methods: {
     goToRegister() {
-      this.$router.push('/signup');
+      this.$router.push('/contato');
     },
     handleScroll() {
       this.transparent = window.pageYOffset;
