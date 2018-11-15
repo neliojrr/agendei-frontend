@@ -4,7 +4,7 @@
     <div class="thanks section">
       <h1 class="title is-spaced">Muito obrigado!</h1>
       <h2 class="subtitle">
-        Ficamos muito feliz com o seu cadastro. <br />Estamos acertando alguns detalhes
+        Ficamos felizes com o seu cadastro. <br />Estamos acertando alguns detalhes
         e em breve entraremos em contato com você!
       </h2>
       <div class="columns">
