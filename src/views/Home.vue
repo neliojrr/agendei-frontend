@@ -165,11 +165,11 @@ export default {
       position: absolute;
       height: 100%;
       width: 100%;
-      background-image: url('../assets/images/salon_bg_small.jpg');
+      background-image: url('../assets/images/salon_bg_small_2.jpg');
       background-size: cover;
       background-position: 50%;
       background-repeat: no-repeat;
-      opacity: 0.66;
+      opacity: 0.56;
     }
 
     .content {
@@ -211,6 +211,7 @@ export default {
     margin-top: 30px;
 
     .mockups {
+      max-width: 1444px;
 
       img {
         box-shadow: 4px 10px 20px rgba(124,146,169,.5);
