@@ -83,13 +83,11 @@
         </div>
       </div>
     </div>
-    <Footer />
   </div>
 </template>
 
 <script>
 import Nav from '@/components/Nav.vue';
-import Footer from '@/components/Footer.vue';
 import api from '@/utils/api-connect';
 import validate from '@/mixins/validate';
 
@@ -106,7 +104,6 @@ export default {
   },
   components: {
     Nav,
-    Footer,
   },
   mixins: [validate],
   methods: {

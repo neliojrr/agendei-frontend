@@ -30,7 +30,7 @@
   padding: 2em 1.5em;
 
   @media screen and (max-width: 768px) {
-    padding: 1.5em 1em;
+    padding: 1em 1em;
   }
 
   .content {
