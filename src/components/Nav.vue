@@ -22,12 +22,12 @@
       </div>
       <div class="navbar-menu" v-bind:class="{ 'is-active': isOpen }">
         <div class="navbar-end">
-          <router-link to="https://agendei.io/signup" class="navbar-item is-flex">
+          <a href="https://agendei.io/contato" class="navbar-item is-flex">
             <span>{{ $t('sign-up') }}</span>
-          </router-link>
-          <router-link to="https://agendei.io/login" class="navbar-item is-flex">
+          </a>
+          <a href="https://agendei.io/login" class="navbar-item is-flex">
             <span>{{ $t('login') }}</span>
-          </router-link>
+          </a>
         </div>
       </div>
     </div>

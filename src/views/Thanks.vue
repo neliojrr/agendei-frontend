@@ -31,12 +31,12 @@ export default {
 
 <style lang="scss">
 .thanks {
-  @media screen and (max-width: 768px) {
-    height: calc(100vh - 75px);
-  }
-
   img {
     height: 300px;
+
+    @media screen and (max-width: 768px) {
+      height: 200px;
+    }
   }
 }
 </style>

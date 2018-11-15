@@ -78,8 +78,10 @@
       <h3 class="subtitle is-2 is-size-3-touch">
         Tenha todas as informações na palma da sua mão
       </h3>
-      <p>
-      </p>
+      <h4 class="subtitle is-5">
+        Acesse o Agendei de qualquer dispositivo, seja ele um computador, tablet
+        ou celular
+      </h4>
       <div class="container mockups">
         <img src="../assets/images/mockup_final.png" />
       </div>
@@ -90,7 +92,7 @@
           Cadastre-se e entraremos em contato com você
         </h3>
         <h4 class="subtitle is-5 is-size-6-touch">
-          Teste gratuitamente por 30 dias. Não pedimos cartão de crédito.
+          Teste gratuitamente por 30 dias
         </h4>
         <p>
           <button class="button is-primary is-large" @click="goToRegister">
@@ -205,7 +207,8 @@ export default {
 
   .app-screenshot {
     width: 100%;
-    background-color: #fcfcfc;
+    background-color: #f8f8f8;
+    margin-top: 30px;
 
     .mockups {
 
@@ -222,7 +225,7 @@ export default {
 
   .contact-form {
     padding-top: 80px;
-    padding-bottom: 80px;
+    padding-bottom: 180px;
 
     input {
       width: 50%;

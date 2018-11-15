@@ -1,10 +1,10 @@
 <template>
   <div>
     <Nav />
-    <div class="signup container">
+    <div class="prospect container">
       <div class="columns">
         <div class="column">
-          <img src="../assets/images/setup.svg">
+          <img src="../assets/images/wall_post.svg">
         </div>
         <div class="column">
           <h1 class="title">{{ $t('title') }}</h1>
@@ -83,11 +83,13 @@
         </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 
 <script>
 import Nav from '@/components/Nav.vue';
+import Footer from '@/components/Footer.vue';
 import api from '@/utils/api-connect';
 import validate from '@/mixins/validate';
 
@@ -104,6 +106,7 @@ export default {
   },
   components: {
     Nav,
+    Footer,
   },
   mixins: [validate],
   methods: {
@@ -175,15 +178,11 @@ export default {
 </script>
 
 <style lang="scss">
-.signup {
-  height: calc(100vh - 55px);
-  overflow-x: hidden;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
+.prospect {
+  padding-top: 5em;
 
   @media screen and (max-width: 768px) {
-    height: calc(100vh - 75px);
-    margin-top: 20px;
+    padding-top: 1.5em;
   }
 
   .columns {
@@ -206,10 +205,10 @@ export default {
       }
 
       img {
-        max-height: 400px;
+        max-height: 280px;
 
         @media screen and (max-width: 768px) {
-          max-height: 150px;
+          max-height: 75px;
         }
       }
     }

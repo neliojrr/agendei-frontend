@@ -18,6 +18,11 @@ import {
   faBox,
   faEnvelope,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  faFacebookSquare,
+  faTwitterSquare,
+  faInstagram,
+} from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import App from './App.vue';
 import router from './router';
@@ -38,6 +43,9 @@ library.add(faCheck);
 library.add(faSearch);
 library.add(faBox);
 library.add(faEnvelope);
+library.add(faFacebookSquare);
+library.add(faTwitterSquare);
+library.add(faInstagram);
 /* end icons */
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
