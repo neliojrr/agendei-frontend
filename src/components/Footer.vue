@@ -8,10 +8,10 @@
           Todos os direitos reservados.
         </span>
         <span class="icons">
-          <a href="http://twitter.com/agendei">
+          <a target="_blank" href="http://twitter.com/agendei">
             <font-awesome-icon :icon="['fab', 'twitter-square']" />
           </a>
-          <a href="http://instagram.com/agendei.io">
+          <a target="_blank" href="http://instagram.com/agendei.io">
             <font-awesome-icon :icon="['fab', 'instagram']" />
           </a>
         </span>
