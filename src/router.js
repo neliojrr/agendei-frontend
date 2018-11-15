@@ -9,6 +9,7 @@ import Calendar from './views/Calendar.vue';
 import Staff from './views/Staff.vue';
 import Clients from './views/Clients.vue';
 import ClientView from './views/ClientView.vue';
+import NotFound from './views/NotFound.vue';
 
 Vue.use(Router);
 
@@ -42,12 +43,12 @@ export default new Router({
       component: Thanks,
       props: { default: true, title: 'Thank you' },
     },
-    {
+    /* {
       path: '/signup',
       name: 'signup',
       component: Signup,
       props: { default: true, title: 'SignUp' },
-    },
+    }, */
     {
       path: '/login',
       name: 'login',
@@ -77,6 +78,14 @@ export default new Router({
       name: 'clientView',
       component: ClientView,
       props: { pageTitle: 'Cliente' },
+    },
+
+    /* not found */
+    {
+      path: '/*',
+      name: 'not-found',
+      component: NotFound,
+      props: { pageTitle: 'Not found' },
     },
   ],
 });
