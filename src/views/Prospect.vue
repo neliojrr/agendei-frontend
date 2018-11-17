@@ -4,7 +4,7 @@
     <div class="prospect container">
       <div class="columns">
         <div class="column">
-          <img src="../assets/images/wall_post.svg">
+          <img alt="Informacoes do Usuario" src="../assets/images/wall_post.svg">
         </div>
         <div class="column">
           <h1 class="title">{{ $t('title') }}</h1>

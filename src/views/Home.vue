@@ -26,7 +26,7 @@
       <div class="columns is-multiline">
         <div class="column is-half">
           <p>
-            <img src="../assets/images/schedule.svg">
+            <img alt="Agendamento" src="../assets/images/schedule.svg">
           </p>
           <h3 class="subtitle is-4">
             Agendamento
@@ -38,7 +38,7 @@
         </div>
         <div class="column is-half">
           <p>
-            <img src="../assets/images/clients.svg">
+            <img alt="Clientes" src="../assets/images/clients.svg">
           </p>
           <h3 class="subtitle is-4">
             Gerencie seus clientes
@@ -50,7 +50,7 @@
         </div>
         <div class="column is-half">
           <p>
-            <img src="../assets/images/sales_report.svg">
+            <img alt="Relatorio de Vendas" src="../assets/images/sales_report.svg">
           </p>
           <h3 class="subtitle is-4">
             Aumente suas vendas
@@ -62,7 +62,7 @@
         </div>
         <div class="column is-half">
           <p>
-            <img src="../assets/images/messages.svg">
+            <img alt="Mensagens" src="../assets/images/messages.svg">
           </p>
           <h3 class="subtitle is-4">
             Reduza o não comparecimento
@@ -83,7 +83,11 @@
         ou celular
       </h4>
       <div class="container mockups">
-        <img src="../assets/images/mockup_final.png" />
+        <img
+          alt="App Mockup"
+          src="../assets/images/mockup_final.png"
+          srcset="mockup_final_mobile.png 480w, mockup_final.png 1080w" sizes="50vw"
+        />
       </div>
     </section>
     <section class="contact-form section">
