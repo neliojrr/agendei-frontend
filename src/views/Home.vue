@@ -11,8 +11,8 @@
           Gerencie seu salão no computador ou celular
         </h1>
         <h2 class="subtitle is-4 is-size-6-touch has-text-white-ter">
-          Simples, fácil e intuitivo software para agendamentos e controle
-          do seu estabelecimento.
+          Simples, fácil e intuitivo software para salões e barbearias com agendamento,
+          controle de clientes e profissionais, relatórios de vendas e muito mais.
         </h2>
         <button
           title="Experimente gratis"
