@@ -86,7 +86,12 @@
         <img
           alt="App Mockup"
           src="../assets/images/mockup_final.png"
-          srcset="mockup_final_mobile.png 480w, mockup_final.png 1080w" sizes="50vw"
+          class="is-hidden-touch"
+        />
+        <img
+          alt="App Mockup"
+          src="../assets/images/mockup_final_mobile.png"
+          class="is-hidden-desktop"
         />
       </div>
     </section>
