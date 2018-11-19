@@ -14,7 +14,12 @@
           Simples, fácil e intuitivo software para agendamentos e controle
           do seu estabelecimento.
         </h2>
-        <button class="button is-primary is-large" @click="goToRegister">
+        <button
+          title="Experimente gratis"
+          type="button"
+          class="button is-primary is-large"
+          @click="goToRegister"
+        >
           Experimente grátis
         </button>
       </div>
@@ -104,7 +109,12 @@
           Teste gratuitamente por 30 dias
         </h4>
         <p>
-          <button class="button is-primary is-large" @click="goToRegister">
+          <button
+            title="Experimente gratis"
+            type="button"
+            class="button is-primary is-large"
+            @click="goToRegister"
+          >
             Cadastre-se
           </button>
         </p>

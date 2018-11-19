@@ -6,7 +6,7 @@
       <h2 class="subtitle">
         Não encontramos a página que você está procurando <br />Que tal voltar a
         nossa página inicial e tentar novamente!?
-        <a href="https://agendei.io/">Clique aqui</a> para voltar.
+        <a name="home" href="https://agendei.io/">Clique aqui</a> para voltar.
       </h2>
       <div class="columns">
         <div class="column">

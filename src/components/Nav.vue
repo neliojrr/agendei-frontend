@@ -5,7 +5,7 @@
   >
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item" href="https://agendei.io">
+        <a name="Agendei" class="navbar-item" href="https://agendei.io">
           <span class="logo">Agendei</span>
         </a>
         <a
@@ -22,10 +22,10 @@
       </div>
       <div class="navbar-menu" v-bind:class="{ 'is-active': isOpen }">
         <div class="navbar-end">
-          <a href="https://agendei.io/contato" class="navbar-item is-flex">
+          <a name="cadastrar" href="https://agendei.io/contato" class="navbar-item is-flex">
             <span>{{ $t('sign-up') }}</span>
           </a>
-          <a href="https://agendei.io/login" class="navbar-item is-flex">
+          <a name="login" href="https://agendei.io/login" class="navbar-item is-flex">
             <span>{{ $t('login') }}</span>
           </a>
         </div>
