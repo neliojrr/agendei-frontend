@@ -109,6 +109,7 @@ export default {
   methods: {
     register() {
       this.errors = {};
+      this.$ga.event('Contact', 'Form send', 'Registration');
       if (this.validateFields()) {
         this.isLoading = true;
         const {
