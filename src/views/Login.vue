@@ -97,11 +97,7 @@ export default {
     const user = JSON.parse(window.sessionStorage.getItem('user')) || {};
     const salon = JSON.parse(window.sessionStorage.getItem('salon')) || {};
     if (user.id && salon.id) {
-      this.$toast.open({
-        message: 'Seja bem vindo!',
-        type: 'is-success',
-      });
-      this.$router.replace('/calendar');
+      this.$router.replace('/agenda');
     }
   },
   methods: {
@@ -137,7 +133,7 @@ export default {
                 message: 'Seja bem vindo!',
                 type: 'is-success',
               });
-              this.$router.push('/calendar');
+              this.$router.push('/agenda');
             }
           })
           .catch((error) => {
