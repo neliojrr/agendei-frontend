@@ -2,7 +2,7 @@ import moment from 'moment';
 
 moment.updateLocale('en', {
   weekdays: [
-    'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado',
+    'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado',
   ],
   weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
 });

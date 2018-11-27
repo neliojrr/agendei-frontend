@@ -1,9 +1,9 @@
 const menuItems = [
   {
-    id: 'calendar',
-    title: 'Calendário',
+    id: 'agenda',
+    title: 'Agenda',
     icon: 'calendar-alt',
-    path: '/calendar',
+    path: '/agenda',
   },
   {
     id: 'clients',

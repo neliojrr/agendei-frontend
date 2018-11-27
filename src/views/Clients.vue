@@ -60,7 +60,7 @@ export default {
   created() {
     this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
     this.user = JSON.parse(window.sessionStorage.getItem('user'));
-    if (this.user.id && this.salon.id) {
+    if (this.user && this.salon && this.user.id && this.salon.id) {
       const headers = {
         'access-token': this.user.token,
         uid: this.user.email,
@@ -97,7 +97,6 @@ export default {
       this.$emit('open-modal', 'Novo Cliente', Form, buttons);
     },
     rowClick(id) {
-      console.log(id);
       this.$router.push(`/clients/${id}`);
     },
   },

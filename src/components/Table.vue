@@ -1,22 +1,25 @@
 <template>
-  <table class="table is-hoverable">
+  <table
+    class="table is-hoverable"
+    :class="{ 'is-bordered': isBordered, 'is-striped': isStriped }"
+  >
     <thead class="table-head">
       <tr>
         <th
           v-for="(h, index) in (headers || defaultHeaders)"
           :key="h.name"
-          :class="{ 'is-hidden-mobile': index > 1 }"
+          :class="{ 'is-hidden-mobile': index > mobileHidden }"
         >
           {{ h.title }}
         </th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="d in defaultData" :key="d.id" @click="rowClick(d.id)">
+      <tr v-for="d in (data || defaultData)" :key="d.id" @click="rowClick(d.id)">
         <td
           v-for="(h, index) in (headers || defaultHeaders)"
           :key="h.name"
-          :class="{ 'is-hidden-mobile': index > 1 }"
+          :class="{ 'is-hidden-mobile': index > mobileHidden }"
         >
           {{ d[h.name] }}
         </td>
@@ -63,6 +66,12 @@ export default {
     classes: String,
     headers: Array,
     data: Array,
+    isBordered: Boolean,
+    isStriped: Boolean,
+    mobileHidden: {
+      type: Number,
+      default: 1,
+    },
   },
   methods: {
     rowClick(id) {

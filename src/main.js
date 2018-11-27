@@ -18,6 +18,8 @@ import {
   faSearch,
   faBox,
   faEnvelope,
+  faArrowRight,
+  faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookSquare,
@@ -47,6 +49,8 @@ library.add(faEnvelope);
 library.add(faFacebookSquare);
 library.add(faTwitterSquare);
 library.add(faInstagram);
+library.add(faArrowLeft);
+library.add(faArrowRight);
 /* end icons */
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

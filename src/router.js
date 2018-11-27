@@ -10,6 +10,7 @@ import Staff from './views/Staff.vue';
 import Clients from './views/Clients.vue';
 import ClientView from './views/ClientView.vue';
 import NotFound from './views/NotFound.vue';
+import Sales from './views/Sales.vue';
 
 Vue.use(Router);
 
@@ -21,15 +22,6 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
-      props: { default: true, title: 'About' },
     },
     {
       path: '/contato',
@@ -56,10 +48,10 @@ export default new Router({
       props: { default: true, pageTitle: 'Login' },
     },
     {
-      path: '/calendar',
-      name: 'calendar',
+      path: '/agenda',
+      name: 'agenda',
       component: Calendar,
-      props: { pageTitle: 'Calendário' },
+      props: { pageTitle: 'Agenda' },
     },
     {
       path: '/staff',
@@ -78,6 +70,12 @@ export default new Router({
       name: 'clientView',
       component: ClientView,
       props: { pageTitle: 'Cliente' },
+    },
+    {
+      path: '/sales',
+      name: 'sales',
+      component: Sales,
+      props: { pageTitle: 'Vendas' },
     },
 
     /* not found */
