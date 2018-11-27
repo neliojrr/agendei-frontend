@@ -15,12 +15,6 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'login',
-      component: Login,
-      props: { default: true, title: 'Login' },
-    },
-    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -42,10 +36,10 @@ export default new Router({
       props: { default: true, pageTitle: 'Login' },
     },
     {
-      path: '/calendar',
-      name: 'calendar',
+      path: '/agenda',
+      name: 'agenda',
       component: Calendar,
-      props: { pageTitle: 'Calendário' },
+      props: { pageTitle: 'Agenda' },
     },
     {
       path: '/staff',

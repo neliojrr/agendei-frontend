@@ -16,6 +16,8 @@ import {
   faCheck,
   faSearch,
   faBox,
+  faArrowRight,
+  faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import App from './App.vue';
@@ -36,6 +38,8 @@ library.add(faPlus);
 library.add(faCheck);
 library.add(faSearch);
 library.add(faBox);
+library.add(faArrowLeft);
+library.add(faArrowRight);
 /* end icons */
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
