@@ -14,12 +14,14 @@ import {
   faSignOutAlt,
   faUser,
   faPlus,
+  faMinus,
   faCheck,
   faSearch,
   faBox,
   faEnvelope,
   faArrowRight,
   faArrowLeft,
+  faClipboardList,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookSquare,
@@ -51,6 +53,8 @@ library.add(faTwitterSquare);
 library.add(faInstagram);
 library.add(faArrowLeft);
 library.add(faArrowRight);
+library.add(faMinus);
+library.add(faClipboardList);
 /* end icons */
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

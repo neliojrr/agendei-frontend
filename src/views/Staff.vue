@@ -90,10 +90,10 @@ export default {
   overflow-y: auto;
 
   .top-actions {
+    margin-bottom: 0;
     text-align: right;
 
     .new-staff {
-      padding: 0;
       @media screen and (max-width: 1024px) {
         position: fixed;
         bottom: 21px;
