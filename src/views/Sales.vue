@@ -12,10 +12,10 @@
       <div class="columns sales-title">
         <div class="column">
           <h2 class="title is-4">
-            Vendas Diárias: {{ daySelected.format('dddd, D MMM YYYY') }}
+            Vendas Diárias
           </h2>
-          <p class="subtitle is-6">
-            Gerado: {{ moment().format('dddd, D MMM YYYY - H:mm') }}
+          <p class="subtitle is-5">
+            {{ daySelected.format('dddd, D MMM YYYY') }}
           </p>
         </div>
       </div>
@@ -71,6 +71,9 @@
           />
         </div>
       </div>
+      <p class="subtitle is-7">
+        Gerado: {{ moment().format('dddd, D MMM YYYY - H:mm') }}
+      </p>
     </div>
   </div>
 </template>
