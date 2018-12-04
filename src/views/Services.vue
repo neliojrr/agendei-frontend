@@ -166,11 +166,7 @@ export default {
 
 <style lang="scss">
 .services {
-  height: calc(100vh - 52px);
   padding: 10px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
 
   .top-actions {
     text-align: right;
