@@ -134,6 +134,10 @@ export default {
         a, button {
           font-size: 22px;
           color: #FFFFFF;
+          @media screen and (max-width: 768px) {
+            font-size: 18px;
+            width: 38px;
+          }
         }
 
         a:hover, button:hover {
