@@ -12,6 +12,7 @@ import ClientView from './views/ClientView.vue';
 import NotFound from './views/NotFound.vue';
 import Sales from './views/Sales.vue';
 import Services from './views/Services.vue';
+import Products from './views/Products.vue';
 
 Vue.use(Router);
 
@@ -83,6 +84,12 @@ export default new Router({
       name: 'services',
       component: Services,
       props: { pageTitle: 'Serviços' },
+    },
+    {
+      path: '/products',
+      name: 'products',
+      component: Products,
+      props: { pageTitle: 'Produtos' },
     },
 
     /* not found */
