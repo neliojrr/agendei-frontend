@@ -13,6 +13,8 @@ import NotFound from './views/NotFound.vue';
 import Sales from './views/Sales.vue';
 import Services from './views/Services.vue';
 import Products from './views/Products.vue';
+import Packages from './views/Packages.vue';
+import PackageView from './views/PackageView.vue';
 
 Vue.use(Router);
 
@@ -90,6 +92,18 @@ export default new Router({
       name: 'products',
       component: Products,
       props: { pageTitle: 'Produtos' },
+    },
+    {
+      path: '/packages',
+      name: 'packages',
+      component: Packages,
+      props: { pageTitle: 'Pacotes' },
+    },
+    {
+      path: '/packages/:id',
+      name: 'package',
+      component: PackageView,
+      props: { pageTitle: 'Pacote' },
     },
 
     /* not found */

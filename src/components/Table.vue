@@ -15,7 +15,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="d in (data || defaultData)" :key="d.id" @click="rowClick(d.id)">
+      <tr v-for="d in (data ? data : defaultData)" :key="d.id" @click="rowClick(d.id)">
         <td
           v-for="(h, index) in (headers || defaultHeaders)"
           :key="h.name"
