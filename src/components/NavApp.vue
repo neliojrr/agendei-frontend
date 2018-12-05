@@ -14,12 +14,17 @@
       </a>
       <div class="navbar-title">
         <h2>{{ title }}</h2>
-        <router-link to="/profile">
-          <font-awesome-icon icon="user" />
-        </router-link>
-        <a class="" @click="logout">
-          <font-awesome-icon icon="sign-out-alt" />
-        </a>
+        <div class="right-icons">
+          <router-link class="button is-text" title="Meu salão" to="/salon">
+            <font-awesome-icon icon="store" />
+          </router-link>
+          <router-link class="button is-text" title="Meu perfil" to="/profile">
+            <font-awesome-icon icon="user" />
+          </router-link>
+          <button class="button is-text" @click="logout" title="Sair">
+            <font-awesome-icon icon="sign-out-alt" />
+          </button>
+        </div>
       </div>
     </div>
     <div class="navbar-menu is-hidden-desktop" v-bind:class="{ 'is-active': isOpen }">
@@ -122,16 +127,23 @@ export default {
         font-size: 24px;
       }
 
-      a {
+      .right-icons {
         position: absolute;
         right: 0;
-        margin-right: 55px;
-        font-size: 20px;
-        color: #FFFFFF;
-      }
 
-      a + a {
-        margin-right: 15px;
+        a, button {
+          font-size: 22px;
+          color: #FFFFFF;
+        }
+
+        a:hover, button:hover {
+          background-color: #FFFFFF;
+          color: $primary;
+        }
+
+        a:last-child {
+          margin-right: 0;
+        }
       }
     }
   }

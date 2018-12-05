@@ -22,6 +22,7 @@ import {
   faArrowRight,
   faArrowLeft,
   faClipboardList,
+  faStore,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookSquare,
@@ -55,6 +56,7 @@ library.add(faArrowLeft);
 library.add(faArrowRight);
 library.add(faMinus);
 library.add(faClipboardList);
+library.add(faStore);
 /* end icons */
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
