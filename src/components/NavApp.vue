@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import api from '@/utils/api-connect';
+import { api } from '@/utils/api-connect';
 import menuItems from '../utils/menuItems';
 
 export default {

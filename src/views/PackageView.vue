@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import api from '@/utils/api-connect';
+import { api } from '@/utils/api-connect';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
 import PackageInfo from '@/components/packages/PackageInfo.vue';

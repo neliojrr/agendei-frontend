@@ -76,7 +76,7 @@
 
 <script>
 import Nav from '@/components/Nav.vue';
-import api from '@/utils/api-connect';
+import { login } from '@/utils/api-connect';
 import validate from '@/mixins/validate';
 
 export default {
@@ -108,27 +108,13 @@ export default {
           email,
           password,
         } = this;
-        api.post('/auth/sign_in', {
+        login.post('/auth/sign_in', {
           email,
           password,
         })
           .then((response) => {
             this.isLoading = false;
             if (response.status === 200) {
-              const { data, headers } = response;
-              const user = {
-                ...data.user,
-                token: headers['access-token'],
-                client: headers.client,
-              };
-              window.sessionStorage.setItem(
-                'user',
-                JSON.stringify(user),
-              );
-              window.sessionStorage.setItem(
-                'salon',
-                JSON.stringify(user.salon),
-              );
               this.$toast.open({
                 message: 'Seja bem vindo!',
                 type: 'is-success',
