@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import api from '@/utils/api-connect';
+import { api } from '@/utils/api-connect';
 import Table from '@/components/Table.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';

@@ -127,7 +127,7 @@
 
 <script>
 import Nav from '@/components/Nav.vue';
-import api from '@/utils/api-connect';
+import { api } from '@/utils/api-connect';
 import validate from '@/mixins/validate';
 
 export default {

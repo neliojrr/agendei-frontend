@@ -23,7 +23,7 @@ import StaffList from '@/components/staff/StaffList.vue';
 import Form from '@/components/staff/Form.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
-import api from '@/utils/api-connect';
+import { api } from '@/utils/api-connect';
 
 export default {
   data() {
@@ -43,12 +43,7 @@ export default {
     this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
     this.user = JSON.parse(window.sessionStorage.getItem('user'));
     if (this.user && this.salon && this.user.id && this.salon.id) {
-      const headers = {
-        'access-token': this.user.token,
-        uid: this.user.email,
-        client: this.user.client,
-      };
-      api.get(`/salons/${this.salon.id}/employees`, { headers })
+      api.get(`/salons/${this.salon.id}/employees`)
         .then((response) => {
           const employees = response.data || [];
           this.data = employees;

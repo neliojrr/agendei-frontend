@@ -32,7 +32,7 @@
 
 <script>
 import moment from 'moment';
-import api from '@/utils/api-connect';
+import { api } from '@/utils/api-connect';
 import Menu from '../components/Menu.vue';
 import NavApp from '../components/NavApp.vue';
 import CalendarHeader from '../components/calendar/CalendarHeader.vue';
@@ -156,12 +156,7 @@ export default {
     this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
     this.user = JSON.parse(window.sessionStorage.getItem('user'));
     if (this.user && this.salon && this.user.id && this.salon.id) {
-      const headers = {
-        'access-token': this.user.token,
-        uid: this.user.email,
-        client: this.user.client,
-      };
-      api.get(`/salons/${this.salon.id}/transactions`, { headers })
+      api.get(`/salons/${this.salon.id}/transactions`)
         .then((response) => {
           const employees = response.data || [];
           this.data = employees;
