@@ -2,7 +2,7 @@
   <div>
     <Menu />
     <NavApp :title="pageTitle" />
-    <div class="calendar app-content">
+    <div class="agenda app-content">
       <CalendarHeader
         :employeeSelected="employeeSelected"
         :staff="staff"
@@ -15,7 +15,7 @@
       <a class="button is-primary new-appointment-button" title="Novo agendamento">
         <font-awesome-icon icon="plus" />
       </a>
-      <Agenda
+      <Calendar
         :employeeSelected="employeeSelected"
         :staff="staff"
         :daySelected="daySelected"
@@ -35,8 +35,8 @@ import moment from 'moment';
 import { api } from '@/utils/api-connect';
 import Menu from '../components/Menu.vue';
 import NavApp from '../components/NavApp.vue';
-import CalendarHeader from '../components/calendar/CalendarHeader.vue';
-import Agenda from '../components/calendar/Agenda.vue';
+import CalendarHeader from '../components/agenda/CalendarHeader.vue';
+import Calendar from '../components/agenda/Calendar.vue';
 import log from '../mixins/log';
 
 export default {
@@ -149,7 +149,7 @@ export default {
     Menu,
     NavApp,
     CalendarHeader,
-    Agenda,
+    Calendar,
   },
   mixins: [log],
   created() {
@@ -235,7 +235,7 @@ export default {
 </script>
 
 <style lang="scss">
-.calendar {
+.agenda {
 
   .new-appointment-button {
     position: fixed;

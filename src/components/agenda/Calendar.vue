@@ -1,6 +1,6 @@
 <template>
-  <div class="agenda">
-    <div class="agenda-header">
+  <div class="calendar">
+    <div class="calendar-header">
       <div
         v-if="showStaffOnHeader"
         class="header columns is-mobile is-side-gapless"
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div class="agenda-body">
+    <div class="calendar-body">
       <div
         class="appointments columns is-mobile is-side-gapless"
         v-for="n in timeRows"
@@ -197,7 +197,7 @@ export default {
 </script>
 
 <style lang="scss">
-.agenda {
+.calendar {
   .columns {
 
     .column {
@@ -223,7 +223,7 @@ export default {
     }
   }
 
-  .agenda-body {
+  .calendar-body {
     height: calc(100vh - 170px);
     overflow-y: scroll;
     overflow-x: hidden;
