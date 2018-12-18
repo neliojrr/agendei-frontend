@@ -3,19 +3,34 @@
     <div class="field">
       <label class="label">Nome</label>
       <div class="control">
-        <input class="input" type="text" placeholder="Lucia Maria">
+        <input
+          v-model="employee.name"
+          class="input"
+          type="text"
+          placeholder="Lucia Maria"
+        >
       </div>
       <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
     </div>
     <div class="field columns">
       <div class="control is-expanded column">
         <label class="label">Email</label>
-        <input class="input" type="email" placeholder="email@exemplo.com">
+        <input
+          v-model="employee.email"
+          class="input"
+          type="email"
+          placeholder="email@exemplo.com"
+        >
         <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
       </div>
       <div class="control is-expanded column">
         <label class="label">Telefone</label>
-        <input class="input" type="tel" placeholder="64999900000">
+        <input
+          v-model="employee.phone"
+          class="input"
+          type="tel"
+          placeholder="64999900000"
+        >
         <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
       </div>
     </div>
@@ -55,9 +70,14 @@
 </template>
 
 <script>
+import { api } from '@/utils/api-connect';
+
 export default {
   data() {
     return {
+      employee: {
+
+      },
       colors: [
         '#ef1554',
         '#c8e30b',
@@ -76,6 +96,29 @@ export default {
     errors: {
       type: Object,
       default: () => ({}),
+    },
+  },
+  created() {
+    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
+    if (this.salon && this.salon.id) {
+      api.get(`/salons/${this.salon.id}/employees`)
+        .then((response) => {
+          const employees = response.data || [];
+          this.data = employees;
+        })
+        .catch(() => {
+          this.$toast.open({
+            message: 'Não foi possível carregar a lista de profissionais. Tente recarregar a página!',
+            type: 'is-danger',
+          });
+        });
+    } else {
+      this.$router.push('/login');
+    }
+  },
+  methods: {
+    createNewProfessional() {
+
     },
   },
 };
