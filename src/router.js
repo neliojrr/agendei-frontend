@@ -5,7 +5,7 @@ import Signup from './views/Signup.vue';
 import Prospect from './views/Prospect.vue';
 import Thanks from './views/Thanks.vue';
 import Login from './views/Login.vue';
-import Calendar from './views/Calendar.vue';
+import Agenda from './views/Agenda.vue';
 import Staff from './views/Staff.vue';
 import Clients from './views/Clients.vue';
 import ClientView from './views/ClientView.vue';
@@ -54,7 +54,7 @@ export default new Router({
     {
       path: '/agenda',
       name: 'agenda',
-      component: Calendar,
+      component: Agenda,
       props: { pageTitle: 'Agenda' },
     },
     {
