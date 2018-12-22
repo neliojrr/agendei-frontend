@@ -3,19 +3,9 @@ import axios from 'axios';
 const prodServer = 'https://super.agendei.io/api/';
 // const localServer = 'http://localhost:3000/api/';
 const VERSION = 'v1';
-const agendeiAuth = JSON.parse(window.sessionStorage.getItem('agendeiAuth')) || {};
-const {
-  token = '', client = '', uid = '', authorization = '',
-} = agendeiAuth;
 
 export const api = axios.create({
   baseURL: `${prodServer}${VERSION}`,
-  headers: {
-    'access-token': token,
-    client,
-    uid,
-    Authorization: authorization,
-  },
 });
 
 export const login = axios.create({
@@ -24,25 +14,36 @@ export const login = axios.create({
 
 // Add a request interceptor for api
 api.interceptors.request.use((config) => {
-  if (agendeiAuth && agendeiAuth.token) {
+  if (config.url === '/auth/sign_out') {
+    window.sessionStorage.setItem('user', null);
+    window.sessionStorage.setItem('salon', null);
+    window.sessionStorage.setItem('agendeiAuth', null);
     return config;
+  }
+  const agendeiAuth = JSON.parse(window.sessionStorage.getItem('agendeiAuth')) || {};
+  if (agendeiAuth && agendeiAuth.token) {
+    const newConfig = config;
+    const { headers } = newConfig;
+    newConfig.headers = {
+      ...headers,
+      'access-token': agendeiAuth.token,
+      client: agendeiAuth.client,
+      uid: agendeiAuth.uid,
+    };
+    return newConfig;
   }
   window.location = '/login';
   return null;
 }, error => Promise.reject(error));
 
 // Add a response interceptor for others api requests
-api.interceptors.response.use(response => response, function (error) {
+api.interceptors.response.use(response => response, (error) => {
   const { status } = error && error.response ? error.response : 0;
   if (status === 401 || status === 403) {
     window.sessionStorage.setItem('user', null);
     window.sessionStorage.setItem('salon', null);
     window.sessionStorage.setItem('agendeiAuth', null);
-    this.$toast.open({
-      message: 'Você não está autorizado para acessar esta página. Faça seu login novamente',
-      type: 'is-danger',
-    });
-    this.$router.push('/login');
+    window.location = '/login';
     return null;
   }
   return Promise.reject(error);
@@ -56,7 +57,6 @@ login.interceptors.response.use((response) => {
     token: response.headers['access-token'],
     client: response.headers.client,
     uid: response.headers.uid,
-    authorization: response.headers.Authorization,
   };
   window.sessionStorage.setItem(
     'agendeiAuth',

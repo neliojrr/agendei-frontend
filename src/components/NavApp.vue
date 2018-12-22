@@ -60,24 +60,16 @@ export default {
       this.isOpen = !this.isOpen;
     },
     logout() {
-      const user = JSON.parse(window.sessionStorage.getItem('user')) || {};
-      if (!user.id) {
-        this.$router.push('/login');
-        return false;
-      }
-      const headers = {
-        'access-token': user.token,
-        uid: user.email,
-        client: user.client,
-      };
-      api.delete('/auth/sign_out', { headers })
+      api.delete('/auth/sign_out')
         .then(() => {
+          this.$router.push('/login');
+        })
+        .catch(() => {
           window.sessionStorage.setItem('user', null);
           window.sessionStorage.setItem('salon', null);
+          window.sessionStorage.setItem('agendeiAuth', null);
           this.$router.push('/login');
         });
-
-      return true;
     },
   },
 };

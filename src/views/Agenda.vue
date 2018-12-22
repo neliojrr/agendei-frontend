@@ -153,23 +153,18 @@ export default {
   },
   mixins: [log],
   created() {
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
-    this.user = JSON.parse(window.sessionStorage.getItem('user'));
-    if (this.user && this.salon && this.user.id && this.salon.id) {
-      api.get(`/salons/${this.salon.id}/transactions`)
-        .then((response) => {
-          const employees = response.data || [];
-          this.data = employees;
-        })
-        .catch(() => {
-          this.$toast.open({
-            message: 'Não foi possível encontrar o cliente!',
-            type: 'is-danger',
-          });
+    this.salon = JSON.parse(window.sessionStorage.getItem('salon')) || {};
+    api.get(`/salons/${this.salon.id}/transactions`)
+      .then((response) => {
+        const employees = response.data || [];
+        this.data = employees;
+      })
+      .catch(() => {
+        this.$toast.open({
+          message: 'Não foi possível carregar seus agendamentos!',
+          type: 'is-danger',
         });
-    } else {
-      this.$router.push('/login');
-    }
+      });
   },
   mounted() {
     this.fillColumnsBooked();
