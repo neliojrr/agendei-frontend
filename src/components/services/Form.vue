@@ -6,6 +6,7 @@
         <input
           v-model="serviceCategory.name"
           class="input"
+          :class="{ 'is-danger': errors.name }"
           type="text"
           placeholder="Cabelo"
         >
@@ -20,6 +21,7 @@
         <textarea
           v-model="serviceCategory.description"
           class="textarea"
+          :class="{ 'is-danger': errors.description }"
           placeholder="Serviços relacionados a corte e penteados de cabelos"
         />
         <p v-for="message in errors.description" :key="message" class="help is-danger">
@@ -36,9 +38,6 @@ export default {
     return {
       serviceCategory: this.data,
     };
-  },
-  updated() {
-    console.log(this.errors);
   },
   props: {
     data: {

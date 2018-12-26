@@ -6,10 +6,18 @@
       <div class="top-actions columns is-mobile">
         <div class="field service-search column is-half-desktop">
           <div class="control has-icons-left">
-            <input class="input" type="text" placeholder="Pesquisar um serviço">
-            <div class="icon is-medium is-left">
-              <font-awesome-icon icon="search" />
-            </div>
+            <form @submit.prevent="search">
+              <input
+                class="input"
+                type="text"
+                placeholder="Pesquisar um serviço"
+                title="Digite parte do nome ou descrição pressione enter"
+                v-model="query"
+              >
+              <div class="icon is-medium is-left">
+                <font-awesome-icon icon="search" />
+              </div>
+            </form>
           </div>
         </div>
         <div class="column new-service">
@@ -22,7 +30,7 @@
           <button
             class="button is-primary is-hidden-desktop"
             v-show="!showButtonOptions"
-            @click="showButtonOptions = !showButtonOptions"
+            @click="$emit('show-mobile-background'); showButtonOptions = !showButtonOptions;"
           >
             <span class="is-hidden-desktop">
               <font-awesome-icon icon="plus" />
@@ -100,7 +108,9 @@ export default {
         cost: null,
       },
       serviceCategories: [],
+      allServiceCategories: [],
       errors: {},
+      query: '',
     };
   },
   props: ['pageTitle'],
@@ -113,13 +123,14 @@ export default {
   },
   created() {
     this.$emit('set-loading-overlay', true);
+    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
     this.getServiceCategories();
   },
   methods: {
     getServiceCategories() {
-      this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
       api.get(`/salons/${this.salon.id}/service_categories`)
         .then((response) => {
+          this.allServiceCategories = response.data;
           this.serviceCategories = response.data || [];
           this.$emit('set-loading-overlay', false);
         })
@@ -202,6 +213,17 @@ export default {
           });
           this.$emit('set-loading-overlay', false);
           this.$emit('close-modal');
+        })
+        .catch((error) => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.$emit('set-form-errors', this.errors);
         });
     },
     updateService({ service }) {
@@ -297,7 +319,7 @@ export default {
       };
       const data = {
         service: this.service,
-        serviceCategories: this.serviceCategories,
+        serviceCategories: this.allServiceCategories,
       };
       this.$emit('open-modal', 'Novo Serviço', FormService, data, buttons);
     },
@@ -316,9 +338,23 @@ export default {
       ];
       const data = {
         service,
-        serviceCategories: this.serviceCategories,
+        serviceCategories: this.allServiceCategories,
       };
       this.$emit('open-modal', 'Editar Serviço', FormService, data, buttons);
+    },
+    search() {
+      api.get(`/salons/${this.salon.id}/services/search/${this.query}`)
+        .then((response) => {
+          this.serviceCategories = response.data || [];
+          this.$emit('set-loading-overlay', false);
+        })
+        .catch(() => {
+          this.$emit('set-loading-overlay', false);
+          this.$toast.open({
+            message: 'Não foi possível encontrar os serviços buscados!',
+            type: 'is-danger',
+          });
+        });
     },
   },
 };
@@ -336,6 +372,7 @@ export default {
         position: fixed;
         bottom: 21px;
         right: 25px;
+        z-index: 99;
       }
 
       button + button {
@@ -357,7 +394,7 @@ export default {
           padding: 0;
           display: flex;
           border-radius: 50%;
-          z-index: 10;
+          z-index: 99;
           font-size: 18px;
         }
       }

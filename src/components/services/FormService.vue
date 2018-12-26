@@ -6,11 +6,14 @@
         <input
           v-model="service.name"
           class="input"
+          :class="{ 'is-danger': errors.name }"
           type="text"
           placeholder="Corte de Cabelo"
         />
       </div>
-      <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
+      <p v-for="message in errors.name" :key="message" class="help is-danger">
+        {{ message }}
+      </p>
     </div>
     <div class="field columns">
       <div class="control is-expanded column">
@@ -18,9 +21,12 @@
         <textarea
           v-model="service.description"
           class="textarea"
+          :class="{ 'is-danger': errors.description }"
           placeholder="Corte de cabelo tradicional"
         />
-        <p v-if="errors.description" class="help is-danger">{{ errors.description }}</p>
+        <p v-for="message in errors.description" :key="message" class="help is-danger">
+          {{ message }}
+        </p>
       </div>
     </div>
     <div class="field columns">
@@ -30,13 +36,16 @@
           <input
             v-model="service.cost"
             class="input"
+            :class="{ 'is-danger': errors.cost }"
             type="number"
             placeholder="Preço de custo do serviço"
           />
           <span class="icon is-small is-left">
             <font-awesome-icon icon="dollar-sign" />
           </span>
-          <p v-if="errors.cost" class="help is-danger">{{ errors.cost }}</p>
+          <p v-for="message in errors.cost" :key="message" class="help is-danger">
+            {{ message }}
+          </p>
         </div>
       </div>
       <div class="column control">
@@ -45,38 +54,45 @@
           <input
             v-model="service.price"
             class="input"
+            :class="{ 'is-danger': errors.price }"
             type="number"
             placeholder="Preço de venda do serviço"
           />
           <span class="icon is-small is-left">
             <font-awesome-icon icon="dollar-sign" />
           </span>
-          <p v-if="errors.price" class="help is-danger">{{ errors.price }}</p>
+          <p v-for="message in errors.price" :key="message" class="help is-danger">
+            {{ message }}
+          </p>
         </div>
       </div>
     </div>
     <div class="field columns">
       <div class="column control">
         <label class="label">Duração</label>
-        <div class="select full-width">
+        <div class="select full-width" :class="{ 'is-danger': errors.duration }">
           <select class="full-width" v-model="service.duration">
             <option v-for="d in durationOptions" :key="d.value" :value="d.value">
               {{ d.title }}
             </option>
           </select>
         </div>
-        <p v-if="errors.duration" class="help is-danger">{{ errors.duration }}</p>
+        <p v-for="message in errors.duration" :key="message" class="help is-danger">
+          {{ message }}
+        </p>
       </div>
       <div class="control column">
         <label class="label">Categoria</label>
-        <div class="select full-width">
+        <div class="select full-width" :class="{ 'is-danger': errors.service_category }">
           <select class="full-width" v-model="service.service_category_id">
             <option v-for="sc in serviceCategories" :key="sc.id" :value="sc.id">
               {{ sc.name }}
             </option>
           </select>
         </div>
-        <p v-if="errors.category" class="help is-danger">{{ errors.category }}</p>
+        <p v-for="message in errors.service_category" :key="message" class="help is-danger">
+          {{ message }}
+        </p>
       </div>
     </div>
   </div>
