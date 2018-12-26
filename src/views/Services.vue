@@ -195,7 +195,7 @@ export default {
         .then((response) => {
           const newService = response.data;
           this.serviceCategories = this.serviceCategories.map((sc) => {
-            if (sc.id === service.service_category_id) {
+            if (sc.id === newService.service_category_id) {
               sc.services.push(newService);
             }
             return sc;
@@ -240,7 +240,7 @@ export default {
                 return sc;
               });
             this.$toast.open({
-              message: 'O serviço foi excluída!',
+              message: 'O serviço foi excluído!',
               type: 'is-success',
             });
             this.$emit('set-loading-overlay', false);
