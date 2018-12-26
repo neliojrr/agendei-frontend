@@ -23,6 +23,12 @@ import {
   faArrowLeft,
   faClipboardList,
   faStore,
+  faCog,
+  faChevronUp,
+  faChevronDown,
+  faDollarSign,
+  faEdit,
+  faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookSquare,
@@ -57,6 +63,12 @@ library.add(faArrowRight);
 library.add(faMinus);
 library.add(faClipboardList);
 library.add(faStore);
+library.add(faCog);
+library.add(faChevronUp);
+library.add(faChevronDown);
+library.add(faDollarSign);
+library.add(faEdit);
+library.add(faTrashAlt);
 /* end icons */
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

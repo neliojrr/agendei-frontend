@@ -12,16 +12,30 @@
         >
           {{ h.title }}
         </th>
+        <th v-if="actions.length > 0">&nbsp;</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="d in (data ? data : defaultData)" :key="d.id" @click="rowClick(d.id)">
+      <tr v-for="d in (data ? data : defaultData)" :key="d.id" @click="rowClick(d)">
         <td
           v-for="(h, index) in (headers || defaultHeaders)"
           :key="h.name"
           :class="{ 'is-hidden-mobile': index > mobileHidden }"
         >
-          {{ d[h.name] }}
+          {{ h.format ? h.format(d[h.name]) : d[h.name] }}
+        </td>
+        <td v-if="actions.length > 0" class="table-actions">
+          <span v-for="action in (actions)" :key="action.title">
+            <button
+              class="action"
+              :title="action.title"
+              @click="action.toDo"
+              :style="{ color: action.color }"
+            >
+              <font-awesome-icon v-if="action.type === 'icon'" :icon="action.icon" />
+              <span v-if="action.type === 'text'">{{ action.title }}</span>
+            </button>
+          </span>
         </td>
       </tr>
     </tbody>
@@ -60,6 +74,7 @@ export default {
           email: 'natalia@email.com',
         },
       ],
+      actions: [],
     };
   },
   props: {
@@ -89,6 +104,26 @@ export default {
 
     td {
       cursor: pointer;
+    }
+  }
+
+  .table-actions {
+
+    span {
+
+      button {
+        background: none;
+        border: 0;
+        cursor: pointer;
+
+        svg {
+          font-size: 18px;
+        }
+      }
+    }
+
+    span + span {
+      margin-left: 10px;
     }
   }
 }

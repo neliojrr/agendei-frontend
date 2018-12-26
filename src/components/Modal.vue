@@ -7,7 +7,7 @@
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
       <section class="modal-card-body">
-        <component :is="content" />
+        <component :is="content" :data="data" :errors="errors" />
       </section>
       <footer class="modal-card-foot">
         <button
@@ -15,7 +15,7 @@
           :key="b.title"
           class="button"
           :class="b.class"
-          @click="b.action"
+          @click="b.action(data)"
         >
           {{ b.title }}
         </button>
@@ -38,6 +38,14 @@ export default {
     content: {
       type: Object,
       default: null,
+    },
+    data: {
+      type: Object,
+      default: () => {},
+    },
+    errors: {
+      type: Object,
+      default: () => {},
     },
     buttons: {
       type: Array,

@@ -1,14 +1,25 @@
 <template>
   <div id="app">
     <section>
+      <b-loading
+        :is-full-page="true"
+        :active.sync="isLoading"
+      ></b-loading>
       <Modal
         :content="modalContent"
         :title="modalTitle"
         :show="showModal"
         :buttons="buttons"
+        :data="formData"
+        :errors="errors"
         @close="closeModal"
       />
-      <router-view @open-modal="openModal" />
+      <router-view
+        @open-modal="openModal"
+        @close-modal="closeModal"
+        @set-form-errors="setFormErrors"
+        @set-loading-overlay="setLoadingOverlay"
+      />
     </section>
   </div>
 </template>
@@ -39,23 +50,37 @@ export default {
       modalContent: null,
       modalTitle: '',
       buttons: [],
+      formData: this.data,
+      errors: {},
+      isLoading: false,
     };
   },
+  props: ['data'],
   components: {
     Modal,
   },
   methods: {
-    openModal(title, content, buttons) {
+    openModal(title, content, data, buttons) {
       this.showModal = true;
       this.modalContent = content;
       this.modalTitle = title;
+      this.formData = data;
       this.buttons = buttons;
+      this.errors = {};
     },
     closeModal() {
       this.showModal = false;
       this.modalContent = null;
       this.modalTitle = '';
       this.buttons = [];
+      this.formData = {};
+      this.errors = {};
+    },
+    setFormErrors(errors) {
+      this.errors = errors;
+    },
+    setLoadingOverlay(isLoading) {
+      this.isLoading = isLoading;
     },
   },
 };
@@ -84,6 +109,7 @@ export default {
 }
 
 .app-content {
+  min-height: 85vh;
   @media screen and (min-width: 1024px) {
     margin-left: $side-menu-size;
   }

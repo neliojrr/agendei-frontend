@@ -30,7 +30,7 @@ export default {
 @import "../assets/sass/variables";
 
 .menu {
-  position: absolute;
+  position: fixed;
   background-color: #333c44;
   height: 100vh;
   width: $side-menu-size;

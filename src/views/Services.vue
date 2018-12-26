@@ -13,16 +13,16 @@
           </div>
         </div>
         <div class="column new-service">
-          <button class="button is-info is-hidden-touch">
+          <button class="button is-info is-hidden-touch" @click="openModalNewServiceCategory">
             <span>Nova Categoria</span>
           </button>
-          <button class="button is-primary is-hidden-touch">
+          <button class="button is-primary is-hidden-touch" @click="openModalNewService">
             <span>Novo Serviço</span>
           </button>
           <button
             class="button is-primary is-hidden-desktop"
             v-show="!showButtonOptions"
-            @click="toggleButtonOptions"
+            @click="showButtonOptions = !showButtonOptions"
           >
             <span class="is-hidden-desktop">
               <font-awesome-icon icon="plus" />
@@ -35,7 +35,7 @@
               type="is-black"
               :always="showButtonOptions"
             >
-              <button class="button is-info">
+              <button class="button is-info" @click="openModalNewServiceCategory">
                 <span>
                   <font-awesome-icon icon="clipboard-list" />
                 </span>
@@ -49,7 +49,7 @@
               type="is-black"
               :always="showButtonOptions"
             >
-              <button class="button is-primary">
+              <button class="button is-primary" @click="openModalNewService">
                 <span>
                   <font-awesome-icon icon="cut" />
                 </span>
@@ -63,26 +63,13 @@
         v-for="serviceCategory in serviceCategories"
         class="categories"
       >
-        <b-collapse
-          class="panel"
-          :open="categoriesOpened.indexOf(serviceCategory.id) !== -1"
-        >
-          <div slot="trigger" @click="toggleCategory(serviceCategory.id)" class="panel-heading">
-            <span v-if="categoriesOpened.indexOf(serviceCategory.id) !== -1">
-              <font-awesome-icon icon="minus" />
-            </span>
-            <span v-else>
-              <font-awesome-icon icon="plus" />
-            </span>
-            <strong>{{ serviceCategory.name }}</strong>
-          </div>
-          <div class="panel-block">
-            <Table
-              :isStriped="true"
-              :mobileHidden="0"
-              />
-          </div>
-        </b-collapse>
+        <ServiceCategoryRow
+          :serviceCategory="serviceCategory"
+          @open-modal-edit-service-category="openModalEditServiceCategory"
+          @delete-service-category="deleteServiceCategory"
+          @open-modal-new-service="openModalNewService"
+          @edit-service="editService"
+        />
       </div>
     </div>
   </section>
@@ -90,75 +77,248 @@
 
 <script>
 import { api } from '@/utils/api-connect';
-import Table from '@/components/Table.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
+import Form from '@/components/services/Form.vue';
+import FormService from '@/components/services/FormService.vue';
+import ServiceCategoryRow from '@/components/services/ServiceCategoryRow.vue';
 
 export default {
   data() {
     return {
       title: this.pageTitle,
       showButtonOptions: false,
-      categoriesOpened: [1],
-      serviceCategories: [
-        {
-          id: 1,
-          name: 'Cabelo',
-        },
-        {
-          id: 2,
-          name: 'Sobrancelha',
-        },
-        {
-          id: 3,
-          name: 'Manicure e Pedicure',
-        },
-      ],
+      serviceCategory: {
+        name: '',
+        description: '',
+      },
+      service: {
+        name: '',
+        description: '',
+        duration: null,
+        price: null,
+        cost: null,
+      },
+      serviceCategories: [],
+      errors: {},
     };
   },
   props: ['pageTitle'],
   components: {
     Menu,
     NavApp,
-    Table,
+    Form,
+    FormService,
+    ServiceCategoryRow,
   },
   created() {
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
-    this.user = JSON.parse(window.sessionStorage.getItem('user'));
-    if (this.user && this.salon && this.user.id && this.salon.id) {
-      const headers = {
-        'access-token': this.user.token,
-        uid: this.user.email,
-        client: this.user.client,
-      };
-      api.get(`/salons/${this.salon.id}/transactions`, { headers })
+    this.$emit('set-loading-overlay', true);
+    this.getServiceCategories();
+  },
+  methods: {
+    getServiceCategories() {
+      this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
+      api.get(`/salons/${this.salon.id}/service_categories`)
         .then((response) => {
-          const employees = response.data || [];
-          this.data = employees;
+          this.serviceCategories = response.data || [];
+          this.$emit('set-loading-overlay', false);
         })
         .catch(() => {
+          this.$emit('set-loading-overlay', false);
           this.$toast.open({
-            message: 'Não foi possível encontrar o cliente!',
+            message: 'Não foi possível encontrar as categorias de serviços!',
             type: 'is-danger',
           });
         });
-    } else {
-      this.$router.push('/login');
-    }
-  },
-  methods: {
-    toggleCategory(id) {
-      let newIsOpen = [];
-      if (this.categoriesOpened.indexOf(id) !== -1) {
-        newIsOpen = this.categoriesOpened.filter(i => i !== id);
-      } else {
-        newIsOpen = this.categoriesOpened.slice(0);
-        newIsOpen.push(id);
-      }
-      this.categoriesOpened = newIsOpen;
     },
-    toggleButtonOptions() {
-      this.showButtonOptions = !this.showButtonOptions;
+    saveNewServiceCategory(serviceCategory) {
+      this.$emit('set-loading-overlay', true);
+      api.post(`/salons/${this.salon.id}/service_categories`, { ...serviceCategory })
+        .then((response) => {
+          this.serviceCategories.push(response.data);
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+        })
+        .catch((error) => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.$emit('set-form-errors', this.errors);
+        });
+    },
+    updateServiceCategory(serviceCategory) {
+      this.$emit('set-loading-overlay', true);
+      api.put(`/service_categories/${serviceCategory.id}`, { ...serviceCategory })
+        .then((response) => {
+          const allServiceCategories = this.serviceCategories.slice(0);
+          const updatedServiceCategory = response.data;
+          this.serviceCategories = allServiceCategories.map((sc) => {
+            if (sc.id === updatedServiceCategory.id) {
+              return updatedServiceCategory;
+            }
+            return sc;
+          });
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+        });
+    },
+    deleteServiceCategory(serviceCategoryId) {
+      if (confirm('Você tem certeza?')) {
+        this.$emit('set-loading-overlay', true);
+        api.delete(`/service_categories/${serviceCategoryId}`)
+          .then(() => {
+            this.serviceCategories =
+              this.serviceCategories.filter(sc => sc.id !== serviceCategoryId);
+            this.$toast.open({
+              message: 'A categoria foi excluída!',
+              type: 'is-success',
+            });
+            this.$emit('set-loading-overlay', false);
+          })
+          .catch(() => {
+            this.$toast.open({
+              message: 'Delete todos os serviços antes de deletar a categoria!',
+              type: 'is-danger',
+            });
+            this.$emit('set-loading-overlay', false);
+          });
+      }
+    },
+    saveNewService(service) {
+      this.$emit('set-loading-overlay', true);
+      api.post(`/salons/${this.salon.id}/services`, { ...service })
+        .then((response) => {
+          const newService = response.data;
+          this.serviceCategories = this.serviceCategories.map((sc) => {
+            if (sc.id === service.service_category_id) {
+              sc.services.push(newService);
+            }
+            return sc;
+          });
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+        });
+    },
+    updateService({ service }) {
+      this.$emit('set-loading-overlay', true);
+      api.put(`/services/${service.id}`, { ...service })
+        .then((response) => {
+          const updatedService = response.data;
+          const serviceCategory = this.serviceCategories
+            .find(sc => sc.id === updatedService.service_category_id);
+          serviceCategory.services = serviceCategory.services.map((s) => {
+            if (s.id === updatedService.id) {
+              return updatedService;
+            }
+            return s;
+          });
+          this.serviceCategories = this.serviceCategories.map((sc) => {
+            if (sc.id === serviceCategory.id) {
+              return serviceCategory;
+            }
+            return sc;
+          });
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+        });
+    },
+    deleteService({ service }) {
+      if (confirm('Você tem certeza?')) {
+        this.$emit('set-loading-overlay', true);
+        api.delete(`/services/${service.id}`)
+          .then(() => {
+            this.serviceCategories =
+              this.serviceCategories.map((sc) => {
+                if (sc.id === service.service_category_id) {
+                  sc.services = sc.services.filter(s => s.id !== service.id);
+                }
+                return sc;
+              });
+            this.$toast.open({
+              message: 'O serviço foi excluída!',
+              type: 'is-success',
+            });
+            this.$emit('set-loading-overlay', false);
+            this.$emit('close-modal');
+          })
+          .catch(() => {
+            this.$toast.open({
+              message: 'Impossível deletar este serviço!',
+              type: 'is-danger',
+            });
+            this.$emit('set-loading-overlay', false);
+          });
+      }
+    },
+    openModalNewServiceCategory() {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.saveNewServiceCategory,
+        },
+      ];
+      this.serviceCategory = {
+        name: '',
+        description: '',
+      };
+      this.$emit('open-modal', 'Nova Categoria', Form, this.serviceCategory, buttons);
+    },
+    openModalEditServiceCategory(serviceCategory) {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.updateServiceCategory,
+        },
+      ];
+      this.$emit('open-modal', 'Editar Categoria', Form, { ...serviceCategory }, buttons);
+    },
+    openModalNewService(serviceCategoryId = null) {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.saveNewService,
+        },
+      ];
+      this.service = {
+        name: '',
+        description: '',
+        duration: null,
+        price: null,
+        cost: null,
+        service_category_id: serviceCategoryId,
+      };
+      const data = {
+        service: this.service,
+        serviceCategories: this.serviceCategories,
+      };
+      this.$emit('open-modal', 'Novo Serviço', FormService, data, buttons);
+    },
+    editService(service) {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.updateService,
+        },
+        {
+          title: 'Deletar',
+          class: 'is-danger',
+          action: this.deleteService,
+        },
+      ];
+      const data = {
+        service,
+        serviceCategories: this.serviceCategories,
+      };
+      this.$emit('open-modal', 'Editar Serviço', FormService, data, buttons);
     },
   },
 };
@@ -201,14 +361,6 @@ export default {
           font-size: 18px;
         }
       }
-    }
-  }
-
-  .panel-heading {
-    text-align: left;
-
-    span {
-      margin-right: 20px;
     }
   }
 
