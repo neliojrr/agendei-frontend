@@ -66,3 +66,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.modal {
+  z-index: 100;
+}
+</style>

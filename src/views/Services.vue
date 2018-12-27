@@ -2,6 +2,11 @@
   <section>
     <Menu />
     <NavApp :title="title" />
+    <div
+      v-if="showButtonOptions"
+      class="is-hidden-desktop mobile-action-background"
+      @click="showButtonOptions = false"
+    />
     <div class="services app-content">
       <div class="top-actions columns is-mobile">
         <div class="field service-search column is-half-desktop">
@@ -30,7 +35,7 @@
           <button
             class="button is-primary is-hidden-desktop"
             v-show="!showButtonOptions"
-            @click="$emit('show-mobile-background'); showButtonOptions = !showButtonOptions;"
+            @click="showButtonOptions = true"
           >
             <span class="is-hidden-desktop">
               <font-awesome-icon icon="plus" />
@@ -78,6 +83,12 @@
           @open-modal-new-service="openModalNewService"
           @edit-service="editService"
         />
+      </div>
+      <div class="categories categories-empty" v-if="serviceCategories.length === 0">
+        <h3 class="subtitle is-5">Não encontramos nenhum serviço.</h3>
+        <p>
+          <img alt="empty results" title="Nao encontrado" src="../assets/images/empty.svg" />
+        </p>
       </div>
     </div>
   </section>
@@ -278,6 +289,7 @@ export default {
       }
     },
     openModalNewServiceCategory() {
+      this.showButtonOptions = false;
       const buttons = [
         {
           title: 'Salvar',
@@ -302,6 +314,7 @@ export default {
       this.$emit('open-modal', 'Editar Categoria', Form, { ...serviceCategory }, buttons);
     },
     openModalNewService(serviceCategoryId = null) {
+      this.showButtonOptions = false;
       const buttons = [
         {
           title: 'Salvar',
@@ -343,24 +356,37 @@ export default {
       this.$emit('open-modal', 'Editar Serviço', FormService, data, buttons);
     },
     search() {
-      api.get(`/salons/${this.salon.id}/services/search/${this.query}`)
-        .then((response) => {
-          this.serviceCategories = response.data || [];
-          this.$emit('set-loading-overlay', false);
-        })
-        .catch(() => {
-          this.$emit('set-loading-overlay', false);
-          this.$toast.open({
-            message: 'Não foi possível encontrar os serviços buscados!',
-            type: 'is-danger',
+      if (this.query) {
+        api.get(`/salons/${this.salon.id}/services/search/${this.query}`)
+          .then((response) => {
+            this.serviceCategories = response.data || [];
+            this.$emit('set-loading-overlay', false);
+          })
+          .catch(() => {
+            this.$emit('set-loading-overlay', false);
+            this.$toast.open({
+              message: 'Não foi possível encontrar os serviços buscados!',
+              type: 'is-danger',
+            });
           });
-        });
+      } else {
+        this.getServiceCategories();
+      }
     },
   },
 };
 </script>
 
 <style lang="scss">
+.mobile-action-background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #000000;
+  opacity: 0.4;
+}
 .services {
   padding: 10px;
 
@@ -403,6 +429,13 @@ export default {
 
   .categories {
     margin-bottom: 20px;
+  }
+
+  .categories-empty {
+
+    h3 {
+      margin-bottom: 50px;
+    }
   }
 }
 </style>

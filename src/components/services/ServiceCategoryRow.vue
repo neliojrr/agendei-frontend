@@ -111,6 +111,12 @@ export default {
     margin-right: 20px;
   }
 
+  strong {
+    @media screen and (max-width: 1024px) {
+      font-size: 16px;
+    }
+  }
+
   .cog-menu {
     margin-left: auto;
     color: #666666;
@@ -127,7 +133,7 @@ export default {
   }
 
   .dropdown-menu {
-    margin-left: -6em;
+    margin-left: -5.8em;
   }
 }
 </style>
