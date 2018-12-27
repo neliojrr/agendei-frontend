@@ -134,7 +134,7 @@ export default {
   },
   created() {
     this.$emit('set-loading-overlay', true);
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
+    this.salon = JSON.parse(window.sessionStorage.getItem('salon')) || {};
     this.getServiceCategories();
   },
   methods: {

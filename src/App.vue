@@ -110,6 +110,10 @@ export default {
 
 .app-content {
   min-height: 85vh;
+  height: calc(100vh - 52px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   @media screen and (min-width: 1024px) {
     margin-left: $side-menu-size;
   }
