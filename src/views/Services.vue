@@ -11,18 +11,16 @@
       <div class="top-actions columns is-mobile">
         <div class="field service-search column is-half-desktop">
           <div class="control has-icons-left">
-            <form @submit.prevent="search">
-              <input
-                class="input"
-                type="text"
-                placeholder="Pesquisar um serviço"
-                title="Digite parte do nome ou descrição pressione enter"
-                v-model="query"
-              >
-              <div class="icon is-medium is-left">
-                <font-awesome-icon icon="search" />
-              </div>
-            </form>
+            <input
+              class="input"
+              type="text"
+              placeholder="Pesquisar um serviço"
+              title="Digite parte do nome ou descrição pressione enter"
+              v-model="query"
+            >
+            <div class="icon is-medium is-left">
+              <font-awesome-icon icon="search" />
+            </div>
           </div>
         </div>
         <div class="column new-service">
@@ -95,6 +93,7 @@
 </template>
 
 <script>
+import { debounce } from 'lodash';
 import { api } from '@/utils/api-connect';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
@@ -132,9 +131,16 @@ export default {
     FormService,
     ServiceCategoryRow,
   },
+  watch: {
+    query() {
+      this.debounceSearch();
+    },
+  },
   created() {
     this.$emit('set-loading-overlay', true);
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon')) || {};
+    this.debounceSearch = debounce(this.search, 500);
+    const salon = window.sessionStorage.getItem('salon') || '{}';
+    this.salon = JSON.parse(salon) || {};
     this.getServiceCategories();
   },
   methods: {
@@ -190,7 +196,7 @@ export default {
         });
     },
     deleteServiceCategory(serviceCategoryId) {
-      if (confirm('Você tem certeza?')) {
+      if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
         api.delete(`/service_categories/${serviceCategoryId}`)
           .then(() => {
@@ -261,12 +267,13 @@ export default {
         });
     },
     deleteService({ service }) {
-      if (confirm('Você tem certeza?')) {
+      if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
         api.delete(`/services/${service.id}`)
           .then(() => {
             this.serviceCategories =
-              this.serviceCategories.map((sc) => {
+              this.serviceCategories.map((serviceCategory) => {
+                const sc = serviceCategory;
                 if (sc.id === service.service_category_id) {
                   sc.services = sc.services.filter(s => s.id !== service.id);
                 }
@@ -356,7 +363,8 @@ export default {
       this.$emit('open-modal', 'Editar Serviço', FormService, data, buttons);
     },
     search() {
-      if (this.query) {
+      this.$emit('set-loading-overlay', true);
+      if (this.query && this.query.length > 1) {
         api.get(`/salons/${this.salon.id}/services/search/${this.query}`)
           .then((response) => {
             this.serviceCategories = response.data || [];
