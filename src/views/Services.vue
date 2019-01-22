@@ -243,22 +243,35 @@ export default {
           this.$emit('set-form-errors', this.errors);
         });
     },
-    updateService({ service }) {
+    updateService({ service, serviceCategoryId }) {
       this.$emit('set-loading-overlay', true);
       api.put(`/services/${service.id}`, { ...service })
         .then((response) => {
-          const updatedService = response.data;
+          const updatedService = response.data || {};
           const serviceCategory = this.serviceCategories
             .find(sc => sc.id === updatedService.service_category_id);
-          serviceCategory.services = serviceCategory.services.map((s) => {
-            if (s.id === updatedService.id) {
-              return updatedService;
-            }
-            return s;
-          });
+          let oldServiceCategory = {};
+          const index = serviceCategory.services.findIndex(s => s.id === updatedService.id);
+          if (index > -1) {
+            serviceCategory.services = serviceCategory.services.map((s) => {
+              if (s.id === updatedService.id) {
+                return updatedService;
+              }
+              return s;
+            });
+          } else {
+            serviceCategory.services.push(updatedService);
+            oldServiceCategory =
+              this.serviceCategories.find(sc => sc.id === serviceCategoryId);
+            oldServiceCategory.services =
+              oldServiceCategory.services.filter(s => s.id !== service.id);
+          }
           this.serviceCategories = this.serviceCategories.map((sc) => {
             if (sc.id === serviceCategory.id) {
               return serviceCategory;
+            }
+            if (sc.id === oldServiceCategory.id) {
+              return oldServiceCategory;
             }
             return sc;
           });
@@ -357,7 +370,8 @@ export default {
         },
       ];
       const data = {
-        service,
+        service: Object.assign({}, service),
+        serviceCategoryId: service.service_category_id,
         serviceCategories: this.allServiceCategories,
       };
       this.$emit('open-modal', 'Editar Serviço', FormService, data, buttons);

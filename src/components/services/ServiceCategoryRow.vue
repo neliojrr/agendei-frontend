@@ -94,8 +94,8 @@ export default {
     Table,
   },
   methods: {
-    rowClick(id) {
-      this.$emit('edit-service', id);
+    rowClick(service) {
+      this.$emit('edit-service', service);
     },
   },
 };
