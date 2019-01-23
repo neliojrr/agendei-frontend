@@ -458,6 +458,14 @@ export default {
     h3 {
       margin-bottom: 50px;
     }
+
+    p {
+      height: 60vh;
+
+      img {
+        height: 100%;
+      }
+    }
   }
 }
 </style>
