@@ -13,7 +13,7 @@
           </button>
         </div>
       </div>
-      <StaffList :data="data" />
+      <StaffList :data="employees" />
     </div>
   </div>
 </template>
@@ -30,6 +30,16 @@ export default {
     return {
       salon: {},
       data: [],
+      allEmployees: [],
+      employees: [],
+      employee: {
+        name: '',
+        email: '',
+        phone: '',
+        services: [],
+        color: '',
+        access: false,
+      },
     };
   },
   props: ['pageTitle'],
@@ -40,38 +50,40 @@ export default {
     Form,
   },
   created() {
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
-    this.user = JSON.parse(window.sessionStorage.getItem('user'));
-    if (this.user && this.salon && this.user.id && this.salon.id) {
+    this.$emit('set-loading-overlay', true);
+    const salon = window.sessionStorage.getItem('salon') || '{}';
+    this.salon = JSON.parse(salon) || {};
+    this.getStaff();
+  },
+  methods: {
+    getStaff() {
       api.get(`/salons/${this.salon.id}/employees`)
         .then((response) => {
-          const employees = response.data || [];
-          this.data = employees;
+          this.allEmployees = response.data;
+          this.employees = response.data || [];
+          this.$emit('set-loading-overlay', false);
         })
         .catch(() => {
+          this.$emit('set-loading-overlay', false);
           this.$toast.open({
-            message: 'Não foi possível carregar a lista de profissionais. Tente recarregar a página!',
+            message: 'Não foi possível encontrar os profissionais para este salão!',
             type: 'is-danger',
           });
         });
-    } else {
-      this.$router.push('/login');
-    }
-  },
-  methods: {
+    },
     openModalNewStaff() {
       const buttons = [
         {
           title: 'Salvar',
           class: 'is-success',
-          action: () => alert('Oi'),
+          action: () => window.alert('Oi'),
         }, {
           title: 'Remover',
           class: 'is-danger',
-          action: () => confirm('Você tem certeza?'),
+          action: () => window.confirm('Você tem certeza?'),
         },
       ];
-      this.$emit('open-modal', 'Novo Profissional', Form, buttons);
+      this.$emit('open-modal', 'Novo Profissional', Form, this.service, buttons);
     },
   },
 };

@@ -1,71 +1,114 @@
 <template>
   <div class="staff-form">
-    <div class="field">
-      <label class="label">Nome</label>
-      <div class="control">
-        <input
-          v-model="employee.name"
-          class="input"
-          type="text"
-          placeholder="Lucia Maria"
-        >
-      </div>
-      <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
-    </div>
-    <div class="field columns">
-      <div class="control is-expanded column">
-        <label class="label">Email</label>
-        <input
-          v-model="employee.email"
-          class="input"
-          type="email"
-          placeholder="email@exemplo.com"
-        >
-        <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
-      </div>
-      <div class="control is-expanded column">
-        <label class="label">Telefone</label>
-        <input
-          v-model="employee.phone"
-          class="input"
-          type="tel"
-          placeholder="64999900000"
-        >
-        <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
-      </div>
-    </div>
-    <div class="field is-grouped">
-      <div class="control is-expanded">
-        <label class="label">Serviços</label>
-        <div class="select is-fullwidth">
-          <select>
-            <option>Serviço 1</option>
-          </select>
+    <b-tabs v-model="activeTab">
+      <b-tab-item label="Detalhes">
+        <div class="field">
+          <label class="label">Nome</label>
+          <div class="control">
+            <input
+              v-model="employee.name"
+              class="input"
+              type="text"
+              placeholder="Lucia Maria"
+            >
+          </div>
+          <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
         </div>
-      </div>
-      <div class="control is-expanded select-all">
-        <label class="label">&nbsp;</label>
-        <b-field>
-          <b-switch>Todos</b-switch>
-        </b-field>
-      </div>
-    </div>
-    <div class="field colors">
-      <label class="label">Cor na agenda</label>
-      <div class="control">
-        <div class="columns is-mobile is-multiline colors-list">
-          <div
-            v-for="(c, i) in colors"
-            :key="c"
-            class="column"
-          >
-            <span class="single-color" :style="{ backgroundColor: c }">
-              <font-awesome-icon v-if="i === 0" icon="check" />
-            </span>
+        <div class="field columns">
+          <div class="control is-expanded column">
+            <label class="label">Email</label>
+            <input
+              v-model="employee.email"
+              class="input"
+              type="email"
+              placeholder="email@exemplo.com"
+            >
+            <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
+          </div>
+          <div class="control is-expanded column">
+            <label class="label">Telefone</label>
+            <input
+              v-model="employee.phone"
+              class="input"
+              type="tel"
+              placeholder="64999900000"
+            >
+            <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
           </div>
         </div>
-      </div>
-    </div>
+        <div class="field is-grouped">
+          <div class="control is-expanded">
+            <label class="label">Serviços</label>
+            <div class="select is-fullwidth">
+              <select>
+                <option>Serviço 1</option>
+              </select>
+            </div>
+          </div>
+          <div class="control is-expanded select-all">
+            <label class="label">&nbsp;</label>
+            <b-field>
+              <b-switch>Todos</b-switch>
+            </b-field>
+          </div>
+        </div>
+        <div class="field colors">
+          <label class="label">Cor na agenda</label>
+          <div class="control">
+            <div class="columns is-mobile is-multiline colors-list">
+              <div
+                v-for="(c, i) in colors"
+                :key="c"
+                class="column"
+              >
+                <span class="single-color" :style="{ backgroundColor: c }">
+                  <font-awesome-icon v-if="i === 0" icon="check" />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </b-tab-item>
+      <b-tab-item label="Serviços">
+        <div class="content">
+          <p class="services-tip">
+            Selecione os serviços efetuados por este profissional
+          </p>
+        </div>
+        <div class="field">
+          <div class="control is-expanded">
+            <label class="checkbox">
+              <input
+                type="checkbox"
+                :checked="services.length === servicesSelected.length"
+                @change="toggleAll"
+              >
+              Selecionar Todos
+            </label>
+          </div>
+        </div>
+        <hr />
+        <div
+          class="field columns is-mobile is-multiline"
+          v-if="services.length > 0"
+        >
+          <div
+            class="control is-expanded column is-half"
+            v-for="service in services"
+            :key="service.id"
+          >
+            <label class="checkbox" >
+              <input
+                type="checkbox"
+                :checked="servicesSelected.indexOf(service.id) > -1"
+                @change="toggleService(service.id)"
+              >
+              {{ service.name }}
+            </label>
+          </div>
+        </div>
+      </b-tab-item>
+    </b-tabs>
   </div>
 </template>
 
@@ -75,9 +118,10 @@ import { api } from '@/utils/api-connect';
 export default {
   data() {
     return {
-      employee: {
-
-      },
+      salon: {},
+      activeTab: 0,
+      services: [],
+      servicesSelected: [],
       colors: [
         '#ef1554',
         '#c8e30b',
@@ -93,30 +137,51 @@ export default {
     };
   },
   props: {
+    employee: {
+      type: Object,
+      default: () => ({}),
+    },
     errors: {
       type: Object,
       default: () => ({}),
     },
   },
   created() {
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
-    if (this.salon && this.salon.id) {
-      api.get(`/salons/${this.salon.id}/employees`)
+    this.$emit('set-loading-overlay', true);
+    const salon = window.sessionStorage.getItem('salon') || '{}';
+    this.salon = JSON.parse(salon) || {};
+    this.getServices();
+  },
+  methods: {
+    toggleService(serviceId) {
+      const index = this.servicesSelected.indexOf(serviceId);
+      if (index > -1) {
+        this.servicesSelected.splice(index, 1);
+      } else {
+        this.servicesSelected.push(serviceId);
+      }
+    },
+    toggleAll() {
+      if (this.servicesSelected.length === this.services.length) {
+        this.servicesSelected = [];
+      } else {
+        this.servicesSelected = this.services.map(service => service.id);
+      }
+    },
+    getServices() {
+      api.get(`/salons/${this.salon.id}/services`)
         .then((response) => {
-          const employees = response.data || [];
-          this.data = employees;
+          this.services = response.data;
+          this.$emit('set-loading-overlay', false);
         })
         .catch(() => {
+          this.$emit('set-loading-overlay', false);
           this.$toast.open({
-            message: 'Não foi possível carregar a lista de profissionais. Tente recarregar a página!',
+            message: 'Não foi possível encontrar os serviços disponíveis!',
             type: 'is-danger',
           });
         });
-    } else {
-      this.$router.push('/login');
-    }
-  },
-  methods: {
+    },
     createNewProfessional() {
 
     },
@@ -124,7 +189,9 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+@import "../../assets/sass/variables";
+
 .staff-form {
   text-align: left;
 
@@ -166,6 +233,21 @@ export default {
         margin-left: 10px;
       }
     }
+  }
+
+  .tabs {
+
+    li.is-active {
+
+      a {
+        color: $primary !important;
+        border-bottom-color: $primary;
+      }
+    }
+  }
+
+  .services-tip {
+    color: #888;
   }
 }
 </style>
