@@ -2,11 +2,7 @@
   <section>
     <Menu />
     <NavApp :title="title" />
-    <div
-      v-if="showButtonOptions"
-      class="is-hidden-desktop mobile-action-background"
-      @click="showButtonOptions = false"
-    />
+
     <div class="services app-content">
       <div class="top-actions columns is-mobile">
         <div class="field service-search column is-half-desktop">
@@ -24,6 +20,11 @@
           </div>
         </div>
         <div class="column new-service">
+          <div
+            v-if="showButtonOptions"
+            class="is-hidden-desktop mobile-action-background"
+            @click="showButtonOptions = false"
+          />
           <button class="button is-info is-hidden-touch" @click="openModalNewServiceCategory">
             <span>Nova Categoria</span>
           </button>
@@ -401,13 +402,14 @@ export default {
 
 <style lang="scss">
 .mobile-action-background {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   height: 100%;
   width: 100%;
   background-color: #000000;
   opacity: 0.4;
+  z-index: 99;
 }
 .services {
   padding: 10px;
@@ -420,7 +422,7 @@ export default {
         position: fixed;
         bottom: 21px;
         right: 25px;
-        z-index: 99;
+        z-index: 100;
       }
 
       button + button {
@@ -442,7 +444,7 @@ export default {
           padding: 0;
           display: flex;
           border-radius: 50%;
-          z-index: 99;
+          z-index: 100;
           font-size: 18px;
         }
       }
