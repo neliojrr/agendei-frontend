@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const prodServer = 'https://super.agendei.io/api/';
-// const localServer = 'http://localhost:3000/api/';
+// const localServer = 'http://192.168.0.189:3000/api/';
 const VERSION = 'v1';
 
 export const api = axios.create({
@@ -52,7 +52,7 @@ api.interceptors.response.use(response => response, (error) => {
 // Add a response interceptor for login
 login.interceptors.response.use((response) => {
   const { data } = response;
-  const user = { ...data.user };
+  const user = { ...data };
   const agendeiAuthorization = {
     token: response.headers['access-token'],
     client: response.headers.client,
