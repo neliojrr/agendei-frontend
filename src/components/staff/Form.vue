@@ -38,17 +38,9 @@
         </div>
         <div class="field is-grouped">
           <div class="control is-expanded">
-            <label class="label">Serviços</label>
-            <div class="select is-fullwidth">
-              <select>
-                <option>Serviço 1</option>
-              </select>
-            </div>
-          </div>
-          <div class="control is-expanded select-all">
-            <label class="label">&nbsp;</label>
+            <label class="label">Acesso</label>
             <b-field>
-              <b-switch>Todos</b-switch>
+              <b-switch>Liberar acesso ao Agendei</b-switch>
             </b-field>
           </div>
         </div>
