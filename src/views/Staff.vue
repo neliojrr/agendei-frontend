@@ -77,10 +77,6 @@ export default {
           title: 'Salvar',
           class: 'is-success',
           action: () => window.alert('Oi'),
-        }, {
-          title: 'Remover',
-          class: 'is-danger',
-          action: () => window.confirm('Você tem certeza?'),
         },
       ];
       this.$emit('open-modal', 'Novo Profissional', Form, this.service, buttons);
