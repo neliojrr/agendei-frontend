@@ -89,8 +89,8 @@ export default {
     },
   },
   methods: {
-    rowClick(id) {
-      this.$emit('row-click', id);
+    rowClick(obj) {
+      this.$emit('row-click', obj);
     },
   },
 };
