@@ -8,11 +8,14 @@
             <input
               v-model="employee.name"
               class="input"
+              :class="{ 'is-danger': errors.name }"
               type="text"
               placeholder="Lucia Maria"
             >
           </div>
-          <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
+          <p v-for="message in errors.name" :key="message" class="help is-danger">
+            {{ message }}
+          </p>
         </div>
         <div class="field columns">
           <div class="control is-expanded column">
@@ -20,27 +23,33 @@
             <input
               v-model="employee.email"
               class="input"
+              :class="{ 'is-danger': errors.email }"
               type="email"
               placeholder="email@exemplo.com"
             >
-            <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
+            <p v-for="message in errors.email" :key="message" class="help is-danger">
+              {{ message }}
+            </p>
           </div>
           <div class="control is-expanded column">
             <label class="label">Telefone</label>
             <input
               v-model="employee.phone"
               class="input"
+              :class="{ 'is-danger': errors.phone }"
               type="tel"
               placeholder="64999900000"
             >
-            <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
+            <p v-for="message in errors.phone" :key="message" class="help is-danger">
+              {{ message }}
+            </p>
           </div>
         </div>
         <div class="field is-grouped">
           <div class="control is-expanded">
             <label class="label">Acesso</label>
             <b-field>
-              <b-switch>Liberar acesso ao Agendei</b-switch>
+              <b-switch v-model="employee.agendei_access">Liberar acesso ao Agendei</b-switch>
             </b-field>
           </div>
         </div>
@@ -49,15 +58,25 @@
           <div class="control">
             <div class="columns is-mobile is-multiline colors-list">
               <div
-                v-for="(c, i) in colors"
+                v-for="(c) in colors"
                 :key="c"
                 class="column"
               >
-                <span class="single-color" :style="{ backgroundColor: c }">
-                  <font-awesome-icon v-if="i === 0" icon="check" />
+                <span
+                  class="single-color"
+                  @click="changeColor(c)"
+                  :style="{ backgroundColor: c }"
+                >
+                  <font-awesome-icon
+                    v-if="employee.color === c"
+                    icon="check"
+                  />
                 </span>
               </div>
             </div>
+            <p v-for="message in errors.color" :key="message" class="help is-danger">
+              {{ message }}
+            </p>
           </div>
         </div>
       </b-tab-item>
@@ -72,7 +91,7 @@
             <label class="checkbox">
               <input
                 type="checkbox"
-                :checked="services.length === servicesSelected.length"
+                :checked="employee.services && services.length === employee.services.length"
                 @change="toggleAll"
               >
               Selecionar Todos
@@ -92,8 +111,8 @@
             <label class="checkbox" >
               <input
                 type="checkbox"
-                :checked="servicesSelected.indexOf(service.id) > -1"
-                @change="toggleService(service.id)"
+                :checked="employee.services && employee.services.find(s => service.id === s.id)"
+                @change="toggleService(service)"
               >
               {{ service.name }}
             </label>
@@ -110,10 +129,10 @@ import { api } from '@/utils/api-connect';
 export default {
   data() {
     return {
+      employee: this.data,
       salon: {},
       activeTab: 0,
       services: [],
-      servicesSelected: [],
       colors: [
         '#ef1554',
         '#c8e30b',
@@ -129,7 +148,7 @@ export default {
     };
   },
   props: {
-    employee: {
+    data: {
       type: Object,
       default: () => ({}),
     },
@@ -145,19 +164,22 @@ export default {
     this.getServices();
   },
   methods: {
-    toggleService(serviceId) {
-      const index = this.servicesSelected.indexOf(serviceId);
+    changeColor(color) {
+      this.employee.color = color;
+    },
+    toggleService(service) {
+      const index = this.employee.services.findIndex(s => s.id === service.id);
       if (index > -1) {
-        this.servicesSelected.splice(index, 1);
+        this.employee.services.splice(index, 1);
       } else {
-        this.servicesSelected.push(serviceId);
+        this.employee.services.push(service);
       }
     },
     toggleAll() {
-      if (this.servicesSelected.length === this.services.length) {
-        this.servicesSelected = [];
+      if (this.employee.services && this.employee.services.length === this.services.length) {
+        this.employee.services = [];
       } else {
-        this.servicesSelected = this.services.map(service => service.id);
+        this.employee.services = this.services;
       }
     },
     getServices() {
@@ -173,9 +195,6 @@ export default {
             type: 'is-danger',
           });
         });
-    },
-    createNewProfessional() {
-
     },
   },
 };

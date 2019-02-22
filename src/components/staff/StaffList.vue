@@ -1,5 +1,5 @@
 <template>
-  <Table :headers="headers" :data="data" />
+  <Table :headers="headers" :data="data" @row-click="editEmployee" />
 </template>
 
 <script>
@@ -13,11 +13,11 @@ export default {
           name: 'name',
           title: 'Nome',
         }, {
-          name: 'email',
-          title: 'Email',
-        }, {
           name: 'phone',
           title: 'Telefone',
+        }, {
+          name: 'email',
+          title: 'Email',
         },
       ],
     };
@@ -25,6 +25,11 @@ export default {
   props: ['data'],
   components: {
     Table,
+  },
+  methods: {
+    editEmployee(employee) {
+      this.$emit('edit-employee', employee);
+    },
   },
 };
 </script>

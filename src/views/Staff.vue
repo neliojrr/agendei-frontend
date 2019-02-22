@@ -13,7 +13,7 @@
           </button>
         </div>
       </div>
-      <StaffList :data="employees" />
+      <StaffList :data="employees" @edit-employee="editEmployee" />
     </div>
   </div>
 </template>
@@ -32,14 +32,15 @@ export default {
       data: [],
       allEmployees: [],
       employees: [],
-      employee: {
+      defaultEmployee: {
         name: '',
         email: '',
         phone: '',
         services: [],
-        color: '',
-        access: false,
+        color: '#ef1554',
+        agendei_access: true,
       },
+      employee: {},
     };
   },
   props: ['pageTitle'],
@@ -50,6 +51,7 @@ export default {
     Form,
   },
   created() {
+    this.employee = { ...this.defaultEmployee };
     this.$emit('set-loading-overlay', true);
     const salon = window.sessionStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
@@ -76,10 +78,103 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: () => window.alert('Oi'),
+          action: this.saveNewEmployee,
         },
       ];
-      this.$emit('open-modal', 'Novo Profissional', Form, this.service, buttons);
+      this.employee = { ...this.defaultEmployee };
+      this.$emit('open-modal', 'Novo Profissional', Form, this.employee, buttons);
+    },
+    saveNewEmployee() {
+      this.$emit('set-loading-overlay', true);
+      this.employee.service_ids = this.employee.services.map(service => service.id);
+      api.post(`/salons/${this.salon.id}/employees`, { employee: this.employee })
+        .then((response) => {
+          const newEmployee = response.data;
+          this.employees.push(newEmployee);
+          this.employee = { ...this.defaultEmployee };
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+        })
+        .catch((error) => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.$emit('set-form-errors', this.errors);
+        });
+    },
+    editEmployee(employee) {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.updateEmployee,
+        },
+        {
+          title: 'Deletar',
+          class: 'is-danger',
+          action: this.deleteEmployee,
+        },
+      ];
+      const data = { ...employee };
+      this.$emit('open-modal', 'Editar Profissional', Form, data, buttons);
+    },
+    deleteEmployee(employee) {
+      if (window.confirm('Você tem certeza?')) {
+        this.$emit('set-loading-overlay', true);
+        api.delete(`/employees/${employee.id}`)
+          .then(() => {
+            this.employees = this.employees.filter(emp => emp.id !== employee.id);
+            this.$toast.open({
+              message: 'O profissional foi excluído!',
+              type: 'is-success',
+            });
+            this.$emit('set-loading-overlay', false);
+            this.$emit('close-modal');
+          })
+          .catch((error) => {
+            const message = error && error.response && error.response.data ?
+              error.response.data.message :
+              null;
+            this.$toast.open({
+              message: `Impossível deletar este profissional! ${message}`,
+              type: 'is-danger',
+            });
+            this.$emit('set-loading-overlay', false);
+          });
+      }
+    },
+    updateEmployee(employee) {
+      this.$emit('set-loading-overlay', true);
+      const newEmployee = employee;
+      newEmployee.service_ids = newEmployee.services.map(service => service.id);
+      api.put(`/employees/${employee.id}`, { employee: { ...newEmployee } })
+        .then((response) => {
+          const updatedEmployee = response.data || {};
+          this.employees = this.employees.map((emp) => {
+            if (emp.id === updatedEmployee.id) {
+              return updatedEmployee;
+            }
+            return emp;
+          });
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+        })
+        .catch((error) => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.$emit('set-form-errors', this.errors);
+        });
     },
   },
 };
