@@ -131,7 +131,7 @@ export default {
                   ? error.response.data
                   : {};
               errors = {
-                message: responseErrors.toString(),
+                message: responseErrors ? responseErrors.toString() : 'Erro desconhecido',
               };
             } else {
               errors.message = error.message;
