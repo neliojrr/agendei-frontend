@@ -19,7 +19,7 @@
           </button>
         </div>
       </div>
-      <Table :headers="headers" :data="data" @row-click="rowClick" />
+      <Table :headers="headers" :data="clients" @row-click="rowClick" />
     </div>
   </div>
 </template>
@@ -35,7 +35,21 @@ export default {
   data() {
     return {
       salon: {},
-      data: [],
+      clients: [],
+      defaultClient: {
+        name: '',
+        photo: '',
+        email: '',
+        phone: '',
+        gender: '',
+        birthday: '',
+        address: '',
+        neighborhood: '',
+        zip_code: '',
+        city: '',
+        state: '',
+      },
+      client: {},
       headers: [
         {
           name: 'name',
@@ -88,13 +102,10 @@ export default {
           title: 'Salvar',
           class: 'is-success',
           action: () => alert('Oi'),
-        }, {
-          title: 'Remover',
-          class: 'is-danger',
-          action: () => confirm('Você tem certeza?'),
         },
       ];
-      this.$emit('open-modal', 'Novo Cliente', Form, buttons);
+      this.client = { ...this.defaultClient };
+      this.$emit('open-modal', 'Novo Cliente', Form, this.client, buttons);
     },
     rowClick(id) {
       this.$router.push(`/clients/${id}`);
