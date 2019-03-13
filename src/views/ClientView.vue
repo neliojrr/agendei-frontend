@@ -5,7 +5,7 @@
     <div class="client-view app-content">
       <div class="columns">
         <div class="column is-one-third">
-          <ClientInfo :client="client" />
+          <ClientInfo :client="client" @edit-client="editClient" />
         </div>
         <div class="column client-sales-column">
           <ClientSales :client="client" />
@@ -25,11 +25,14 @@ import NavApp from '@/components/NavApp.vue';
 import ClientInfo from '@/components/clients/ClientInfo.vue';
 import ClientSales from '@/components/clients/ClientSales.vue';
 import ClientHistory from '@/components/clients/ClientHistory.vue';
+import Form from '@/components/clients/Form.vue';
 
 export default {
   data() {
     return {
-      client: {},
+      client: {
+        avatar: {},
+      },
       title: this.pageTitle,
     };
   },
@@ -41,33 +44,44 @@ export default {
     ClientInfo,
     ClientSales,
     ClientHistory,
+    Form,
   },
   created() {
-    this.title = 'Joana';
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
-    this.user = JSON.parse(window.sessionStorage.getItem('user'));
-    if (this.user && this.salon && this.user.id && this.salon.id) {
-      const headers = {
-        'access-token': this.user.token,
-        uid: this.user.email,
-        client: this.user.client,
-      };
-      api.get(`/salons/${this.salon.id}/clients`, { headers })
+    this.$emit('set-loading-overlay', true);
+    this.getClient(this.$route.params.id);
+  },
+  methods: {
+    getClient(clientId) {
+      api.get(`/clients/${clientId}`)
         .then((response) => {
-          const employees = response.data || [];
-          this.data = employees;
+          this.client = response.data || {};
+          this.$emit('set-loading-overlay', false);
         })
         .catch(() => {
+          this.$emit('set-loading-overlay', false);
           this.$toast.open({
-            message: 'Não foi possível encontrar o cliente!',
+            message: 'Não foi possível encontrar o cliente deste salão!',
             type: 'is-danger',
           });
         });
-    } else {
-      this.$router.push('/login');
-    }
+    },
+    editClient() {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.updateClient,
+        },
+        {
+          title: 'Deletar',
+          class: 'is-danger',
+          action: this.deleteClient,
+        },
+      ];
+      const data = { ...this.client };
+      this.$emit('open-modal', 'Editar Cliente', Form, data, buttons);
+    },
   },
-  methods: {},
 };
 </script>
 

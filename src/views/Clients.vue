@@ -35,19 +35,21 @@ export default {
   data() {
     return {
       salon: {},
+      allClients: [],
       clients: [],
       defaultClient: {
         name: '',
         photo: '',
         email: '',
         phone: '',
-        gender: '',
+        gender: 'female',
         birthday: '',
         address: '',
         neighborhood: '',
         zip_code: '',
         city: '',
         state: '',
+        avatar: undefined,
       },
       client: {},
       headers: [
@@ -72,43 +74,72 @@ export default {
     Form,
   },
   created() {
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
-    this.user = JSON.parse(window.sessionStorage.getItem('user'));
-    if (this.user && this.salon && this.user.id && this.salon.id) {
-      const headers = {
-        'access-token': this.user.token,
-        uid: this.user.email,
-        client: this.user.client,
-      };
-      api.get(`/salons/${this.salon.id}/clients`, { headers })
+    this.client = { ...this.defaultClient };
+    this.$emit('set-loading-overlay', true);
+    const salon = window.sessionStorage.getItem('salon') || '{}';
+    this.salon = JSON.parse(salon) || {};
+    this.getClients();
+  },
+  methods: {
+    getClients() {
+      api.get(`/salons/${this.salon.id}/clients`)
         .then((response) => {
-          const employees = response.data || [];
-          this.data = employees;
+          this.allClients = response.data;
+          this.clients = response.data || [];
+          this.$emit('set-loading-overlay', false);
         })
         .catch(() => {
+          this.$emit('set-loading-overlay', false);
           this.$toast.open({
-            message: 'Não foi possível carregar a lista de clientes. Tente recarregar a página!',
+            message: 'Não foi possível encontrar os clientes deste salão!',
             type: 'is-danger',
           });
         });
-    } else {
-      this.$router.push('/login');
-    }
-  },
-  methods: {
+    },
     openModalNewClient() {
       const buttons = [
         {
           title: 'Salvar',
           class: 'is-success',
-          action: () => alert('Oi'),
+          action: this.saveNewClient,
         },
       ];
       this.client = { ...this.defaultClient };
       this.$emit('open-modal', 'Novo Cliente', Form, this.client, buttons);
     },
-    rowClick(id) {
-      this.$router.push(`/clients/${id}`);
+    saveNewClient() {
+      this.$emit('set-loading-overlay', true);
+      const data = new FormData();
+      const clientAttributes = Object.keys(this.client);
+      for (let i = 0; i < clientAttributes.length; i += 1) {
+        data.append(`client[${clientAttributes[i]}]`, this.client[clientAttributes[i]]);
+      }
+      api.post(`/salons/${this.salon.id}/clients`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+        .then((response) => {
+          const newClient = response.data;
+          this.clients.push(newClient);
+          this.client = { ...this.defaultClient };
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+          this.$toast.open({
+            message: 'Cliente cadastrado com sucesso.',
+            type: 'is-success',
+          });
+        })
+        .catch((error) => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.$emit('set-form-errors', this.errors);
+        });
+    },
+    rowClick(client) {
+      this.$router.push(`/clients/${client.id}`);
     },
   },
 };

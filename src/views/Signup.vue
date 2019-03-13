@@ -147,6 +147,9 @@ export default {
     Nav,
   },
   mixins: [validate],
+  created() {
+    console.log('here');
+  },
   methods: {
     register() {
       this.errors = {};
@@ -170,25 +173,11 @@ export default {
           .then((response) => {
             this.isLoading = false;
             if (response.status === 200) {
-              const { data, headers } = response;
-              const user = {
-                ...data.user,
-                token: headers['access-token'],
-                client: headers.client,
-              };
-              window.sessionStorage.setItem(
-                'user',
-                JSON.stringify(user),
-              );
-              window.sessionStorage.setItem(
-                'salon',
-                JSON.stringify(user.salon),
-              );
               this.$toast.open({
-                message: 'Seja bem vindo!',
+                message: 'Cadastro realizado! Faça seu login para continuar',
                 type: 'is-success',
               });
-              this.$router.push('/calendar');
+              this.$router.push('/login');
             }
           })
           .catch((error) => {

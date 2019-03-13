@@ -20,6 +20,9 @@ api.interceptors.request.use((config) => {
     window.sessionStorage.setItem('agendeiAuth', null);
     return config;
   }
+  if (config.url === '/auth') {
+    return config;
+  }
   const agendeiAuth = JSON.parse(window.sessionStorage.getItem('agendeiAuth')) || {};
   if (agendeiAuth && agendeiAuth.token) {
     const newConfig = config;

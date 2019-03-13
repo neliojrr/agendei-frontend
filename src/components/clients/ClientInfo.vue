@@ -4,22 +4,35 @@
       <div class="card-content">
         <div>
           <figure class="image is-128x128">
-            <img class="is-rounded" src="../../assets/images/client_example.jpg">
+            <img class="is-rounded" :src="client.avatar.path">
           </figure>
         </div>
         <div>
-          <b-tag type="is-info">10 agendamentos</b-tag>
+          <b-tag type="is-info">
+            {{ client.bookings ? client.bookings.length : 0 }} agendamentos
+          </b-tag>
         </div>
         <div class="content">
-          <p>Joana Guimarães</p>
-          <p>joana@agendei.io</p>
-          <p>+55 64 90000000</p>
+          <p>{{ client.name }}</p>
+          <p>{{ client.email }}</p>
+          <p>{{ client.phone }}</p>
         </div>
       </div>
       <footer class="card-footer">
-        <a href="#" class="card-footer-item new-appointment">Agendamento</a>
-        <a href="#" class="card-footer-item edit-client">Editar</a>
-        <a href="#" class="card-footer-item delete-client">Deletar</a>
+        <button
+          type="button"
+          href="#"
+          class="button is-text card-footer-item new-appointment"
+        >
+          Agendamento
+        </button>
+        <button
+          type="button"
+          @click="$emit('edit-client')"
+          class="button is-text card-footer-item edit-client"
+        >
+          Editar
+        </button>
       </footer>
     </div>
   </div>
@@ -55,24 +68,31 @@ export default {
 
       figure {
         margin: auto;
+
+        img {
+          height: 128px;
+          width: 128px;
+        }
       }
     }
 
     .card-footer {
 
-      a.new-appointment {
+      button {
+        height: 98%;
+        text-decoration: none;
+        border-radius: 0;
+      }
+
+      button.new-appointment {
         color: $primary;
       }
 
-      a.delete-client {
-        color: $danger;
-      }
-
-      a.edit-client {
+      button.edit-client {
         color: $info;
       }
 
-      a:hover {
+      button:hover {
         text-decoration: underline;
       }
     }

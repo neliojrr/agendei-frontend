@@ -5,27 +5,49 @@
         <div class="field">
           <div class="client-photo">
             <figure class="image is-128x128">
-              <img class="is-rounded" src="../../assets/images/client_example.jpg">
+              <img
+                v-if="client.avatar && client.avatar.path"
+                class="is-rounded user-avatar"
+                :src="client.avatar.path"
+              />
+              <div
+                v-else
+                class="empty-photo has-background-grey-lighter has-text-grey-dark has-text-weight-semibold"
+              >
+                {{ client.name ? client.name.substring(0, 1) : '' }}
+              </div>
+              <b-loading
+                :is-full-page="false"
+                :active.sync="isLoading"
+                :can-cancel="false"
+              >
+              </b-loading>
             </figure>
-            <button class="button is-text">Adicionar foto</button>
+            <input type="file" ref="avatar" style="display: none" @change="setAvatar" />
+            <button class="button is-text" @click="$refs.avatar.click()">Adicionar foto</button>
           </div>
         </div>
         <div class="field">
           <label class="label">Nome</label>
           <div class="control">
-            <input class="input" type="text" placeholder="Lucia Maria">
+            <input class="input" type="text" placeholder="Lucia Maria" v-model="client.name" />
           </div>
           <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
         </div>
         <div class="field columns">
           <div class="control is-expanded column">
             <label class="label">Email</label>
-            <input class="input" type="email" placeholder="email@exemplo.com">
+            <input
+              class="input"
+              type="email"
+              placeholder="email@exemplo.com"
+              v-model="client.email"
+            >
             <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
           </div>
           <div class="control is-expanded column">
             <label class="label">Telefone</label>
-            <input class="input" type="tel" placeholder="64999900000">
+            <input class="input" type="tel" placeholder="64999900000" v-model="client.phone" />
             <p v-if="errors.phone" class="help is-danger">{{ errors.phone }}</p>
           </div>
         </div>
@@ -33,10 +55,10 @@
           <div class="control is-expanded column">
             <label class="label">Gênero</label>
             <div class="select is-fullwidth">
-              <select>
-                <option>Feminino</option>
-                <option>Masculino</option>
-                <option>Não binario</option>
+              <select v-model="client.gender">
+                <option value="female">Feminino</option>
+                <option value="male">Masculino</option>
+                <option value="none">Não binario</option>
               </select>
             </div>
           </div>
@@ -58,32 +80,42 @@
         <div class="field">
           <label class="label">Endereço</label>
           <div class="control">
-            <input class="input" type="text" placeholder="Rua das Flores, 134">
+            <input
+              class="input"
+              type="text"
+              placeholder="Rua das Flores, 134"
+              v-model="client.address"
+            />
           </div>
           <p v-if="errors.address" class="help is-danger">{{ errors.address }}</p>
         </div>
         <div class="field columns">
           <div class="control is-expanded column">
             <label class="label">Bairro</label>
-            <input class="input" type="text" placeholder="Setor Oeste">
+            <input
+              class="input"
+              type="text"
+              placeholder="Setor Oeste"
+              v-model="client.neighborhood"
+            />
             <p v-if="errors.neighborhood" class="help is-danger">{{ errors.neighborhood }}</p>
           </div>
           <div class="control is-expanded column">
             <label class="label">CEP</label>
-            <input class="input" type="text" placeholder="72030-201">
+            <input class="input" type="text" placeholder="72030-201" v-model="client.zip_code" />
             <p v-if="errors.zip_code" class="help is-danger">{{ errors.zip_code }}</p>
           </div>
         </div>
         <div class="field columns">
           <div class="control is-expanded column is-four-fifths">
             <label class="label">Cidade</label>
-            <input class="input" type="text" placeholder="Rio de Janeiro">
+            <input class="input" type="text" placeholder="Rio de Janeiro" v-model="client.city" />
             <p v-if="errors.city" class="help is-danger">{{ errors.city }}</p>
           </div>
           <div class="control is-expanded column">
             <label class="label">Estado</label>
             <div class="select is-fullwidth">
-              <select>
+              <select v-model="client.state">
                 <option value="AC">AC</option>
                 <option value="AL">AL</option>
                 <option value="AM">AM</option>
@@ -139,13 +171,22 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     'imask-input': IMaskComponent,
   },
   methods: {
-    onAccept(e) {
-      console.log(e);
+    onAccept() {},
+    setAvatar(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        const path = window.URL.createObjectURL(e.target.files[0]);
+        this.client.avatar = e.target.files[0];
+        this.client.avatar.path = path;
+      }
     },
   },
 };
@@ -175,6 +216,21 @@ export default {
 
       figure {
         margin: auto;
+
+        img {
+          max-height: 128px;
+          max-width: 128px;
+        }
+
+        .empty-photo {
+          height: 128px;
+          width: 128px;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 42px;
+        }
       }
 
       button {
