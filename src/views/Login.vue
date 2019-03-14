@@ -93,10 +93,14 @@ export default {
     Nav,
   },
   mixins: [validate],
-  created() {
+  beforeCreate() {
     const user = JSON.parse(window.localStorage.getItem('user')) || {};
     const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
     if (user.id && salon.id) {
+      this.$toast.open({
+        message: 'Bem vindo de volta!',
+        type: 'is-success',
+      });
       this.$router.replace('/agenda');
     }
   },
