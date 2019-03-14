@@ -12,7 +12,7 @@
               />
               <div
                 v-else
-                class="empty-photo has-background-grey-lighter has-text-grey-dark has-text-weight-semibold"
+                class="empty-photo has-background-grey-lighter has-text-white has-text-weight-semibold"
               >
                 {{ client.name ? client.name.substring(0, 1) : '' }}
               </div>

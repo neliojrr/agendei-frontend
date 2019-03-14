@@ -4,7 +4,16 @@
       <div class="card-content">
         <div>
           <figure class="image is-128x128">
-            <img class="is-rounded" :src="client.avatar.path">
+            <img 
+              v-if="client.avatar && client.avatar.path" 
+              class="is-rounded" :src="client.avatar.path"
+            />
+            <div
+              v-else
+              class="empty-photo has-background-grey-lighter has-text-white has-text-weight-semibold"
+            >
+              {{ client.name ? client.name.substring(0, 1) : '' }}
+            </div>
           </figure>
         </div>
         <div>
@@ -72,6 +81,16 @@ export default {
         img {
           height: 128px;
           width: 128px;
+        }
+
+        .empty-photo {
+          height: 128px;
+          width: 128px;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 42px;
         }
       }
     }
