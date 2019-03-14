@@ -153,7 +153,7 @@ export default {
   },
   mixins: [log],
   created() {
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon')) || {};
+    this.salon = JSON.parse(window.localStorage.getItem('salon')) || {};
     api.get(`/salons/${this.salon.id}/transactions`)
       .then((response) => {
         const employees = response.data || [];

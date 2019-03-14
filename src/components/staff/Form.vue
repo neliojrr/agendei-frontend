@@ -159,7 +159,7 @@ export default {
   },
   created() {
     this.$emit('set-loading-overlay', true);
-    const salon = window.sessionStorage.getItem('salon') || '{}';
+    const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
     this.getServices();
   },

@@ -58,8 +58,8 @@ export default {
     Form,
   },
   created() {
-    this.salon = JSON.parse(window.sessionStorage.getItem('salon'));
-    this.user = JSON.parse(window.sessionStorage.getItem('user'));
+    this.salon = JSON.parse(window.localStorage.getItem('salon'));
+    this.user = JSON.parse(window.localStorage.getItem('user'));
     if (this.user && this.salon && this.user.id && this.salon.id) {
       const headers = {
         'access-token': this.user.token,

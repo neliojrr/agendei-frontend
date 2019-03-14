@@ -65,9 +65,9 @@ export default {
           this.$router.push('/login');
         })
         .catch(() => {
-          window.sessionStorage.setItem('user', null);
-          window.sessionStorage.setItem('salon', null);
-          window.sessionStorage.setItem('agendeiAuth', null);
+          window.localStorage.setItem('user', null);
+          window.localStorage.setItem('salon', null);
+          window.localStorage.setItem('agendeiAuth', null);
           this.$router.push('/login');
         });
     },

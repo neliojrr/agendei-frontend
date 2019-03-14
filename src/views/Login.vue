@@ -94,8 +94,8 @@ export default {
   },
   mixins: [validate],
   created() {
-    const user = JSON.parse(window.sessionStorage.getItem('user')) || {};
-    const salon = JSON.parse(window.sessionStorage.getItem('salon')) || {};
+    const user = JSON.parse(window.localStorage.getItem('user')) || {};
+    const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
     if (user.id && salon.id) {
       this.$router.replace('/agenda');
     }

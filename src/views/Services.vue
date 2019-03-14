@@ -140,7 +140,7 @@ export default {
   created() {
     this.$emit('set-loading-overlay', true);
     this.debounceSearch = debounce(this.search, 500);
-    const salon = window.sessionStorage.getItem('salon') || '{}';
+    const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
     this.getServiceCategories();
   },

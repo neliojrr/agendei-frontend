@@ -15,15 +15,15 @@ export const login = axios.create({
 // Add a request interceptor for api
 api.interceptors.request.use((config) => {
   if (config.url === '/auth/sign_out') {
-    window.sessionStorage.setItem('user', null);
-    window.sessionStorage.setItem('salon', null);
-    window.sessionStorage.setItem('agendeiAuth', null);
+    window.localStorage.setItem('user', null);
+    window.localStorage.setItem('salon', null);
+    window.localStorage.setItem('agendeiAuth', null);
     return config;
   }
   if (config.url === '/auth') {
     return config;
   }
-  const agendeiAuth = JSON.parse(window.sessionStorage.getItem('agendeiAuth')) || {};
+  const agendeiAuth = JSON.parse(window.localStorage.getItem('agendeiAuth')) || {};
   if (agendeiAuth && agendeiAuth.token) {
     const newConfig = config;
     const { headers } = newConfig;
@@ -43,9 +43,9 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(response => response, (error) => {
   const { status } = error && error.response ? error.response : 0;
   if (status === 401 || status === 403) {
-    window.sessionStorage.setItem('user', null);
-    window.sessionStorage.setItem('salon', null);
-    window.sessionStorage.setItem('agendeiAuth', null);
+    window.localStorage.setItem('user', null);
+    window.localStorage.setItem('salon', null);
+    window.localStorage.setItem('agendeiAuth', null);
     window.location = '/login';
     return null;
   }
@@ -61,15 +61,15 @@ login.interceptors.response.use((response) => {
     client: response.headers.client,
     uid: response.headers.uid,
   };
-  window.sessionStorage.setItem(
+  window.localStorage.setItem(
     'agendeiAuth',
     JSON.stringify(agendeiAuthorization),
   );
-  window.sessionStorage.setItem(
+  window.localStorage.setItem(
     'user',
     JSON.stringify(user),
   );
-  window.sessionStorage.setItem(
+  window.localStorage.setItem(
     'salon',
     JSON.stringify(user.salon),
   );
