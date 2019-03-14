@@ -81,6 +81,58 @@ export default {
       const data = { ...this.client };
       this.$emit('open-modal', 'Editar Cliente', Form, data, buttons);
     },
+    updateClient(client) {
+      this.$emit('set-loading-overlay', true);
+      delete client.salon;
+      if (client.avatar && !client.avatar.name) delete client.avatar;
+      const data = new FormData();
+      const clientAttributes = Object.keys(client);
+      for (let i = 0; i < clientAttributes.length; i += 1) {
+        data.append(`client[${clientAttributes[i]}]`, client[clientAttributes[i]]);
+      }
+      api.put(`/clients/${client.id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+        .then((response) => {
+          this.client = response.data || {};
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+        })
+        .catch((error) => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.$emit('set-form-errors', this.errors);
+        });
+    },
+    deleteClient(client) {
+      if (window.confirm('Você tem certeza?')) {
+        this.$emit('set-loading-overlay', true);
+        api.delete(`/clients/${client.id}`)
+          .then(() => {
+            this.$toast.open({
+              message: 'O cliente foi excluído!',
+              type: 'is-success',
+            });
+            this.$emit('set-loading-overlay', false);
+            this.$emit('close-modal');
+            this.$router.replace('/clients');
+          })
+          .catch((error) => {
+            const message = error && error.response && error.response.data ?
+              error.response.data.message :
+              null;
+            this.$toast.open({
+              message: `Impossível deletar este cliente! ${message}`,
+              type: 'is-danger',
+            });
+            this.$emit('set-loading-overlay', false);
+          });
+      }
+    },
   },
 };
 </script>

@@ -65,14 +65,14 @@
           <div class="control is-expanded column">
             <label class="label">Data nascimento</label>
             <imask-input
-              v-model="client.birthday"
+              v-model="client.birth"
               :mask="Date"
               :unmask="true"
               @accept="onAccept"
               placeholder='01/10/1987'
               class="input"
             />
-            <p v-if="errors.birthday" class="help is-danger">{{ errors.birthday }}</p>
+            <p v-if="errors.birth" class="help is-danger">{{ errors.birth }}</p>
           </div>
         </div>
       </b-tab-item>
