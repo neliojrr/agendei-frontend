@@ -74,7 +74,7 @@
           </h3>
           <p>
             O agendei envia lembretes automaticamente para seus clientes reduzindo
-            as changes de não comparecimento
+            as chances de não comparecimento
           </p>
         </div>
       </div>
