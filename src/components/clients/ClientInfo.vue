@@ -4,8 +4,8 @@
       <div class="card-content">
         <div>
           <figure class="image is-128x128">
-            <img 
-              v-if="client.avatar && client.avatar.path" 
+            <img
+              v-if="client.avatar && client.avatar.path"
               class="is-rounded" :src="client.avatar.path"
             />
             <div
