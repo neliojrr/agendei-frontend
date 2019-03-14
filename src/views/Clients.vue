@@ -49,7 +49,7 @@ export default {
         zip_code: '',
         city: '',
         state: '',
-        avatar: undefined,
+        avatar: null,
       },
       client: {},
       headers: [
