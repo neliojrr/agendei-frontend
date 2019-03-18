@@ -5,19 +5,23 @@
     <div class="agenda app-content">
       <CalendarHeader
         :employeeSelected="employeeSelected"
-        :staff="staff"
+        :staff="employees"
         :daySelected="daySelected"
         :showStaffOnHeader="showStaffOnHeader"
         @change-date="changeDate"
         @toggle-staff-on-header="toggleStaffOnHeader"
         @employee-change="employeeChange"
       />
-      <a class="button is-primary new-appointment-button" title="Novo agendamento">
+      <button
+        class="button is-primary new-appointment-button"
+        title="Novo agendamento"
+        @click="openModalNewAppointment"
+      >
         <font-awesome-icon icon="plus" />
-      </a>
+      </button>
       <Calendar
         :employeeSelected="employeeSelected"
-        :staff="staff"
+        :staff="employees"
         :daySelected="daySelected"
         :showStaffOnHeader="showStaffOnHeader"
         :appointments="appointments"
@@ -37,7 +41,32 @@ import Menu from '../components/Menu.vue';
 import NavApp from '../components/NavApp.vue';
 import CalendarHeader from '../components/agenda/CalendarHeader.vue';
 import Calendar from '../components/agenda/Calendar.vue';
+import Form from '../components/agenda/Form.vue';
 import log from '../mixins/log';
+
+/**
+ * Default appointment
+
+  {
+    employee: {
+      id: 1,
+      email: 'nelio@agendei.io',
+      name: 'Nelio',
+      color: '#23d160',
+      borderColor: 'hsl(141, 71%, 28%)',
+    },
+    client: {
+      id: 1,
+      name: 'João',
+    },
+    service: {
+      id: 1,
+      title: 'Corte de cabelo',
+    },
+    start: '2018-11-12 07:30',
+    end: '2018-11-12 08:45',
+  }
+*/
 
 export default {
   data() {
@@ -49,99 +78,14 @@ export default {
       employeeSelected: null,
       columnsBooked: {},
       bookingInfo: {},
-      staff: [
-        {
-          id: 1,
-          email: 'nelio@agendei.io',
-          name: 'Nelio',
-          color: 'hsl(141, 71%, 48%)',
-          borderColor: 'hsl(141, 71%, 28%)',
-        },
-        {
-          id: 2,
-          email: 'gustavo@agendei.io',
-          name: 'Gustavo',
-          color: 'hsl(171, 100%, 41%)',
-          borderColor: 'hsl(171, 100%, 21%)',
-        },
-        {
-          id: 3,
-          email: 'salviano@agendei.io',
-          name: 'Salviano',
-          color: 'hsl(47, 95%, 69%)',
-          borderColor: 'hsl(47, 95%, 49%)',
-        },
-      ],
-      appointments: [
-        {
-          employee: {
-            id: 1,
-            email: 'nelio@agendei.io',
-            name: 'Nelio',
-            color: '#23d160',
-            borderColor: 'hsl(141, 71%, 28%)',
-          },
-          client: {
-            name: 'João',
-          },
-          service: {
-            title: 'Corte de cabelo',
-          },
-          start: '2018-11-12 07:30',
-          end: '2018-11-12 08:45',
-        },
-        {
-          employee: {
-            id: 1,
-            email: 'nelio@agendei.io',
-            name: 'Nelio',
-            color: '#23d160',
-            borderColor: 'hsl(141, 71%, 28%)',
-          },
-          client: {
-            name: 'Lucia',
-          },
-          service: {
-            title: 'Sobrancelha',
-          },
-          start: '2018-11-12 09:00',
-          end: '2018-11-12 10:00',
-        },
-        {
-          employee: {
-            id: 3,
-            email: 'salviano@agendei.io',
-            name: 'Salviano',
-            color: 'hsl(47, 95%, 69%)',
-            borderColor: 'hsl(47, 95%, 49%)',
-          },
-          client: {
-            name: 'Joana',
-          },
-          service: {
-            title: 'Manicure',
-          },
-          start: '2018-11-12 07:00',
-          end: '2018-11-12 08:15',
-        },
-        {
-          employee: {
-            id: 2,
-            email: 'gustavo@agendei.io',
-            name: 'Gustavo',
-            color: 'hsl(171, 100%, 41%)',
-            borderColor: 'hsl(171, 100%, 21%)',
-          },
-          client: {
-            name: 'Gabriela',
-          },
-          service: {
-            title: 'Corte de cabelo',
-          },
-          start: '2018-11-12 08:15',
-          end: '2018-11-12 09:15',
-        },
-      ],
+      employees: [],
+      appointments: [],
+      defaultAppointment: {
+        service: {},
+        client: {},
+        employee: {},
+      },
+      appointment: {},
     };
   },
   props: ['pageTitle'],
@@ -153,18 +97,11 @@ export default {
   },
   mixins: [log],
   created() {
-    this.salon = JSON.parse(window.localStorage.getItem('salon')) || {};
-    api.get(`/salons/${this.salon.id}/transactions`)
-      .then((response) => {
-        const employees = response.data || [];
-        this.data = employees;
-      })
-      .catch(() => {
-        this.$toast.open({
-          message: 'Não foi possível carregar seus agendamentos!',
-          type: 'is-danger',
-        });
-      });
+    this.appointment = { ...this.defaultAppointment };
+    const salon = window.localStorage.getItem('salon') || '{}';
+    this.salon = JSON.parse(salon) || {};
+    this.getAppointments();
+    this.getEmployees();
   },
   mounted() {
     this.fillColumnsBooked();
@@ -223,6 +160,56 @@ export default {
         return book.service.title;
       }
       return null;
+    },
+    getAppointments() {
+      this.$emit('set-loading-overlay', true);
+      api.get(`/salons/${this.salon.id}/appointments`)
+        .then((response) => {
+          this.clients = response.data || [];
+          this.$emit('set-loading-overlay', false);
+        })
+        .catch(() => {
+          this.$emit('set-loading-overlay', false);
+          this.$toast.open({
+            message: 'Não foi possível carregar seus agendamentos. Faça seu login novamente!',
+            type: 'is-danger',
+          });
+        });
+    },
+    getEmployees() {
+      this.$emit('set-loading-overlay', true);
+      api.get(`/salons/${this.salon.id}/employees`)
+        .then((response) => {
+          this.employees = response.data || [];
+          this.$emit('set-loading-overlay', false);
+        })
+        .catch(() => {
+          this.$emit('set-loading-overlay', false);
+          this.$toast.open({
+            message: 'Não foi possível encontrar os profissionais para este salão!',
+            type: 'is-danger',
+          });
+        });
+    },
+    openModalNewAppointment() {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.saveNewAppointment,
+        },
+      ];
+      this.appointment = { ...this.defaultAppointment };
+      const data = {
+        appointment: this.appointment,
+        employees: this.employees,
+        start: this.start,
+        end: this.end,
+      };
+      this.$emit('open-modal', 'Novo Agendamento', Form, data, buttons);
+    },
+    saveNewAppointment() {
+      console.log(this.appointment);
     },
   },
 };

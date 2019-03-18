@@ -138,7 +138,7 @@ import moment from 'moment';
 export default {
   data() {
     return {
-      timeRows: (24 - 7) * 4,
+      timeRows: (this.end - this.start) * 4,
       daysOfWeek: [],
     };
   },
