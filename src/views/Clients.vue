@@ -48,7 +48,6 @@ export default {
     return {
       salon: {},
       query: '',
-      allClients: [],
       clients: [],
       defaultClient: {
         name: '',
@@ -102,7 +101,6 @@ export default {
     getClients() {
       api.get(`/salons/${this.salon.id}/clients`)
         .then((response) => {
-          this.allClients = response.data;
           this.clients = response.data || [];
           this.$emit('set-loading-overlay', false);
         })
