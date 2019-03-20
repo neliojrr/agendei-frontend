@@ -73,7 +73,7 @@ export default {
     return {
       start: 7,
       end: 24,
-      showStaffOnHeader: false,
+      showStaffOnHeader: true,
       daySelected: moment(),
       employeeSelected: null,
       columnsBooked: {},
@@ -103,9 +103,6 @@ export default {
     this.getAppointments();
     this.getEmployees();
   },
-  mounted() {
-    this.fillColumnsBooked();
-  },
   methods: {
     moment(date) {
       return moment(date);
@@ -117,24 +114,31 @@ export default {
     },
     toggleStaffOnHeader() {
       this.showStaffOnHeader = !this.showStaffOnHeader;
+      if (!this.showStaffOnHeader) {
+        this.employeeSelected =
+          this.employees.length > 0 ? this.employees[0] : null;
+      }
       this.fillColumnsBooked();
     },
     employeeChange(value) {
-      this.employeeSelected = this.staff.find(s => s.id === Number(value));
+      this.employeeSelected = this.employees.find(s => s.id === Number(value));
+      if (!this.employeeSelected) {
+        this.showStaffOnHeader = true;
+      }
       this.fillColumnsBooked();
     },
     fillColumnsBooked() {
-      let { appointments } = this;
+      let allAppointments = this.appointments.slice(0);
       const { employeeSelected, showStaffOnHeader } = this;
       const columnsBooked = {};
       const bookingInfo = {};
       if (employeeSelected) {
-        appointments = appointments
+        allAppointments = this.appointments
           .filter(book => book.employee.id === employeeSelected.id);
       }
-      appointments.forEach((book) => {
-        const start = moment(book.start);
-        const end = moment(book.end);
+      allAppointments.forEach((book) => {
+        const start = moment.unix(book.start_at);
+        const end = moment.unix(book.start_at).add(book.duration, 's');
         let infoOrder = 0;
         while (start.isBefore(end)) {
           const ref = showStaffOnHeader
@@ -151,13 +155,15 @@ export default {
     },
     fillBookingInfo(order, book) {
       if (order === 0) {
-        return `${moment(book.start).format('H:mm')} - ${moment(book.end).format('H:mm')}`;
+        const start = moment.unix(book.start_at);
+        const end = moment.unix(book.start_at).add(book.duration, 's');
+        return `${start.format('H:mm')} - ${end.format('H:mm')}`;
       }
       if (order === 1) {
         return book.client.name;
       }
       if (order === 2) {
-        return book.service.title;
+        return book.service.name;
       }
       return null;
     },
@@ -165,7 +171,8 @@ export default {
       this.$emit('set-loading-overlay', true);
       api.get(`/salons/${this.salon.id}/appointments`)
         .then((response) => {
-          this.clients = response.data || [];
+          this.appointments = response.data || [];
+          this.fillColumnsBooked();
           this.$emit('set-loading-overlay', false);
         })
         .catch(() => {
@@ -209,7 +216,28 @@ export default {
       this.$emit('open-modal', 'Novo Agendamento', Form, data, buttons);
     },
     saveNewAppointment() {
-      console.log(this.appointment);
+      this.$emit('set-loading-overlay', true);
+      const startAt =
+        moment.unix(this.appointment.start_at);
+      api.post(
+        `/salons/${this.salon.id}/appointments`, 
+        { ...this.appointment, start_at: startAt }
+      ).then((response) => {
+        const newAppointment = response.data;
+        this.appointments.push(newAppointment);
+        this.$emit('set-loading-overlay', false);
+        this.$emit('close-modal');
+      }).catch((error) => {
+        this.$emit('set-loading-overlay', false);
+        let errors = {};
+        if (error.response) {
+          errors = error.response.data || {};
+        } else {
+          errors.message = error.message;
+        }
+        this.errors = errors;
+        this.$emit('set-form-errors', this.errors);
+      });
     },
   },
 };

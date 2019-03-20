@@ -53,6 +53,7 @@
                 v-if="!!columnsBooked[getColumnId(n, daySelected, employeeSelected)]"
               >
                 <span
+                  v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, daySelected, employeeSelected)]) }"
                   class="booking-description has-text-white has-text-weight-semibold"
                 >
                   {{ bookingInfo[getColumnId(n, daySelected, employeeSelected)] }}&nbsp;
@@ -84,6 +85,7 @@
                 v-if="columnsBooked[getColumnId(n, daySelected, s)]"
               >
                 <span
+                  v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, daySelected, s)]) }"
                   class="booking-description has-text-white has-text-weight-semibold"
                 >
                   {{ bookingInfo[getColumnId(n, daySelected, s)] }}&nbsp;
@@ -116,6 +118,7 @@
               v-if="!!columnsBooked[getColumnId(n, d)]"
             >
               <span
+                v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, d)]) }"
                 class="booking-description has-text-white has-text-weight-semibold"
               >
                 {{ bookingInfo[getColumnId(n, d)] || '' }}&nbsp;
@@ -192,6 +195,14 @@ export default {
       }
       return `${moment(header).format('MM_DD')}_${this.fullHour(rowTime)}_${this.fullMinute(rowTime)}`;
     },
+    tooltipContent(appointment) {
+      if (appointment) {
+        return (
+          `<div class="columns"><div class="column is-3"><span class="figure">${appointment.client ? appointment.client.name.substr(0, 1) : 'A'}</span></div><div class="column is-9 client-name"><h1 class="subtitle">${appointment.client ? appointment.client.name : 'Desconhecido'}</h1></div></div><div class="columns is-multiline"><div class="column is-9 appointment-time">${moment.unix(appointment.start_at).format('HH:mm')} <span>às</span> ${moment.unix(appointment.start_at).add(appointment.duration, 's').format('HH:mm')}</div><div class="column is-3 appointment-price">${appointment.price}</div><div class="column is-9 appointment-service">${appointment.service.name} <span>com</span> ${appointment.employee.name}</div><div class="column is-3 appointment-status">${appointment.status}</div><div class="column is-12 appointment-notes">${appointment.notes || ''}</div></div>`
+        );
+      }
+      return null;
+    },
   },
 };
 </script>
@@ -251,7 +262,7 @@ export default {
 
   .full-hour {
     border-top: 2px solid #cccccc !important;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: bold;
     text-align: center;
   }
@@ -267,6 +278,7 @@ export default {
     overflow: hidden;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
 
   .is-side-gapless {
@@ -286,6 +298,7 @@ export default {
     text-overflow: ellipsis;
     font-weight: bold;
     text-align: left;
+    font-size: 13px;
 
     @media screen and (max-width: 768px) {
       font-size: 11px;

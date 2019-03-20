@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import Buefy from 'buefy';
 import VueAnalytics from 'vue-analytics';
+import VTooltip from 'v-tooltip';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCalendarAlt,
@@ -71,6 +72,7 @@ library.add(faEdit);
 library.add(faTrashAlt);
 /* end icons */
 
+
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.config.productionTip = false;
@@ -82,6 +84,8 @@ Vue.use(VueAnalytics, {
   id: 'UA-36204274-9',
   router,
 });
+Vue.use(VTooltip);
+VTooltip.enabled = window.innerWidth > 768;
 
 const i18n = new VueI18n({
   locale: 'pt-br',
