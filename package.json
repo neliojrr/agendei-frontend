@@ -28,7 +28,7 @@
     "vue-i18n": "^8.2.1",
     "vue-imask": "^4.1.5",
     "vue-router": "^3.0.1",
-    "vuejs-datepicker": "^1.5.3",
+    "vuejs-datepicker": "^1.5.4",
     "vuetable-2": "^1.7.5",
     "vuex": "^3.0.1"
   },
