@@ -220,8 +220,8 @@ export default {
       const startAt =
         moment.unix(this.appointment.start_at);
       api.post(
-        `/salons/${this.salon.id}/appointments`, 
-        { ...this.appointment, start_at: startAt }
+        `/salons/${this.salon.id}/appointments`,
+        { ...this.appointment, start_at: startAt },
       ).then((response) => {
         const newAppointment = response.data;
         this.appointments.push(newAppointment);
