@@ -122,8 +122,11 @@ export default {
 }
 
 .date-picker-calendar {
-  @media screen and (max-width: 1023px) {
-    left: -35%;
+  width: 100% !important;
+
+  @media screen and (max-width: 768px) {
+    width: 160% !important;
+    left: -30%;
   }
 }
 </style>
