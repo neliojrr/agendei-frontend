@@ -225,7 +225,7 @@ export default {
       this.appointment.start_at = updatedDate.unix();
     },
     getCalendarValue() {
-      return (this.appointment.start_at ? moment.unix(this.appointment.start_at) : moment()).format('YYYY-MM-DD');
+      return (this.appointment.start_at ? moment.unix(this.appointment.start_at) : moment()).toDate();
     },
   },
 };

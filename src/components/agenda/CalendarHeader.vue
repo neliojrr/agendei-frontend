@@ -29,7 +29,7 @@
               input-class="input is-medium date-picker"
               calendar-class="date-picker-calendar"
               :language="ptBR"
-              :value="daySelected.format('YYYY-MM-DD')"
+              :value="daySelected.toDate()"
               @selected="changeDate"
             />
           </div>
