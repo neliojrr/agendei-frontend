@@ -6,12 +6,7 @@
         :active.sync="isLoading"
       ></b-loading>
       <Modal
-        :content="modalContent"
-        :title="modalTitle"
-        :show="showModal"
-        :buttons="buttons"
-        :data="formData"
-        :errors="errors"
+        v-bind="modalProps"
         @close="closeModal"
       />
       <router-view
@@ -46,12 +41,7 @@ moment.updateLocale('en', {
 export default {
   data() {
     return {
-      showModal: false,
-      modalContent: null,
-      modalTitle: '',
-      buttons: [],
-      formData: this.data,
-      errors: {},
+      modalProps: {},
       isLoading: false,
     };
   },
@@ -60,24 +50,29 @@ export default {
     Modal,
   },
   methods: {
-    openModal(title, content, data, buttons) {
-      this.showModal = true;
-      this.modalContent = content;
-      this.modalTitle = title;
-      this.formData = data;
-      this.buttons = buttons;
-      this.errors = {};
+    openModal(props) {
+      this.modalProps = {
+        ...props,
+        show: true,
+        errors: {},
+      };
     },
     closeModal() {
-      this.showModal = false;
-      this.modalContent = null;
-      this.modalTitle = '';
-      this.buttons = [];
-      this.formData = {};
-      this.errors = {};
+      this.modalProps = {
+        showModal: false,
+        modalContent: null,
+        modalTitle: '',
+        buttons: [],
+        dropdown: [],
+        formData: {},
+        errors: {},
+      };
     },
     setFormErrors(errors) {
-      this.errors = errors;
+      this.modalProps = {
+        ...this.modalProps,
+        errors,
+      };
     },
     setLoadingOverlay(isLoading) {
       this.isLoading = isLoading;

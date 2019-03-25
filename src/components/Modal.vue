@@ -7,10 +7,11 @@
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
       <section class="modal-card-body">
-        <component :is="content" :data="data" :errors="errors" />
+        <component :is="content" v-bind="data" :errors="errors" :allDisabled="allDisabled" />
       </section>
       <footer class="modal-card-foot">
         <button
+          v-if="buttons.length > 0"
           v-for="b in buttons"
           :key="b.title"
           class="button"
@@ -19,7 +20,29 @@
         >
           {{ b.title }}
         </button>
-        <button class="button" @click="$emit('close')">{{ cancelButtonText }}</button>
+        <b-dropdown
+          aria-role="list"
+          v-if="dropdown.length > 0"
+          position="is-top-left"
+        >
+          <button class="button" slot="trigger">
+            <span>Opções</span>
+            <span class="icon is-small">
+              <font-awesome-icon icon="chevron-up" />
+            </span>
+          </button>
+
+          <b-dropdown-item
+            aria-role="listitem"
+            v-for="drop in dropdown"
+            :class="drop.class"
+            :key="drop.title"
+            @click="drop.action(data)"
+          >
+            {{ drop.title }}
+          </b-dropdown-item>
+        </b-dropdown>
+        <button class="button is-text" @click="$emit('close')">{{ cancelButtonText }}</button>
       </footer>
     </div>
   </div>
@@ -28,7 +51,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      isActive: false,
+    };
   },
   props: {
     title: {
@@ -55,6 +80,10 @@ export default {
         action: () => null,
       }],
     },
+    dropdown: {
+      type: Array,
+      default: () => [],
+    },
     cancelButtonText: {
       type: String,
       default: 'Cancelar',
@@ -63,12 +92,31 @@ export default {
       type: Boolean,
       default: false,
     },
+    allDisabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  watch: {
+    show() {
+      if (!this.show) {
+        this.isActive = false;
+      }
+    },
   },
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .modal {
   z-index: 100;
+
+  .dropdown-content {
+
+    a {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
 }
 </style>
