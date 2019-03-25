@@ -54,14 +54,19 @@
               >
                 <span
                   v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, daySelected, employeeSelected)]) }"
-                  class="booking-description has-text-white has-text-weight-semibold"
+                  class="booking-description"
                 >
-                  {{ bookingInfo[getColumnId(n, daySelected, employeeSelected)] }}&nbsp;
+                  <button
+                    @click="$emit('open-modal-checkout', columnsBooked[getColumnId(n, daySelected, employeeSelected)])"
+                    class="has-text-white has-text-weight-semibold"
+                  >
+                    {{ bookingInfo[getColumnId(n, daySelected, employeeSelected)] }}&nbsp;
+                  </button>
                 </span>
               </template>
-                <template v-else>
-                  <span>&nbsp;</span>
-                </template>
+              <template v-else>
+                <span>&nbsp;</span>
+              </template>
             </div>
           </template>
           <template v-else>
@@ -88,12 +93,17 @@
                   v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, daySelected, s)]) }"
                   class="booking-description has-text-white has-text-weight-semibold"
                 >
-                  {{ bookingInfo[getColumnId(n, daySelected, s)] }}&nbsp;
+                  <button
+                    @click="$emit('open-modal-checkout', columnsBooked[getColumnId(n, daySelected, s)])"
+                    class="has-text-white has-text-weight-semibold"
+                  >
+                    {{ bookingInfo[getColumnId(n, daySelected, s)] }}&nbsp;
+                  </button>
                 </span>
               </template>
-                <template v-else>
-                  <span>&nbsp;</span>
-                </template>
+              <template v-else>
+                <span>&nbsp;</span>
+              </template>
             </div>
           </template>
         </template>
@@ -121,12 +131,17 @@
                 v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, d)]) }"
                 class="booking-description has-text-white has-text-weight-semibold"
               >
-                {{ bookingInfo[getColumnId(n, d)] || '' }}&nbsp;
+                <button
+                  @click="$emit('open-modal-checkout', columnsBooked[getColumnId(n, d)])"
+                  class="has-text-white has-text-weight-semibold"
+                >
+                  {{ bookingInfo[getColumnId(n, d)] || '' }}&nbsp;
+                </button>
               </span>
             </template>
-              <template v-else>
-                <span>&nbsp;</span>
-              </template>
+            <template v-else>
+              <span>&nbsp;</span>
+            </template>
           </div>
         </template>
       </div>
@@ -250,6 +265,7 @@ export default {
       .column {
         padding-top: 3px;
         padding-bottom: 3px;
+        min-height: 1.9em;
       }
 
       .is-booking-type {
@@ -300,8 +316,18 @@ export default {
     text-align: left;
     font-size: 13px;
 
-    @media screen and (max-width: 768px) {
-      font-size: 11px;
+    button {
+      background: transparent;
+      border: 0;
+      outline: none;
+      font-size: 14px;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+
+      @media screen and (max-width: 768px) {
+        font-size: 11px;
+      }
     }
   }
 }

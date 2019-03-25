@@ -29,6 +29,7 @@
         :bookingInfo="bookingInfo"
         :start="start"
         :end="end"
+        @open-modal-checkout="openModalCheckout"
       />
     </div>
   </div>
@@ -37,12 +38,13 @@
 <script>
 import moment from 'moment';
 import { api } from '@/utils/api-connect';
+import log from '../mixins/log';
 import Menu from '../components/Menu.vue';
 import NavApp from '../components/NavApp.vue';
 import CalendarHeader from '../components/agenda/CalendarHeader.vue';
 import Calendar from '../components/agenda/Calendar.vue';
 import Form from '../components/agenda/Form.vue';
-import log from '../mixins/log';
+import AppointmentView from '../components/agenda/AppointmentView.vue';
 
 /**
  * Default appointment
@@ -94,6 +96,8 @@ export default {
     NavApp,
     CalendarHeader,
     Calendar,
+    Form,
+    AppointmentView,
   },
   mixins: [log],
   created() {
@@ -213,7 +217,46 @@ export default {
         start: this.start,
         end: this.end,
       };
-      this.$emit('open-modal', 'Novo Agendamento', Form, data, buttons);
+      this.$emit('open-modal', {
+        title: 'Novo Agendamento', content: Form, data, buttons,
+      });
+    },
+    openModalCheckout(appointment) {
+      const buttons = [
+        {
+          title: 'Finalizar',
+          class: 'is-primary',
+          action: this.saveNewAppointment,
+        },
+      ];
+      const dropdown = [
+        {
+          title: 'Editar',
+          action: this.saveNewAppointment,
+        },
+        {
+          title: 'Não compareceu',
+          class: 'has-text-danger',
+          action: this.saveNewAppointment,
+        },
+        {
+          title: 'Deletar',
+          class: 'has-text-danger',
+          action: this.saveNewAppointment,
+        },
+      ];
+      const data = {
+        appointment,
+        employees: this.employees,
+        start: this.start,
+        end: this.end,
+      };
+      this.$emit(
+        'open-modal',
+        {
+          title: 'Agendamento', content: AppointmentView, data, buttons, dropdown,
+        },
+      );
     },
     saveNewAppointment() {
       this.$emit('set-loading-overlay', true);

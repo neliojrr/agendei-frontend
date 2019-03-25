@@ -5,12 +5,21 @@
       calendar-class="appointment-calendar"
       :language="ptBR"
       :value="getCalendarValue()"
+      :disabled="allDisabled"
       @selected="changeDate"
     />
     <div class="field">
       <label class="label">Cliente</label>
       <div class="control">
+        <input
+          v-if="allDisabled"
+          class="input"
+          type="text"
+          :value="appointment.client ? appointment.client.name : ''"
+          disabled
+        />
         <b-autocomplete
+          v-else
           v-model="name"
           :data="filteredDataObj"
           :open-on-focus="true"
@@ -32,7 +41,7 @@
       <div class="control column is-3">
         <label class="label">Início</label>
         <div class="select is-fullwidth" :class="{ 'is-danger': errors.start_at }">
-          <select v-model="appointment.start_at">
+          <select :disabled="allDisabled" v-model="appointment.start_at">
             <option v-for="t in timeRows" :key="t" :value="getTimeInSeconds(t)">
               {{ getDisplayTime(t) }}
             </option>
@@ -45,7 +54,7 @@
       <div class="control column is-9">
         <label class="label">Serviço</label>
         <div class="select is-fullwidth" :class="{ 'is-danger': errors.service }">
-          <select v-model="appointment.service" @change="setDuration">
+          <select :disabled="allDisabled" v-model="appointment.service" @change="setDuration">
             <optgroup
               v-for="serviceCategory in serviceCategories"
               :key="serviceCategory.id"
@@ -68,7 +77,7 @@
       <div class="control column is-3">
         <label class="label">Duração</label>
         <div class="select is-fullwidth" :class="{ 'is-danger': errors.duration }">
-          <select v-model="appointment.duration">
+          <select :disabled="allDisabled" v-model="appointment.duration">
             <option v-for="d in durationOptions" :key="d.value" :value="d.value">
               {{ d.title }}
             </option>
@@ -81,8 +90,16 @@
       <div class="control is-9 column">
         <label class="label">Profissional</label>
         <div class="select is-fullwidth" :class="{ 'is-danger': errors.employee }">
-          <select v-model="appointment.employee" @change="setEmployeeId">
-            <option v-for="emp in employees" :key="emp.id" :value="emp">
+          <select
+            :value="appointment.employee.id"
+            :disabled="allDisabled"
+            @change="setEmployeeId"
+          >
+            <option
+              v-for="emp in employees"
+              :key="emp.id"
+              :value="emp.id"
+            >
               {{ emp.name }}
             </option>
           </select>
@@ -93,6 +110,7 @@
     <div class="field">
       <label class="label">Nota</label>
       <textarea
+        :disabled="allDisabled"
         v-model="appointment.notes"
         class="textarea"
         placeholder="Escreva alguma observação sobre este agendamento">
@@ -136,6 +154,10 @@ export default {
       default: () => ({}),
     },
     isLoading: {
+      type: Boolean,
+      default: false,
+    },
+    allDisabled: {
       type: Boolean,
       default: false,
     },
@@ -211,9 +233,9 @@ export default {
       this.appointment.service_id =
         this.appointment.service ? this.appointment.service.id : null;
     },
-    setEmployeeId() {
-      this.appointment.employee_id =
-        this.appointment.employee ? this.appointment.employee.id : null;
+    setEmployeeId(id) {
+      this.appointment.employee_id = id;
+      this.appointment.employee = this.employees.find(emp => emp.id === Number(id));
     },
     changeDate(date) {
       const momentDate = moment(date);
