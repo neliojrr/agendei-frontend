@@ -121,7 +121,12 @@ export default {
         },
       ];
       const data = { ...employee };
-      this.$emit('open-modal', 'Editar Profissional', Form, data, buttons);
+      this.$emit(
+        'open-modal',
+        {
+          title: 'Editar Profissional', content: Form, data, buttons,
+        },
+      );
     },
     deleteEmployee(employee) {
       if (window.confirm('Você tem certeza?')) {
