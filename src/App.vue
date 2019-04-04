@@ -59,12 +59,12 @@ export default {
     },
     closeModal() {
       this.modalProps = {
-        showModal: false,
-        modalContent: null,
-        modalTitle: '',
+        show: false,
+        content: null,
+        title: '',
         buttons: [],
         dropdown: [],
-        formData: {},
+        data: {},
         errors: {},
       };
     },

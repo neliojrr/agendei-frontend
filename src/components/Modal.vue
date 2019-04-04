@@ -7,7 +7,7 @@
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
       <section class="modal-card-body">
-        <component :is="content" v-bind="data" :errors="errors" :allDisabled="allDisabled" />
+        <component :is="content" :data="data" :errors="errors" :allDisabled="allDisabled" />
       </section>
       <footer class="modal-card-foot">
         <button
