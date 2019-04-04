@@ -3,7 +3,7 @@
     class="panel"
     :open.sync="isOpen"
   >
-    <div slot="trigger" @click="isOpen = !isOpen" class="panel-heading">
+    <div slot="trigger" class="panel-heading">
       <span v-if="isOpen">
         <font-awesome-icon icon="chevron-up" />
       </span>
@@ -11,44 +11,35 @@
         <font-awesome-icon icon="chevron-down" />
       </span>
       <strong>{{ serviceCategory.name }}</strong>
-      <div class="cog-menu dropdown" :class="{ 'is-active': isCogOpen }">
-        <div class="dropdown-trigger">
-          <button
-            class="cog-menu button"
-            aria-haspopup="true"
-            aria-controls="dropdown-menu"
-            @click.stop="isCogOpen = !isCogOpen"
-            @blur="isCogOpen = false"
-          >
-            <span><font-awesome-icon icon="cog" /></span>
-          </button>
-        </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-          <div class="dropdown-content" >
-            <a
-              href="#"
-              class="dropdown-item"
-              @mousedown="$emit('open-modal-new-service', serviceCategory.id)"
-            >
-              Adicionar Serviço
-            </a>
-            <a
-              href="#"
-              class="dropdown-item"
-              @mousedown="$emit('open-modal-edit-service-category', serviceCategory)"
-            >
-              Editar
-            </a>
-            <a
-              href="#"
-              class="dropdown-item"
-              @mousedown="$emit('delete-service-category', serviceCategory.id)"
-            >
-              Excluir
-            </a>
-          </div>
-        </div>
-      </div>
+      <b-dropdown
+        aria-role="list"
+        position="is-bottom-left"
+        class="cog-menu"
+      >
+        <button class="button is-text" slot="trigger">
+          <span class="icon is-small">
+            <font-awesome-icon icon="cog" />
+          </span>
+        </button>
+        <b-dropdown-item
+          aria-role="listitem"
+          @click="$emit('open-modal-new-service', serviceCategory.id)"
+        >
+          Adicionar Serviço
+        </b-dropdown-item>
+        <b-dropdown-item
+          aria-role="listitem"
+          @click="$emit('open-modal-edit-service-category', serviceCategory)"
+        >
+          Editar
+        </b-dropdown-item>
+        <b-dropdown-item
+          aria-role="listitem"
+          @click="$emit('delete-service-category', serviceCategory.id)"
+        >
+          Excluir
+        </b-dropdown-item>
+      </b-dropdown>
     </div>
     <div class="panel-block">
       <Table
@@ -119,9 +110,6 @@ export default {
 
   .cog-menu {
     margin-left: auto;
-    color: #666666;
-    border: 0;
-    background: none;
   }
 
   .cog-menu:hover {
