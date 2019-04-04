@@ -45,7 +45,7 @@
       <div class="control column is-9">
         <label class="label">Serviço</label>
         <div class="select is-fullwidth" :class="{ 'is-danger': errors.service }">
-          <select v-model="appointment.service" @change="setDuration">
+          <select v-model="appointment.service" @change="setDurationAndPrice">
             <optgroup
               v-for="serviceCategory in serviceCategories"
               :key="serviceCategory.id"
@@ -154,9 +154,11 @@ export default {
     this.$emit('set-loading-overlay', true);
     const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
+    if (this.appointment && this.appointment.client) {
+      this.name = this.appointment.client.name || '';
+    }
     this.getClients();
     this.getServiceCategories();
-    console.log(this.data);
   },
   computed: {
     filteredDataObj() {
@@ -174,7 +176,9 @@ export default {
     getTimeInSeconds(t) {
       const minutes = this.data.start * 60;
       const seconds = (((t - 1) * 15) + minutes) * 60;
-      return (this.appointment.start_at ? moment.unix(this.appointment.start_at) : moment()).hour(0).minute(0).second(seconds).unix();
+      return (this.appointment.start_at
+        ? moment.unix(this.appointment.start_at)
+        : moment()).hour(0).minute(0).second(seconds).unix();
     },
     getDisplayTime(t) {
       const minutes = ((t - 1) * 15) % 60;
@@ -213,13 +217,16 @@ export default {
       this.appointment.client = client;
       this.appointment.client_id = client ? client.id : null;
     },
-    setDuration() {
+    setDurationAndPrice() {
       this.appointment.duration =
         this.appointment.service ? this.appointment.service.duration : null;
       this.appointment.service_id =
         this.appointment.service ? this.appointment.service.id : null;
+      this.appointment.price =
+        this.appointment.service ? this.appointment.service.price : null;
     },
-    setEmployeeId(id) {
+    setEmployeeId(e) {
+      const id = e.target.value;
       this.appointment.employee_id = id;
       this.appointment.employee = this.employees.find(emp => emp.id === Number(id));
     },
