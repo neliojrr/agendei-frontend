@@ -29,10 +29,17 @@
 import moment from 'moment';
 
 export default {
+  data() {
+    return {
+      appointment: this.data.appointment,
+    };
+  },
   props: {
-    appointment: {
+    data: {
       type: Object,
-      default: () => ({}),
+      default: () => ({
+        appointment: {},
+      }),
     },
   },
   computed: {
