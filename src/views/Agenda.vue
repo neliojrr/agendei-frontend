@@ -221,6 +221,24 @@ export default {
         title: 'Novo Agendamento', content: Form, data, buttons,
       });
     },
+    openModalEdit(appointment) {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.updateAppointment,
+        },
+      ];
+      const data = {
+        appointment: { ...appointment },
+        employees: this.employees,
+        start: this.start,
+        end: this.end,
+      };
+      this.$emit('open-modal', {
+        title: 'Editar Agendamento', content: Form, data, buttons,
+      });
+    },
     openModalCheckout(appointment) {
       const buttons = [
         {
@@ -232,7 +250,7 @@ export default {
       const dropdown = [
         {
           title: 'Editar',
-          action: this.saveNewAppointment,
+          action: () => this.openModalEdit(appointment),
         },
         {
           title: 'Não compareceu',
@@ -262,12 +280,46 @@ export default {
       this.$emit('set-loading-overlay', true);
       const startAt =
         moment.unix(this.appointment.start_at);
+      const price = this.appointment.price ? this.appointment.price * 100 : null;
       api.post(
         `/salons/${this.salon.id}/appointments`,
-        { ...this.appointment, start_at: startAt },
+        { ...this.appointment, price, start_at: startAt },
       ).then((response) => {
         const newAppointment = response.data;
         this.appointments.push(newAppointment);
+        this.$emit('set-loading-overlay', false);
+        this.$emit('close-modal');
+      }).catch((error) => {
+        this.$emit('set-loading-overlay', false);
+        let errors = {};
+        if (error.response) {
+          errors = error.response.data || {};
+        } else {
+          errors.message = error.message;
+        }
+        this.errors = errors;
+        this.$emit('set-form-errors', this.errors);
+      });
+    },
+    updateAppointment(data) {
+      this.$emit('set-loading-overlay', true);
+      const { appointment } = data;
+      const startAt =
+        moment.unix(appointment.start_at);
+      const price = appointment.price ? appointment.price * 100 : null;
+      api.put(
+        `/appointments/${appointment.id}`,
+        { ...appointment, price, start_at: startAt },
+      ).then((response) => {
+        const updatedAppointment = response.data || {};
+        console.log(this.appointments);
+        this.appointments = this.appointments.map((apt) => {
+          if (apt.id === updatedAppointment.id) {
+            return updatedAppointment;
+          }
+          return apt;
+        });
+        console.log(this.appointments);
         this.$emit('set-loading-overlay', false);
         this.$emit('close-modal');
       }).catch((error) => {
