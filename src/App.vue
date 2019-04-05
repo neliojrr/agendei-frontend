@@ -63,7 +63,10 @@ export default {
           }
         }
         this.setLoadingOverlay(false);
-      }).catch(() => { this.setLoadingOverlay(false); });
+      }).catch(() => {
+        this.$router.replace('/login');
+        this.setLoadingOverlay(false);
+      });
     } else {
       this.setLoadingOverlay(false);
     }
