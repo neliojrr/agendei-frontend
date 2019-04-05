@@ -260,7 +260,7 @@ export default {
         {
           title: 'Deletar',
           class: 'has-text-danger',
-          action: this.saveNewAppointment,
+          action: this.deleteAppointment,
         },
       ];
       const data = {
@@ -319,7 +319,6 @@ export default {
           }
           return apt;
         });
-        console.log(this.appointments);
         this.$emit('set-loading-overlay', false);
         this.$emit('close-modal');
       }).catch((error) => {
@@ -333,6 +332,32 @@ export default {
         this.errors = errors;
         this.$emit('set-form-errors', this.errors);
       });
+    },
+    deleteAppointment(data) {
+      const { appointment } = data;
+      if (window.confirm('Você tem certeza?')) {
+        this.$emit('set-loading-overlay', true);
+        api.delete(`/appointments/${appointment.id}`)
+          .then(() => {
+            this.appointments = this.appointments.filter(app => app.id !== appointment.id);
+            this.$toast.open({
+              message: 'O agendamento foi excluído!',
+              type: 'is-success',
+            });
+            this.$emit('set-loading-overlay', false);
+            this.$emit('close-modal');
+          })
+          .catch((error) => {
+            const message = error && error.response && error.response.data ?
+              error.response.data.message :
+              null;
+            this.$toast.open({
+              message: `Impossível deletar este agendamento! ${message}`,
+              type: 'is-danger',
+            });
+            this.$emit('set-loading-overlay', false);
+          });
+      }
     },
   },
 };
