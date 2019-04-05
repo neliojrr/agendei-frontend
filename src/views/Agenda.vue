@@ -287,6 +287,7 @@ export default {
       ).then((response) => {
         const newAppointment = response.data;
         this.appointments.push(newAppointment);
+        this.fillColumnsBooked();
         this.$emit('set-loading-overlay', false);
         this.$emit('close-modal');
       }).catch((error) => {
@@ -312,13 +313,13 @@ export default {
         { ...appointment, price, start_at: startAt },
       ).then((response) => {
         const updatedAppointment = response.data || {};
-        console.log(this.appointments);
         this.appointments = this.appointments.map((apt) => {
           if (apt.id === updatedAppointment.id) {
             return updatedAppointment;
           }
           return apt;
         });
+        this.fillColumnsBooked();
         this.$emit('set-loading-overlay', false);
         this.$emit('close-modal');
       }).catch((error) => {
