@@ -20,8 +20,9 @@
 </template>
 
 <script>
-import Modal from '@/components/Modal.vue';
 import moment from 'moment';
+import Modal from '@/components/Modal.vue';
+import { api } from '@/utils/api-connect';
 
 moment.updateLocale('en', {
   weekdays: [
@@ -48,6 +49,24 @@ export default {
   props: ['data'],
   components: {
     Modal,
+  },
+  created() {
+    const user = JSON.parse(window.localStorage.getItem('user')) || {};
+    const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
+    if (user.id && salon.id) {
+      this.setLoadingOverlay(true);
+      api.get('/auth/validate_token').then((response) => {
+        if (response && response.status && response.status === 200) {
+          const path = window.location.pathname;
+          if (path.indexOf('/login') !== -1) {
+            this.$router.replace('/agenda');
+          }
+        }
+        this.setLoadingOverlay(false);
+      }).catch(() => { this.setLoadingOverlay(false); });
+    } else {
+      this.setLoadingOverlay(false);
+    }
   },
   methods: {
     openModal(props) {
