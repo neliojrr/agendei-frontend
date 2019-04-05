@@ -18,10 +18,6 @@ api.interceptors.request.use((config) => {
     window.localStorage.setItem('user', null);
     window.localStorage.setItem('salon', null);
     window.localStorage.setItem('agendeiAuth', null);
-    return config;
-  }
-  if (config.url === '/auth') {
-    return config;
   }
   const agendeiAuth = JSON.parse(window.localStorage.getItem('agendeiAuth')) || {};
   if (agendeiAuth && agendeiAuth.token) {
@@ -35,8 +31,7 @@ api.interceptors.request.use((config) => {
     };
     return newConfig;
   }
-  window.location = '/login';
-  return null;
+  return config;
 }, error => Promise.reject(error));
 
 // Add a response interceptor for others api requests
