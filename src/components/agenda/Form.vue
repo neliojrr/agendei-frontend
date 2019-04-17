@@ -176,9 +176,8 @@ export default {
     getTimeInSeconds(t) {
       const minutes = this.data.start * 60;
       const seconds = (((t - 1) * 15) + minutes) * 60;
-      return (this.appointment.start_at
-        ? moment.unix(this.appointment.start_at)
-        : moment()).hour(0).minute(0).second(seconds).unix();
+      return moment().hour(0).minute(0).second(seconds)
+        .unix();
     },
     getDisplayTime(t) {
       const minutes = ((t - 1) * 15) % 60;
