@@ -18,9 +18,16 @@
           </p>
         </div>
       </div>
-      <p class="column is-2-desktop is-2-tablet is-3-mobile appointment-price">
-        {{ `R$${appointment.price}` }}
-      </p>
+      <div class="column is-2-desktop is-2-tablet is-3-mobile">
+        <div class="columns is-multiline">
+          <p class="column is-12-mobile is-12-desktop is-2-tablet appointment-price">
+            {{ `R$${appointment.price}` }}
+          </p>
+          <p class="column is-12-desktop is-12-tablet appointment-service has-text-primary">
+            {{ appointment.status_display }}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
