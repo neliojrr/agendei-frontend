@@ -38,6 +38,7 @@
 <script>
 import moment from 'moment';
 import { api } from '@/utils/api-connect';
+import AppointmentStatus from '@/utils/AppointmentStatus';
 import log from '../mixins/log';
 import Menu from '../components/Menu.vue';
 import NavApp from '../components/NavApp.vue';
@@ -101,6 +102,9 @@ export default {
   },
   mixins: [log],
   created() {
+    this.defaultAppointment.start_at =
+      moment().hour(0).minute(0).second(this.start * 3600)
+        .unix();
     this.appointment = { ...this.defaultAppointment };
     const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
@@ -239,30 +243,57 @@ export default {
         title: 'Editar Agendamento', content: Form, data, buttons,
       });
     },
-    openModalCheckout(appointment) {
-      const buttons = [
-        {
+    openModalCheckout(appointmentToCheckout) {
+      const appointment = appointmentToCheckout;
+      const canComplete = appointment.status === AppointmentStatus.NEW ||
+        appointment.status === AppointmentStatus.STARTED;
+      const canEdit = appointment.status === AppointmentStatus.NEW ||
+        appointment.status === AppointmentStatus.STARTED;
+      const canNoShow = appointment.status === AppointmentStatus.NEW;
+      const canStart = appointment.status === AppointmentStatus.NEW;
+
+      const buttons = [];
+      if (canComplete) {
+        buttons.push({
           title: 'Finalizar',
           class: 'is-primary',
-          action: this.saveNewAppointment,
-        },
-      ];
-      const dropdown = [
-        {
+          action: this.checkout,
+        });
+      }
+
+      const dropdown = [];
+      if (canEdit) {
+        dropdown.push({
           title: 'Editar',
           action: () => this.openModalEdit(appointment),
-        },
-        {
+        });
+      }
+      if (canStart) {
+        dropdown.push({
+          title: 'Iniciar',
+          class: 'has-text-info',
+          action: () => {
+            appointment.status = AppointmentStatus.STARTED;
+            this.updateAppointment({ appointment });
+          },
+        });
+      }
+      if (canNoShow) {
+        dropdown.push({
           title: 'Não compareceu',
           class: 'has-text-danger',
-          action: this.saveNewAppointment,
-        },
-        {
-          title: 'Deletar',
-          class: 'has-text-danger',
-          action: this.deleteAppointment,
-        },
-      ];
+          action: () => {
+            appointment.status = AppointmentStatus.NO_SHOW;
+            this.updateAppointment({ appointment });
+          },
+        });
+      }
+      dropdown.push({
+        title: 'Deletar',
+        class: 'has-text-danger',
+        action: this.deleteAppointment,
+      });
+
       const data = {
         appointment,
         employees: this.employees,
@@ -341,6 +372,7 @@ export default {
         api.delete(`/appointments/${appointment.id}`)
           .then(() => {
             this.appointments = this.appointments.filter(app => app.id !== appointment.id);
+            this.fillColumnsBooked();
             this.$toast.open({
               message: 'O agendamento foi excluído!',
               type: 'is-success',
@@ -359,6 +391,33 @@ export default {
             this.$emit('set-loading-overlay', false);
           });
       }
+    },
+    checkout(data) {
+      const { appointment } = data;
+      this.$emit('set-loading-overlay', true);
+      api.post(`/appointments/${appointment.id}/checkout`)
+        .then((response) => {
+          const updatedAppointment = response.data || {};
+          this.appointments = this.appointments.map((apt) => {
+            if (apt.id === updatedAppointment.id) {
+              return updatedAppointment;
+            }
+            return apt;
+          });
+          this.fillColumnsBooked();
+          this.$emit('set-loading-overlay', false);
+          this.$emit('close-modal');
+        })
+        .catch((error) => {
+          const message = error && error.response && error.response.data ?
+            error.response.data.message :
+            null;
+          this.$toast.open({
+            message: `Impossível realizer o checkout para esse agendamento! ${message}`,
+            type: 'is-danger',
+          });
+          this.$emit('set-loading-overlay', false);
+        });
     },
   },
 };
