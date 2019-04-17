@@ -23,7 +23,7 @@
         <b-dropdown
           aria-role="list"
           v-if="dropdown.length > 0"
-          position="is-top-left"
+          position="is-top-right"
         >
           <button class="button" slot="trigger">
             <span>Opções</span>
