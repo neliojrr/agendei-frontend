@@ -6,12 +6,12 @@
         :active.sync="isLoading"
       ></b-loading>
       <Modal
-        v-bind="modalProps"
-        @close="closeModal"
+        v-if="currentModal && currentModal.id"
+        v-bind:key="currentModal.id"
+        v-bind:id="currentModal.id"
+        v-bind="currentModal.props"
       />
       <router-view
-        @open-modal="openModal"
-        @close-modal="closeModal"
         @set-form-errors="setFormErrors"
         @set-loading-overlay="setLoadingOverlay"
       />
@@ -51,45 +51,38 @@ export default {
     Modal,
   },
   created() {
-    const user = JSON.parse(window.localStorage.getItem('user')) || {};
-    const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
-    if (user.id && salon.id) {
-      this.setLoadingOverlay(true);
-      api.get('/auth/validate_token').then((response) => {
-        if (response && response.status && response.status === 200) {
-          const path = window.location.pathname;
-          if (path.indexOf('/login') !== -1) {
+    const path = window.location.pathname;
+    if (path.indexOf('/login') > -1) {
+      const user = JSON.parse(window.localStorage.getItem('user')) || {};
+      const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
+      if (user.id && salon.id) {
+        this.setLoadingOverlay(true);
+        api.get('/auth/validate_token').then((response) => {
+          if (response && response.status && response.status === 200) {
             this.$router.replace('/agenda');
           }
-        }
+          this.setLoadingOverlay(false);
+        }).catch(() => {
+          this.setLoadingOverlay(false);
+        });
+      } else {
         this.setLoadingOverlay(false);
-      }).catch(() => {
-        this.$router.replace('/login');
-        this.setLoadingOverlay(false);
-      });
-    } else {
-      this.setLoadingOverlay(false);
+      }
     }
   },
+  computed: {
+    modals() {
+      return this.$store.state.modal.items;
+    },
+    currentModal() {
+      const modalsCount = this.$store.state.modal.items.length;
+      if (modalsCount > 0) {
+        return this.$store.state.modal.items[modalsCount - 1];
+      }
+      return null;
+    },
+  },
   methods: {
-    openModal(props) {
-      this.modalProps = {
-        ...props,
-        show: true,
-        errors: {},
-      };
-    },
-    closeModal() {
-      this.modalProps = {
-        show: false,
-        content: null,
-        title: '',
-        buttons: [],
-        dropdown: [],
-        data: {},
-        errors: {},
-      };
-    },
     setFormErrors(errors) {
       this.modalProps = {
         ...this.modalProps,

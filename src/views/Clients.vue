@@ -37,11 +37,13 @@
 
 <script>
 import { debounce } from 'lodash';
+import { mapMutations, mapActions } from 'vuex';
 import Table from '@/components/Table.vue';
 import Form from '@/components/clients/Form.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
 import { api } from '@/utils/api-connect';
+import modalId from '@/utils/modalId';
 
 export default {
   data() {
@@ -60,7 +62,6 @@ export default {
         zip_code: '',
         city: '',
         state: '',
-        avatar: undefined,
       },
       client: {},
       headers: [
@@ -98,6 +99,8 @@ export default {
     this.getClients();
   },
   methods: {
+    ...mapActions('client', ['addClient']),
+    ...mapMutations('modal', ['addModal']),
     getClients() {
       api.get(`/salons/${this.salon.id}/clients`)
         .then((response) => {
@@ -121,7 +124,12 @@ export default {
         },
       ];
       this.client = { ...this.defaultClient };
-      this.$emit('open-modal', 'Novo Cliente', Form, this.client, buttons);
+      const id = modalId.NEW_CLIENT;
+      const props =
+        {
+          title: 'Novo Cliente', content: Form, data: this.client, buttons,
+        };
+      this.addModal({ id, props });
     },
     saveNewClient() {
       this.$emit('set-loading-overlay', true);
@@ -130,9 +138,9 @@ export default {
       for (let i = 0; i < clientAttributes.length; i += 1) {
         data.append(`client[${clientAttributes[i]}]`, this.client[clientAttributes[i]]);
       }
-      api.post(`/salons/${this.salon.id}/clients`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      this.addClient({ data, salon: this.salon })
         .then((response) => {
-          const newClient = response.data;
+          const newClient = response;
           this.clients.push(newClient);
           this.client = { ...this.defaultClient };
           this.$emit('set-loading-overlay', false);
@@ -142,14 +150,8 @@ export default {
             type: 'is-success',
           });
         })
-        .catch((error) => {
+        .catch((errors) => {
           this.$emit('set-loading-overlay', false);
-          let errors = {};
-          if (error.response) {
-            errors = error.response.data || {};
-          } else {
-            errors.message = error.message;
-          }
           this.errors = errors;
           this.$emit('set-form-errors', this.errors);
         });

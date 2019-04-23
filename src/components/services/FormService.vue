@@ -39,6 +39,7 @@
             :class="{ 'is-danger': errors.cost }"
             type="number"
             placeholder="Preço de custo do serviço"
+            step="any"
           />
           <span class="icon is-small is-left">
             <font-awesome-icon icon="dollar-sign" />
@@ -57,6 +58,7 @@
             :class="{ 'is-danger': errors.price }"
             type="number"
             placeholder="Preço de venda do serviço"
+            step="0.1"
           />
           <span class="icon is-small is-left">
             <font-awesome-icon icon="dollar-sign" />
@@ -142,4 +144,3 @@ export default {
   }
 }
 </style>
-

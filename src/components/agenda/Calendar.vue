@@ -45,6 +45,7 @@
                 ? {
                   backgroundColor: columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.color,
                   borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.borderColor}`,
+                  opacity: columnsBooked[getColumnId(n, daySelected, employeeSelected)].status === 'completed' ? 0.6 : 1,
                 }
                 : {}
               "
@@ -82,6 +83,7 @@
                 ? {
                   backgroundColor: columnsBooked[getColumnId(n, daySelected, s)].employee.color,
                   borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, s)].employee.borderColor}`,
+                  opacity: columnsBooked[getColumnId(n, daySelected, s)].status === 'completed' ? 0.6 : 1,
                 }
                 : {}
               "
@@ -120,6 +122,7 @@
               ? {
                 backgroundColor: columnsBooked[getColumnId(n, d)].employee.color,
                 borderLeft: `2px solid ${columnsBooked[getColumnId(n, d)].employee.borderColor}`,
+                opacity: columnsBooked[getColumnId(n, d)].status === 'completed' ? 0.6 : 1,
               }
               : {}
             "

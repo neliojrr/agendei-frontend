@@ -65,7 +65,7 @@
           <div class="control is-expanded column">
             <label class="label">Data nascimento</label>
             <imask-input
-              v-model="client.birth"
+              :value="birthday"
               :mask="Date"
               :unmask="true"
               @accept="onAccept"
@@ -154,6 +154,7 @@
 
 <script>
 import { IMaskComponent } from 'vue-imask';
+import moment from 'moment';
 
 export default {
   data() {
@@ -178,6 +179,14 @@ export default {
   },
   components: {
     'imask-input': IMaskComponent,
+  },
+  computed: {
+    birthday() {
+      if (this.client.birth) {
+        return moment(this.client.birth).format('DD.MM.YYYY');
+      }
+      return null;
+    },
   },
   methods: {
     onAccept() {},
@@ -241,4 +250,3 @@ export default {
   }
 }
 </style>
-

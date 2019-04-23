@@ -19,11 +19,13 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+import modalId from '@/utils/modalId';
+import { api } from '@/utils/api-connect';
 import StaffList from '@/components/staff/StaffList.vue';
 import Form from '@/components/staff/Form.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
-import { api } from '@/utils/api-connect';
 
 export default {
   data() {
@@ -58,6 +60,8 @@ export default {
     this.getStaff();
   },
   methods: {
+    ...mapMutations('modal', ['addModal', 'removeModal']),
+
     getStaff() {
       api.get(`/salons/${this.salon.id}/employees`)
         .then((response) => {
@@ -73,6 +77,7 @@ export default {
           });
         });
     },
+
     openModalNewStaff() {
       const buttons = [
         {
@@ -82,8 +87,15 @@ export default {
         },
       ];
       this.employee = { ...this.defaultEmployee };
-      this.$emit('open-modal', 'Novo Profissional', Form, this.employee, buttons);
+      const id = modalId.NEW_STAFF;
+      const data = this.employee;
+      const props =
+        {
+          title: 'Novo Profissional', content: Form, data, buttons,
+        };
+      this.addModal({ id, props });
     },
+
     saveNewEmployee() {
       this.$emit('set-loading-overlay', true);
       this.employee.service_ids = this.employee.services.map(service => service.id);
@@ -93,7 +105,7 @@ export default {
           this.employees.push(newEmployee);
           this.employee = { ...this.defaultEmployee };
           this.$emit('set-loading-overlay', false);
-          this.$emit('close-modal');
+          this.removeModal({ id: modalId.NEW_STAFF });
         })
         .catch((error) => {
           this.$emit('set-loading-overlay', false);
@@ -107,6 +119,7 @@ export default {
           this.$emit('set-form-errors', this.errors);
         });
     },
+
     editEmployee(employee) {
       const buttons = [
         {
@@ -121,13 +134,14 @@ export default {
         },
       ];
       const data = { ...employee };
-      this.$emit(
-        'open-modal',
+      const id = modalId.EDIT_STAFF;
+      const props =
         {
           title: 'Editar Profissional', content: Form, data, buttons,
-        },
-      );
+        };
+      this.addModal({ id, props });
     },
+
     deleteEmployee(employee) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
@@ -139,7 +153,7 @@ export default {
               type: 'is-success',
             });
             this.$emit('set-loading-overlay', false);
-            this.$emit('close-modal');
+            this.removeModal({ id: modalId.EDIT_STAFF });
           })
           .catch((error) => {
             const message = error && error.response && error.response.data ?
@@ -153,6 +167,7 @@ export default {
           });
       }
     },
+
     updateEmployee(employee) {
       this.$emit('set-loading-overlay', true);
       const newEmployee = employee;
@@ -167,7 +182,7 @@ export default {
             return emp;
           });
           this.$emit('set-loading-overlay', false);
-          this.$emit('close-modal');
+          this.removeModal({ id: modalId.EDIT_STAFF });
         })
         .catch((error) => {
           this.$emit('set-loading-overlay', false);

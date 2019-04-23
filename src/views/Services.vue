@@ -95,6 +95,8 @@
 
 <script>
 import { debounce } from 'lodash';
+import { mapMutations } from 'vuex';
+import modalId from '@/utils/modalId';
 import { api } from '@/utils/api-connect';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
@@ -145,6 +147,8 @@ export default {
     this.getServiceCategories();
   },
   methods: {
+    ...mapMutations('modal', ['addModal', 'removeModal']),
+
     getServiceCategories() {
       api.get(`/salons/${this.salon.id}/service_categories`)
         .then((response) => {
@@ -160,13 +164,14 @@ export default {
           });
         });
     },
+
     saveNewServiceCategory(serviceCategory) {
       this.$emit('set-loading-overlay', true);
       api.post(`/salons/${this.salon.id}/service_categories`, { ...serviceCategory })
         .then((response) => {
           this.serviceCategories.push(response.data);
           this.$emit('set-loading-overlay', false);
-          this.$emit('close-modal');
+          this.removeModal({ id: modalId.NEW_SERVICE_CATEGORY });
         })
         .catch((error) => {
           this.$emit('set-loading-overlay', false);
@@ -180,6 +185,7 @@ export default {
           this.$emit('set-form-errors', this.errors);
         });
     },
+
     updateServiceCategory(serviceCategory) {
       this.$emit('set-loading-overlay', true);
       api.put(`/service_categories/${serviceCategory.id}`, { ...serviceCategory })
@@ -193,9 +199,10 @@ export default {
             return sc;
           });
           this.$emit('set-loading-overlay', false);
-          this.$emit('close-modal');
+          this.removeModal({ id: modalId.EDIT_SERVICE_CATEGORY });
         });
     },
+
     deleteServiceCategory(serviceCategoryId) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
@@ -218,9 +225,13 @@ export default {
           });
       }
     },
-    saveNewService(service) {
+
+    saveNewService(data) {
       this.$emit('set-loading-overlay', true);
-      api.post(`/salons/${this.salon.id}/services`, { ...service })
+      const newData = { ...data };
+      newData.service.cost = newData.service.cost * 100;
+      newData.service.price = newData.service.price * 100;
+      api.post(`/salons/${this.salon.id}/services`, { ...newData })
         .then((response) => {
           const newService = response.data;
           this.serviceCategories = this.serviceCategories.map((sc) => {
@@ -230,7 +241,7 @@ export default {
             return sc;
           });
           this.$emit('set-loading-overlay', false);
-          this.$emit('close-modal');
+          this.removeModal({ id: modalId.NEW_SERVICE });
         })
         .catch((error) => {
           this.$emit('set-loading-overlay', false);
@@ -244,9 +255,13 @@ export default {
           this.$emit('set-form-errors', this.errors);
         });
     },
+
     updateService({ service, serviceCategoryId }) {
       this.$emit('set-loading-overlay', true);
-      api.put(`/services/${service.id}`, { ...service })
+      const newService = { ...service };
+      newService.cost *= 100;
+      newService.price *= 100;
+      api.put(`/services/${service.id}`, { ...newService })
         .then((response) => {
           const updatedService = response.data || {};
           const serviceCategory = this.serviceCategories
@@ -277,9 +292,10 @@ export default {
             return sc;
           });
           this.$emit('set-loading-overlay', false);
-          this.$emit('close-modal');
+          this.removeModal({ id: modalId.EDIT_SERVICE });
         });
     },
+
     deleteService({ service }) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
@@ -298,7 +314,7 @@ export default {
               type: 'is-success',
             });
             this.$emit('set-loading-overlay', false);
-            this.$emit('close-modal');
+            this.removeModal({ id: modalId.EDIT_SERVICE });
           })
           .catch(() => {
             this.$toast.open({
@@ -309,6 +325,7 @@ export default {
           });
       }
     },
+
     openModalNewServiceCategory() {
       this.showButtonOptions = false;
       const buttons = [
@@ -322,8 +339,14 @@ export default {
         name: '',
         description: '',
       };
-      this.$emit('open-modal', 'Nova Categoria', Form, this.serviceCategory, buttons);
+      const id = modalId.NEW_SERVICE_CATEGORY;
+      const data = { ...this.serviceCategory };
+      const props = {
+        title: 'Nova Categoria', content: Form, data, buttons,
+      };
+      this.addModal({ id, props });
     },
+
     openModalEditServiceCategory(serviceCategory) {
       const buttons = [
         {
@@ -332,8 +355,14 @@ export default {
           action: this.updateServiceCategory,
         },
       ];
-      this.$emit('open-modal', 'Editar Categoria', Form, { ...serviceCategory }, buttons);
+      const id = modalId.EDIT_SERVICE_CATEGORY;
+      const data = { ...serviceCategory };
+      const props = {
+        title: 'Editar Categoria', content: Form, data, buttons,
+      };
+      this.addModal({ id, props });
     },
+
     openModalNewService(serviceCategoryId = null) {
       this.showButtonOptions = false;
       const buttons = [
@@ -355,8 +384,14 @@ export default {
         service: this.service,
         serviceCategories: this.allServiceCategories,
       };
-      this.$emit('open-modal', 'Novo Serviço', FormService, data, buttons);
+      const id = modalId.NEW_SERVICE;
+      const props =
+        {
+          title: 'Novo Serviço', content: FormService, data, buttons,
+        };
+      this.addModal({ id, props });
     },
+
     editService(service) {
       const buttons = [
         {
@@ -375,8 +410,14 @@ export default {
         serviceCategoryId: service.service_category_id,
         serviceCategories: this.allServiceCategories,
       };
-      this.$emit('open-modal', 'Editar Serviço', FormService, data, buttons);
+      const id = modalId.EDIT_SERVICE;
+      const props =
+        {
+          title: 'Editar Serviço', content: FormService, data, buttons,
+        };
+      this.addModal({ id, props });
     },
+
     search() {
       this.$emit('set-loading-overlay', true);
       if (this.query && this.query.length > 1) {

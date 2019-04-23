@@ -1,13 +1,19 @@
 <template>
-  <div class="modal" :class="{ 'is-active': show }">
-    <div class="modal-background" @click="$emit('close')"></div>
+  <div class="modal is-active">
+    <div class="modal-background" @click="removeModal({ id })"></div>
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">{{ title }}</p>
-        <button class="delete" aria-label="close" @click="$emit('close')"></button>
+        <button class="delete" aria-label="close" @click="removeModal({ id })"></button>
       </header>
       <section class="modal-card-body">
-        <component :is="content" :data="data" :errors="errors" :allDisabled="allDisabled" />
+        <component
+          :is="content"
+          :data="data"
+          :errors="errors"
+          :allDisabled="allDisabled"
+          :statusDisplay="statusDisplay"
+        />
       </section>
       <footer class="modal-card-foot">
         <button
@@ -42,20 +48,26 @@
             {{ drop.title }}
           </b-dropdown-item>
         </b-dropdown>
-        <button class="button is-text" @click="$emit('close')">{{ cancelButtonText }}</button>
+        <button class="button is-text" @click="removeModal({ id })">{{ cancelButtonText }}</button>
       </footer>
     </div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   data() {
     return {
-      isActive: false,
+      statusDisplay: 'none',
     };
   },
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       default: '',
@@ -97,12 +109,8 @@ export default {
       default: false,
     },
   },
-  watch: {
-    show() {
-      if (!this.show) {
-        this.isActive = false;
-      }
-    },
+  methods: {
+    ...mapMutations('modal', ['removeModal']),
   },
 };
 </script>

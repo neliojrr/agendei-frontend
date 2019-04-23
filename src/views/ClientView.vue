@@ -18,7 +18,9 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 import { api } from '@/utils/api-connect';
+import modalId from '@/utils/modalId';
 import Table from '@/components/Table.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
@@ -51,10 +53,15 @@ export default {
     this.getClient(this.$route.params.id);
   },
   methods: {
+    ...mapMutations('modal', ['addModal', 'removeModal']),
+
     getClient(clientId) {
       api.get(`/clients/${clientId}`)
         .then((response) => {
           this.client = response.data || {};
+          if (this.client.avatar === null) {
+            delete this.client.avatar;
+          }
           this.$emit('set-loading-overlay', false);
         })
         .catch(() => {
@@ -65,6 +72,7 @@ export default {
           });
         });
     },
+
     editClient() {
       const buttons = [
         {
@@ -79,8 +87,13 @@ export default {
         },
       ];
       const data = { ...this.client };
-      this.$emit('open-modal', 'Editar Cliente', Form, data, buttons);
+      const id = modalId.EDIT_CLIENT;
+      const props = {
+        title: 'Editar Cliente', content: Form, data, buttons,
+      };
+      this.addModal({ id, props });
     },
+
     updateClient(client) {
       this.$emit('set-loading-overlay', true);
       delete client.salon;
@@ -94,7 +107,7 @@ export default {
         .then((response) => {
           this.client = response.data || {};
           this.$emit('set-loading-overlay', false);
-          this.$emit('close-modal');
+          this.removeModal({ id: modalId.EDIT_CLIENT });
         })
         .catch((error) => {
           this.$emit('set-loading-overlay', false);
@@ -108,6 +121,7 @@ export default {
           this.$emit('set-form-errors', this.errors);
         });
     },
+
     deleteClient(client) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
@@ -118,7 +132,7 @@ export default {
               type: 'is-success',
             });
             this.$emit('set-loading-overlay', false);
-            this.$emit('close-modal');
+            this.removeModal({ id: modalId.EDIT_CLIENT });
             this.$router.replace('/clients');
           })
           .catch((error) => {
