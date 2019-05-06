@@ -124,7 +124,7 @@ export default {
     changeDate(date) {
       this.daySelected = moment(date);
       this.showStaffOnHeader = true;
-      this.fillColumnsBooked();
+      this.getAppointments(this.daySelected);
     },
 
     toggleStaffOnHeader() {
@@ -186,9 +186,13 @@ export default {
       return null;
     },
 
-    getAppointments() {
+    getAppointments(day = moment()) {
       this.$emit('set-loading-overlay', true);
-      api.get(`/salons/${this.salon.id}/appointments`)
+      api.get(`/salons/${this.salon.id}/appointments`, {
+        params: {
+          day: day.format('YYYY-MM-DD'),
+        },
+      })
         .then((response) => {
           this.appointments = response.data || [];
           this.fillColumnsBooked();
