@@ -100,7 +100,8 @@ export default {
   },
   methods: {
     ...mapActions('client', ['addClient']),
-    ...mapMutations('modal', ['addModal']),
+    ...mapMutations('modal', ['addModal', 'removeModal']),
+
     getClients() {
       api.get(`/salons/${this.salon.id}/clients`)
         .then((response) => {
@@ -115,6 +116,7 @@ export default {
           });
         });
     },
+
     openModalNewClient() {
       const buttons = [
         {
@@ -131,6 +133,7 @@ export default {
         };
       this.addModal({ id, props });
     },
+
     saveNewClient() {
       this.$emit('set-loading-overlay', true);
       const data = new FormData();
@@ -143,8 +146,8 @@ export default {
           const newClient = response;
           this.clients.push(newClient);
           this.client = { ...this.defaultClient };
+          this.removeModal({ id: modalId.NEW_CLIENT });
           this.$emit('set-loading-overlay', false);
-          this.$emit('close-modal');
           this.$toast.open({
             message: 'Cliente cadastrado com sucesso.',
             type: 'is-success',
@@ -156,6 +159,7 @@ export default {
           this.$emit('set-form-errors', this.errors);
         });
     },
+
     search() {
       this.$emit('set-loading-overlay', true);
       if (this.query && this.query.length > 1) {
@@ -175,6 +179,7 @@ export default {
         this.getClients();
       }
     },
+
     rowClick(client) {
       this.$router.push(`/clients/${client.id}`);
     },
