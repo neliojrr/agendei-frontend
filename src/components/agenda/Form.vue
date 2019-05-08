@@ -32,7 +32,7 @@
       <div class="control column is-3">
         <label class="label">Início</label>
         <div class="select is-fullwidth" :class="{ 'is-danger': errors.start_at }">
-          <select v-model="appointment.start_at">
+          <select @change="selectStartAt" :value="hourSelected">
             <option v-for="t in timeRows" :key="t" :value="getTimeInSeconds(t)">
               {{ getDisplayTime(t) }}
             </option>
@@ -118,6 +118,7 @@ import serviceDuration from '@/utils/serviceDuration';
 export default {
   data() {
     return {
+      ptBR,
       appointment: this.data.appointment,
       employees: this.data.employees,
       durationOptions: serviceDuration,
@@ -125,7 +126,7 @@ export default {
       clients: [],
       serviceCategories: [],
       timeRows: (this.data.end - this.data.start) * 4,
-      ptBR,
+      hourSelected: this.data.start * 3600,
     };
   },
   props: {
@@ -175,15 +176,15 @@ export default {
     // Get the time based on the counting between start and end of the day (15 in 15 min)
     getTimeInSeconds(t) {
       const minutes = this.data.start * 60;
-      const seconds = (((t - 1) * 15) + minutes) * 60;
-      return moment().hour(0).minute(0).second(seconds)
-        .unix();
+      return (((t - 1) * 15) + minutes) * 60;
     },
+
     getDisplayTime(t) {
       const minutes = ((t - 1) * 15) % 60;
       const hours = parseInt((t - 1) / 4, 10) + this.data.start;
       return `${hours}:${minutes === 0 ? '00' : minutes}h`;
     },
+
     getClients() {
       api.get(`/salons/${this.salon.id}/clients`)
         .then((response) => {
@@ -198,6 +199,7 @@ export default {
           });
         });
     },
+
     getServiceCategories() {
       api.get(`/salons/${this.salon.id}/service_categories`)
         .then((response) => {
@@ -212,10 +214,12 @@ export default {
           });
         });
     },
+
     setClient(client) {
       this.appointment.client = client;
       this.appointment.client_id = client ? client.id : null;
     },
+
     setDurationAndPrice() {
       this.appointment.duration =
         this.appointment.service ? this.appointment.service.duration : null;
@@ -224,22 +228,39 @@ export default {
       this.appointment.price =
         this.appointment.service ? this.appointment.service.price : null;
     },
+
     setEmployeeId(e) {
       const id = e.target.value;
       this.appointment.employee_id = id;
       this.appointment.employee = this.employees.find(emp => emp.id === Number(id));
     },
+
     changeDate(date) {
       const momentDate = moment(date);
       const day = momentDate.date();
       const month = momentDate.month();
       const year = momentDate.year();
-      const currentPickedDate = this.appointment.start_at ? moment.unix(this.appointment.start_at) : moment();
+      const currentPickedDate = this.appointment.start_at
+        ? moment.unix(this.appointment.start_at)
+        : moment();
       const updatedDate = currentPickedDate.date(day).month(month).year(year);
       this.appointment.start_at = updatedDate.unix();
     },
+
     getCalendarValue() {
-      return (this.appointment.start_at ? moment.unix(this.appointment.start_at) : moment()).toDate();
+      return (
+        this.appointment.start_at
+          ? moment.unix(this.appointment.start_at)
+          : moment()
+      ).toDate();
+    },
+
+    selectStartAt(e) {
+      this.hourSelected = e.target.value;
+      this.appointment.start_at =
+        moment.unix(this.appointment.start_at).hour(0).minutes(0).seconds(0)
+          .seconds(this.hourSelected)
+          .unix();
     },
   },
 };
@@ -289,4 +310,3 @@ export default {
   }
 }
 </style>
-

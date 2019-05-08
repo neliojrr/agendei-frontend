@@ -104,9 +104,8 @@ export default {
   },
   mixins: [log],
   created() {
-    this.defaultAppointment.start_at =
-      moment().hour(0).minute(0).second(this.start * 3600)
-        .unix();
+    const startDate = moment().hour(0).minute(0).seconds(this.start * 3600);
+    this.defaultAppointment.start_at = startDate.unix();
     this.appointment = { ...this.defaultAppointment };
     const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
