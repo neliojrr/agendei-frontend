@@ -195,6 +195,10 @@ export default {
         color: $success;
       }
 
+      .appointment-status-no-show {
+        color: $error;
+      }
+
       .appointment-notes {
         margin-top: 0;
         font-size: 14px;
