@@ -39,13 +39,18 @@
               class="column is-booking-type"
               :class="{
                 'full-hour': isFullHour(n),
-                'is-booked': columnsBooked[getColumnId(n, daySelected, employeeSelected)]
+                'is-booked': columnsBooked[getColumnId(n, daySelected, employeeSelected)],
               }"
               :style="!!columnsBooked[getColumnId(n, daySelected, employeeSelected)]
                 ? {
-                  backgroundColor: columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.color,
+                  backgroundColor: columnsBooked[getColumnId(n, daySelected, employeeSelected)].status === 'no-show'
+                    ? 'hsl(348, 100%, 61%)'
+                    : columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.color,
                   borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.borderColor}`,
-                  opacity: columnsBooked[getColumnId(n, daySelected, employeeSelected)].status === 'completed' ? 0.6 : 1,
+                  opacity: columnsBooked[getColumnId(n, daySelected, employeeSelected)].status === 'no-show' ||
+                           columnsBooked[getColumnId(n, daySelected, employeeSelected)].status === 'completed'
+                            ? 0.6
+                            : 1,
                 }
                 : {}
               "
@@ -77,13 +82,18 @@
               class="column is-booking-type"
               :class="{
                 'full-hour': isFullHour(n),
-                'is-booked': !!columnsBooked[getColumnId(n, daySelected, s)]
+                'is-booked': !!columnsBooked[getColumnId(n, daySelected, s)],
               }"
               :style="!!columnsBooked[getColumnId(n, daySelected, s)]
                 ? {
-                  backgroundColor: columnsBooked[getColumnId(n, daySelected, s)].employee.color,
+                  backgroundColor: columnsBooked[getColumnId(n, daySelected, s)].status === 'no-show'
+                    ? 'hsl(348, 100%, 61%)'
+                    : columnsBooked[getColumnId(n, daySelected, s)].employee.color,
                   borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, s)].employee.borderColor}`,
-                  opacity: columnsBooked[getColumnId(n, daySelected, s)].status === 'completed' ? 0.6 : 1,
+                  opacity: columnsBooked[getColumnId(n, daySelected, s)].status === 'no-show' ||
+                           columnsBooked[getColumnId(n, daySelected, s)].status === 'completed'
+                            ? 0.6
+                            : 1,
                 }
                 : {}
               "
@@ -114,15 +124,20 @@
             class="column is-booking-type"
             :class="{
               'full-hour': isFullHour(n),
-              'is-booked': !!columnsBooked[getColumnId(n, d)]
+              'is-booked': !!columnsBooked[getColumnId(n, d)],
             }"
             v-for="d in daysOfWeek"
             :key="getColumnId(n, d)"
             :style="!!columnsBooked[getColumnId(n, d)]
               ? {
-                backgroundColor: columnsBooked[getColumnId(n, d)].employee.color,
+                backgroundColor: columnsBooked[getColumnId(n, d)].status === 'no-show'
+                  ? 'hsl(348, 100%, 61%)'
+                  : columnsBooked[getColumnId(n, d)].employee.color,
                 borderLeft: `2px solid ${columnsBooked[getColumnId(n, d)].employee.borderColor}`,
-                opacity: columnsBooked[getColumnId(n, d)].status === 'completed' ? 0.6 : 1,
+                opacity: columnsBooked[getColumnId(n, d)].status === 'no-show' ||
+                         columnsBooked[getColumnId(n, d)].status === 'completed'
+                          ? 0.6
+                          : 1,
               }
               : {}
             "
@@ -216,7 +231,38 @@ export default {
     tooltipContent(appointment) {
       if (appointment) {
         return (
-          `<div class="columns"><div class="column is-3"><span class="figure">${appointment.client ? appointment.client.name.substr(0, 1) : 'A'}</span></div><div class="column is-9 client-name"><h1 class="subtitle">${appointment.client ? appointment.client.name : 'Desconhecido'}</h1></div></div><div class="columns is-multiline"><div class="column is-9 appointment-time">${moment.unix(appointment.start_at).format('HH:mm')} <span>às</span> ${moment.unix(appointment.start_at).add(appointment.duration, 's').format('HH:mm')}</div><div class="column is-3 appointment-price">${appointment.price}</div><div class="column is-9 appointment-service">${appointment.service.name} <span>com</span> ${appointment.employee.name}</div><div class="column is-3 appointment-status">${appointment.status_display}</div><div class="column is-12 appointment-notes">${appointment.notes || ''}</div></div>`
+          `<div class="columns">
+            <div class="column is-3">
+              <span class="figure">
+                ${appointment.client ? appointment.client.name.substr(0, 1) : 'A'}
+              </span>
+            </div>
+            <div class="column is-9 client-name">
+              <h1 class="subtitle">${appointment.client ? appointment.client.name : 'Desconhecido'}
+              </h1>
+            </div>
+          </div>
+          <div class="columns is-multiline">
+            <div class="column is-8 appointment-time">
+              ${moment.unix(appointment.start_at).format('HH:mm')}
+              <span>às</span>
+              ${moment.unix(appointment.start_at).add(appointment.duration, 's').format('HH:mm')}
+            </div>
+            <div class="column is-4 appointment-price">
+              ${appointment.price}
+            </div>
+            <div class="column is-8 appointment-service">
+              ${appointment.service.name}
+              <span>com</span>
+              ${appointment.employee.name}
+            </div>
+            <div class="column is-4 appointment-status appointment-status-${appointment.status}">
+              ${appointment.status_display}
+            </div>
+            <div class="column is-12 appointment-notes">
+              ${appointment.notes || ''}
+            </div>
+          </div>`
         );
       }
       return null;
