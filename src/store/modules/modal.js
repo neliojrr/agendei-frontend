@@ -17,13 +17,20 @@ const modal = {
       state.items = state.items.filter(item => item.id !== id);
     },
 
-    updateModalData(state, payload) {
-      const { id, data } = payload;
+    updateModalProps(state, payload) {
+      const {
+        id, data, buttons, dropdown,
+      } = payload;
       const index = state.items.findIndex(item => item.id === id);
       if (index > -1) {
-        const modal = { ...state.items[index] };
-        modal.props = { ...modal.props, data: { ...modal.props.data, ...data } };
-        state.items.splice(index, 1, modal);
+        const currentModal = { ...state.items[index] };
+        currentModal.props = {
+          ...currentModal.props,
+          buttons,
+          dropdown,
+          data: { ...currentModal.props.data, ...data },
+        };
+        state.items.splice(index, 1, currentModal);
       }
     },
 

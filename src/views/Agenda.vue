@@ -113,7 +113,7 @@ export default {
     this.getEmployees();
   },
   methods: {
-    ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalData']),
+    ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
     ...mapGetters('modal', ['isModalOpen']),
 
     moment(date) {
@@ -183,6 +183,58 @@ export default {
         return book.service ? book.service.name : '';
       }
       return null;
+    },
+
+    modalButtons() {
+      const canComplete = this.appointment.status === AppointmentStatus.NEW ||
+        this.appointment.status === AppointmentStatus.STARTED;
+      const canEdit = this.appointment.status === AppointmentStatus.NEW ||
+        this.appointment.status === AppointmentStatus.STARTED;
+      const canNoShow = this.appointment.status === AppointmentStatus.NEW;
+      const canStart = this.appointment.status === AppointmentStatus.NEW;
+
+      const buttons = [];
+      if (canComplete) {
+        buttons.push({
+          title: 'Finalizar',
+          class: 'is-primary',
+          action: this.checkout,
+        });
+      }
+
+      const dropdown = [];
+      if (canEdit) {
+        dropdown.push({
+          title: 'Editar',
+          action: () => this.openModalEdit(this.appointment),
+        });
+      }
+      if (canStart) {
+        dropdown.push({
+          title: 'Iniciar',
+          class: 'has-text-info',
+          action: () => {
+            this.appointment.status = AppointmentStatus.STARTED;
+            this.updateAppointment({ appointment: this.appointment });
+          },
+        });
+      }
+      if (canNoShow) {
+        dropdown.push({
+          title: 'Não compareceu',
+          class: `has-text-danger ${this.appointment.status}`,
+          action: () => {
+            this.appointment.status = AppointmentStatus.NO_SHOW;
+            this.updateAppointment({ appointment: this.appointment });
+          },
+        });
+      }
+      dropdown.push({
+        title: 'Deletar',
+        class: 'has-text-danger',
+        action: this.deleteAppointment,
+      });
+      return { buttons, dropdown };
     },
 
     getAppointments(day = moment()) {
@@ -268,55 +320,7 @@ export default {
 
     openModalCheckout(appointmentToCheckout) {
       this.appointment = appointmentToCheckout;
-      const canComplete = this.appointment.status === AppointmentStatus.NEW ||
-        this.appointment.status === AppointmentStatus.STARTED;
-      const canEdit = this.appointment.status === AppointmentStatus.NEW ||
-        this.appointment.status === AppointmentStatus.STARTED;
-      const canNoShow = this.appointment.status === AppointmentStatus.NEW;
-      const canStart = this.appointment.status === AppointmentStatus.NEW;
-
-      const buttons = [];
-      if (canComplete) {
-        buttons.push({
-          title: 'Finalizar',
-          class: 'is-primary',
-          action: this.checkout,
-        });
-      }
-
-      const dropdown = [];
-      if (canEdit) {
-        dropdown.push({
-          title: 'Editar',
-          action: () => this.openModalEdit(this.appointment),
-        });
-      }
-      if (canStart) {
-        dropdown.push({
-          title: 'Iniciar',
-          class: 'has-text-info',
-          action: () => {
-            this.appointment.status = AppointmentStatus.STARTED;
-            this.updateAppointment({ appointment: this.appointment });
-          },
-        });
-      }
-      if (canNoShow) {
-        dropdown.push({
-          title: 'Não compareceu',
-          class: 'has-text-danger',
-          action: () => {
-            this.appointment.status = AppointmentStatus.NO_SHOW;
-            this.updateAppointment({ appointment: this.appointment });
-          },
-        });
-      }
-      dropdown.push({
-        title: 'Deletar',
-        class: 'has-text-danger',
-        action: this.deleteAppointment,
-      });
-
+      const { buttons, dropdown } = this.modalButtons();
       const data = this.appointment;
       const id = modalId.CHECKOUT_APPOINTMENT;
       const props = {
@@ -376,7 +380,13 @@ export default {
         this.fillColumnsBooked();
         this.$emit('set-loading-overlay', false);
         this.removeModal({ id: modalId.EDIT_APPOINTMENT });
-        this.updateModalData({ id: modalId.CHECKOUT_APPOINTMENT, data: updatedAppointment });
+        const { buttons, dropdown } = this.modalButtons();
+        this.updateModalProps({
+          buttons,
+          dropdown,
+          id: modalId.CHECKOUT_APPOINTMENT,
+          data: updatedAppointment,
+        });
       }).catch((error) => {
         this.$emit('set-loading-overlay', false);
         let errors = {};
