@@ -29,8 +29,11 @@
         type="is-black"
         :always="showButtonOptions"
       >
-        <button class="button is-info" @click="buttonAction(button.action)">
-
+        <button
+          class="button"
+          :class="button.class ? button.class : 'is-primary'"
+          @click="buttonAction(button.action)"
+        >
           <span>
             <font-awesome-icon :icon="button.icon" />
           </span>

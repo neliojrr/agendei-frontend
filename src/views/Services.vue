@@ -107,6 +107,7 @@ export default {
         title: 'Nova Categoria',
         icon: 'clipboard-list',
         action: this.openModalNewServiceCategory,
+        class: 'is-info',
       },
       {
         id: 'newService',

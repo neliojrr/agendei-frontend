@@ -103,15 +103,16 @@ export default {
   created() {
     this.buttons = [
       {
-        id: 'newAppointment',
-        title: 'Novo agendamento',
-        icon: 'calendar-alt',
+        id: 'newSale',
+        title: 'Nova Venda',
+        icon: 'spray-can',
         action: this.openModalNewAppointment,
+        class: 'is-info',
       },
       {
-        id: 'newSale',
-        title: 'Nova venda',
-        icon: 'spray-can',
+        id: 'newAppointment',
+        title: 'Novo Agendamento',
+        icon: 'calendar-alt',
         action: this.openModalNewAppointment,
       },
     ];
