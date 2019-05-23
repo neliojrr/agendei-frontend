@@ -20,54 +20,13 @@
           </div>
         </div>
         <div class="column new-service">
-          <div
-            v-if="showButtonOptions"
-            class="is-hidden-desktop mobile-action-background"
-            @click="showButtonOptions = false"
-          />
           <button class="button is-info is-hidden-touch" @click="openModalNewServiceCategory">
             <span>Nova Categoria</span>
           </button>
           <button class="button is-primary is-hidden-touch" @click="openModalNewService">
             <span>Novo Serviço</span>
           </button>
-          <button
-            class="button is-primary is-hidden-desktop"
-            v-show="!showButtonOptions"
-            @click="showButtonOptions = true"
-          >
-            <span class="is-hidden-desktop">
-              <font-awesome-icon icon="plus" />
-            </span>
-          </button>
-          <div v-show="showButtonOptions" class="is-hidden-desktop mobile-buttons">
-            <b-tooltip
-              label="Nova Categoria"
-              position="is-left"
-              type="is-black"
-              :always="showButtonOptions"
-            >
-              <button class="button is-info" @click="openModalNewServiceCategory">
-                <span>
-                  <font-awesome-icon icon="clipboard-list" />
-                </span>
-              </button>
-            </b-tooltip>
-          </div>
-          <div v-show="showButtonOptions" class="is-hidden-desktop mobile-buttons">
-            <b-tooltip
-              label="Novo Serviço"
-              position="is-left"
-              type="is-black"
-              :always="showButtonOptions"
-            >
-              <button class="button is-primary" @click="openModalNewService">
-                <span>
-                  <font-awesome-icon icon="cut" />
-                </span>
-              </button>
-            </b-tooltip>
-          </div>
+          <MobileBottomMenu :buttons="buttons" />
         </div>
       </div>
       <div
@@ -100,6 +59,7 @@ import modalId from '@/utils/modalId';
 import { api } from '@/utils/api-connect';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
+import MobileBottomMenu from '@/components/MobileBottomMenu.vue';
 import Form from '@/components/services/Form.vue';
 import FormService from '@/components/services/FormService.vue';
 import ServiceCategoryRow from '@/components/services/ServiceCategoryRow.vue';
@@ -108,7 +68,6 @@ export default {
   data() {
     return {
       title: this.pageTitle,
-      showButtonOptions: false,
       serviceCategory: {
         name: '',
         description: '',
@@ -124,12 +83,14 @@ export default {
       allServiceCategories: [],
       errors: {},
       query: '',
+      buttons: [],
     };
   },
   props: ['pageTitle'],
   components: {
     Menu,
     NavApp,
+    MobileBottomMenu,
     Form,
     FormService,
     ServiceCategoryRow,
@@ -140,6 +101,20 @@ export default {
     },
   },
   created() {
+    this.buttons = [
+      {
+        id: 'newServiceCategory',
+        title: 'Nova Categoria',
+        icon: 'clipboard-list',
+        action: this.openModalNewServiceCategory,
+      },
+      {
+        id: 'newService',
+        title: 'Novo Serviço',
+        icon: 'cut',
+        action: this.openModalNewServiceCategory,
+      },
+    ];
     this.$emit('set-loading-overlay', true);
     this.debounceSearch = debounce(this.search, 500);
     const salon = window.localStorage.getItem('salon') || '{}';
@@ -229,8 +204,8 @@ export default {
     saveNewService(data) {
       this.$emit('set-loading-overlay', true);
       const newData = { ...data };
-      newData.service.cost = newData.service.cost * 100;
-      newData.service.price = newData.service.price * 100;
+      newData.service.cost *= 100;
+      newData.service.price *= 100;
       api.post(`/salons/${this.salon.id}/services`, { ...newData })
         .then((response) => {
           const newService = response.data;
@@ -327,7 +302,6 @@ export default {
     },
 
     openModalNewServiceCategory() {
-      this.showButtonOptions = false;
       const buttons = [
         {
           title: 'Salvar',
@@ -364,7 +338,6 @@ export default {
     },
 
     openModalNewService(serviceCategoryId = null) {
-      this.showButtonOptions = false;
       const buttons = [
         {
           title: 'Salvar',
@@ -442,16 +415,6 @@ export default {
 </script>
 
 <style lang="scss">
-.mobile-action-background {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  background-color: #000000;
-  opacity: 0.4;
-  z-index: 99;
-}
 .services {
   padding: 10px;
 
@@ -459,35 +422,9 @@ export default {
     text-align: right;
 
     .new-service {
-      @media screen and (max-width: 1024px) {
-        position: fixed;
-        bottom: 21px;
-        right: 25px;
-        z-index: 100;
-      }
 
       button + button {
         margin-left: 10px;
-      }
-
-      .mobile-buttons {
-        margin-bottom: 10px;
-      }
-
-      .mobile-buttons + .mobile-buttons {
-        margin-bottom: 0;
-      }
-
-      button {
-        @media screen and (max-width: 1024px) {
-          height: 50px;
-          width: 50px;
-          padding: 0;
-          display: flex;
-          border-radius: 50%;
-          z-index: 100;
-          font-size: 18px;
-        }
       }
     }
   }

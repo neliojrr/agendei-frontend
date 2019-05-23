@@ -12,13 +12,7 @@
         @toggle-staff-on-header="toggleStaffOnHeader"
         @employee-change="employeeChange"
       />
-      <button
-        class="button is-primary new-appointment-button"
-        title="Novo agendamento"
-        @click="openModalNewAppointment"
-      >
-        <font-awesome-icon icon="plus" />
-      </button>
+      <MobileBottomMenu :buttons="buttons" :isHiddenDesktop="false" />
       <Calendar
         :employeeSelected="employeeSelected"
         :staff="employees"
@@ -44,6 +38,7 @@ import modalId from '@/utils/modalId';
 import log from '../mixins/log';
 import Menu from '../components/Menu.vue';
 import NavApp from '../components/NavApp.vue';
+import MobileBottomMenu from '../components/MobileBottomMenu.vue';
 import CalendarHeader from '../components/agenda/CalendarHeader.vue';
 import Calendar from '../components/agenda/Calendar.vue';
 import Form from '../components/agenda/Form.vue';
@@ -91,12 +86,14 @@ export default {
         employee: {},
       },
       appointment: {},
+      buttons: [],
     };
   },
   props: ['pageTitle'],
   components: {
     Menu,
     NavApp,
+    MobileBottomMenu,
     CalendarHeader,
     Calendar,
     Form,
@@ -104,6 +101,20 @@ export default {
   },
   mixins: [log],
   created() {
+    this.buttons = [
+      {
+        id: 'newAppointment',
+        title: 'Novo agendamento',
+        icon: 'calendar-alt',
+        action: this.openModalNewAppointment,
+      },
+      {
+        id: 'newSale',
+        title: 'Nova venda',
+        icon: 'spray-can',
+        action: this.openModalNewAppointment,
+      },
+    ];
     const startDate = moment().hour(0).minute(0).seconds(this.start * 3600);
     this.defaultAppointment.start_at = startDate.unix();
     this.appointment = { ...this.defaultAppointment };
