@@ -184,10 +184,6 @@ export default {
         color: $primary;
       }
 
-      .appointment-price::before {
-        content: '$';
-      }
-
       .appointment-status {
         padding-bottom: 0;
         font-size: 12px;

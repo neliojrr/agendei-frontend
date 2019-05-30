@@ -21,7 +21,7 @@
       <div class="column is-2-desktop is-2-tablet is-3-mobile">
         <div class="columns is-multiline">
           <p class="column is-12-mobile is-12-desktop is-2-tablet appointment-price">
-            {{ `R$${data.price}` }}
+            {{ displayMoney(data.price) }}
           </p>
           <p class="column is-12-desktop is-12-tablet appointment-service has-text-primary">
             {{ data.status_display }}

@@ -34,9 +34,10 @@
         <label class="label">Preço de Custo</label>
         <div class="control has-icons-left">
           <input
-            v-model="service.cost"
-            class="input"
+            :value="displayRawMoney(service.cost)"
+            @change="setCost"
             :class="{ 'is-danger': errors.cost }"
+            class="input"
             type="number"
             placeholder="Preço de custo do serviço"
             step="any"
@@ -53,9 +54,10 @@
         <label class="label">Preço de Venda</label>
         <div class="control has-icons-left">
           <input
-            v-model="service.price"
-            class="input"
+            :value="displayRawMoney(service.price)"
+            @change="setPrice"
             :class="{ 'is-danger': errors.price }"
+            class="input"
             type="number"
             placeholder="Preço de venda do serviço"
             step="0.1"
@@ -119,6 +121,14 @@ export default {
     errors: {
       type: Object,
       default: () => ({}),
+    },
+  },
+  methods: {
+    setPrice(e) {
+      this.service.price = parseInt(e.target.value * 100, 10);
+    },
+    setCost(e) {
+      this.service.cost = parseInt(e.target.value * 100, 10);
     },
   },
 };

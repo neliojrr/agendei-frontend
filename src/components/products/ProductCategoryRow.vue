@@ -69,7 +69,7 @@ export default {
         {
           name: 'price',
           title: 'Preço',
-          format: value => (`R$ ${value}`),
+          format: value => this.displayMoney(value),
         },
       ],
     };

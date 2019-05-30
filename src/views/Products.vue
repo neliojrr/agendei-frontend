@@ -229,8 +229,6 @@ export default {
     saveNewProduct({ product }) {
       this.$emit('set-loading-overlay', true);
       const data = { ...product };
-      data.cost *= 100;
-      data.price *= 100;
       api.post(`/salons/${this.salon.id}/products`, { product: data })
         .then((response) => {
           const newProduct = response.data;
@@ -259,8 +257,6 @@ export default {
     updateProduct({ product, productCategoryId }) {
       this.$emit('set-loading-overlay', true);
       const newProduct = { ...product };
-      newProduct.cost *= 100;
-      newProduct.price *= 100;
       api.put(`/products/${product.id}`, { ...newProduct })
         .then((response) => {
           const updatedProduct = response.data || {};

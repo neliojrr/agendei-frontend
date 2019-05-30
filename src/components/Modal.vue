@@ -48,7 +48,13 @@
             {{ drop.title }}
           </b-dropdown-item>
         </b-dropdown>
-        <button class="button is-text" @click="removeModal({ id })">{{ cancelButtonText }}</button>
+        <button
+          v-if="buttons.length > 0"
+          class="button is-text"
+          @click="removeModal({ id })"
+        >
+          {{ cancelButtonText }}
+        </button>
       </footer>
     </div>
   </div>
@@ -86,11 +92,7 @@ export default {
     },
     buttons: {
       type: Array,
-      default: () => [{
-        title: 'Salvar',
-        class: 'is-success',
-        action: () => null,
-      }],
+      default: () => [],
     },
     dropdown: {
       type: Array,

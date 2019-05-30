@@ -249,7 +249,7 @@ export default {
               ${moment.unix(appointment.start_at).add(appointment.duration, 's').format('HH:mm')}
             </div>
             <div class="column is-4 appointment-price">
-              ${appointment.price}
+              ${this.displayMoney(appointment.price)}
             </div>
             <div class="column is-8 appointment-service">
               ${appointment.service.name}

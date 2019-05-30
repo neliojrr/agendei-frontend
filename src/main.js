@@ -27,6 +27,8 @@ import {
   faCog,
   faChevronUp,
   faChevronDown,
+  faChevronRight,
+  faChevronLeft,
   faDollarSign,
   faEdit,
   faTrashAlt,
@@ -37,6 +39,7 @@ import {
   faInstagram,
 } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import dinero from './mixins/dinero';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -67,11 +70,14 @@ library.add(faStore);
 library.add(faCog);
 library.add(faChevronUp);
 library.add(faChevronDown);
+library.add(faChevronRight);
+library.add(faChevronLeft);
 library.add(faDollarSign);
 library.add(faEdit);
 library.add(faTrashAlt);
 /* end icons */
 
+Vue.mixin(dinero);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 

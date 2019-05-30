@@ -42,6 +42,7 @@ import MobileBottomMenu from '../components/MobileBottomMenu.vue';
 import CalendarHeader from '../components/agenda/CalendarHeader.vue';
 import Calendar from '../components/agenda/Calendar.vue';
 import Form from '../components/agenda/Form.vue';
+import FormSelectItem from '../components/sales/Form.vue';
 import AppointmentView from '../components/agenda/AppointmentView.vue';
 
 /**
@@ -105,8 +106,8 @@ export default {
       {
         id: 'newSale',
         title: 'Nova Venda',
-        icon: 'spray-can',
-        action: this.openModalNewAppointment,
+        icon: 'file-invoice-dollar',
+        action: this.openModalSelectItem,
         class: 'is-info',
       },
       {
@@ -286,6 +287,32 @@ export default {
         });
     },
 
+    openModalSelectItem() {
+      const id = modalId.SELECT_ITEM_SALE;
+      const props = { title: 'Selecione um item', content: FormSelectItem };
+      this.addModal({ id, props });
+    },
+
+    openModalNewSale() {
+      const buttons = [
+        {
+          title: 'Salvar',
+          class: 'is-success',
+          action: this.saveNewAppointment,
+        },
+      ];
+      this.sale = { ...this.defaultSale };
+      const data = {
+        sale: this.appointment,
+        employees: this.employees,
+      };
+      const id = modalId.NEW_SALE;
+      const props = {
+        title: 'Novo Agendamento', content: Form, data, buttons,
+      };
+      this.addModal({ id, props });
+    },
+
     openModalNewAppointment() {
       const buttons = [
         {
@@ -349,10 +376,9 @@ export default {
       this.$emit('set-loading-overlay', true);
       const startAt =
         moment.unix(this.appointment.start_at);
-      const price = this.appointment.price ? this.appointment.price * 100 : null;
       api.post(
         `/salons/${this.salon.id}/appointments`,
-        { ...this.appointment, price, start_at: startAt },
+        { ...this.appointment, start_at: startAt },
       ).then((response) => {
         const newAppointment = response.data;
         this.appointments.push(newAppointment);
@@ -377,10 +403,9 @@ export default {
       const { appointment } = data;
       const startAt =
         moment.unix(appointment.start_at);
-      const price = appointment.price ? appointment.price * 100 : null;
       api.put(
         `/appointments/${appointment.id}`,
-        { ...appointment, price, start_at: startAt },
+        { ...appointment, start_at: startAt },
       ).then((response) => {
         const updatedAppointment = response.data || {};
         this.appointments = this.appointments.map((apt) => {

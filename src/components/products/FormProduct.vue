@@ -9,7 +9,7 @@
           :class="{ 'is-danger': errors.name }"
           type="text"
           placeholder="Shampoo"
-        >
+        />
       </div>
       <p v-for="message in errors.name" :key="message" class="help is-danger">
         {{ message }}
@@ -40,9 +40,10 @@
         <label class="label">Preço de Custo</label>
         <div class="control has-icons-left">
           <input
-            v-model="product.cost"
-            class="input"
+            :value="displayRawMoney(product.cost)"
+            @change="setCost"
             :class="{ 'is-danger': errors.cost }"
+            class="input"
             type="number"
             placeholder="Preço de custo do produto"
             step="any"
@@ -59,9 +60,10 @@
         <label class="label">Preço de Venda</label>
         <div class="control has-icons-left">
           <input
-            v-model="product.price"
-            class="input"
+            :value="displayRawMoney(product.price)"
+            @change="setPrice"
             :class="{ 'is-danger': errors.price }"
+            class="input"
             type="number"
             placeholder="Preço de venda do produto"
             step="0.1"
@@ -154,9 +156,8 @@ export default {
   },
   created() {
     if (this.product && this.product.product_category_id > -1) {
-      this.productCategorySelected = this.productCategories.find(
-        pc => pc.id === this.product.product_category_id
-      );
+      this.productCategorySelected = this.productCategories
+        .find(pc => pc.id === this.product.product_category_id);
     }
   },
   methods: {
@@ -164,6 +165,12 @@ export default {
       this.product.productCategory = productCategory;
       this.product.product_category_id =
         productCategory ? productCategory.id : null;
+    },
+    setPrice(e) {
+      this.product.price = parseInt(e.target.value * 100, 10);
+    },
+    setCost(e) {
+      this.product.cost = parseInt(e.target.value * 100, 10);
     },
   },
 };
