@@ -16,6 +16,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "axios": "^0.18.0",
     "buefy": "^0.6.7",
+    "dinero.js": "^1.6.0",
     "i": "^0.3.6",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
