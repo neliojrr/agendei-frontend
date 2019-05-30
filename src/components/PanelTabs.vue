@@ -20,6 +20,11 @@
           </span>
           Voltar
         </a>
+        <div v-if="items.length === 0" class="panel-block">
+          <p class="is-centered">
+            Não existem itens nesta seção
+          </p>
+        </div>
         <a
           class="panel-block"
           v-for="item in items"
@@ -106,6 +111,11 @@ export default {
     width: 5em;
     margin-right: 0;
     text-align: right;
+  }
+
+  .is-centered {
+    margin: auto;
+    padding: 20px;
   }
 
   .slide-in-enter-active {

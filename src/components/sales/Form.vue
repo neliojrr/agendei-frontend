@@ -24,13 +24,13 @@ export default {
           id: 'products',
           title: 'Produtos',
           icon: 'spray-can',
-          action: () => null,
+          action: this.loadProductCategories,
         },
         {
           id: 'packages',
           title: 'Pacotes',
           icon: 'box',
-          action: () => null,
+          action: () => this.items.push([]),
         },
       ]],
       item: '',
@@ -72,6 +72,32 @@ export default {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
             message: 'Não foi possível encontrar as categorias de serviços!',
+            type: 'is-danger',
+          });
+        });
+    },
+
+    loadProductCategories() {
+      this.$emit('set-loading-overlay', true);
+      api.get(`/salons/${this.salon.id}/product_categories`)
+        .then((response) => {
+          const productCategories = response.data || [];
+          this.items.push(productCategories.map(sc => ({
+            id: sc.id,
+            title: sc.name,
+            action: () => this.items.push(sc.products.map(product => ({
+              id: product.id,
+              title: product.name,
+              selectable: true,
+              price: product.price,
+            }))),
+          })));
+          this.$emit('set-loading-overlay', false);
+        })
+        .catch(() => {
+          this.$emit('set-loading-overlay', false);
+          this.$toast.open({
+            message: 'Não foi possível encontrar as categorias dos produtos!',
             type: 'is-danger',
           });
         });
