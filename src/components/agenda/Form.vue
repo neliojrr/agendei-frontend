@@ -124,7 +124,6 @@ export default {
       durationOptions: serviceDuration,
       name: '',
       clients: [],
-      serviceCategories: [],
       timeRows: (this.data.end - this.data.start) * 4,
       hourSelected: this.data.start * 3600,
     };
@@ -159,7 +158,6 @@ export default {
       this.name = this.appointment.client.name || '';
     }
     this.getClients();
-    this.getServiceCategories();
   },
   computed: {
     filteredDataObj() {
@@ -171,6 +169,7 @@ export default {
     moment() {
       return moment;
     },
+    serviceCategories() { return this.$store.state.service.serviceCategories; },
   },
   methods: {
     // Get the time based on the counting between start and end of the day (15 in 15 min)

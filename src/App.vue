@@ -52,10 +52,13 @@ export default {
   },
   created() {
     const path = window.location.pathname;
-    if (path.indexOf('/login') > -1) {
-      const user = JSON.parse(window.localStorage.getItem('user')) || {};
-      const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
-      if (user.id && salon.id) {
+    const user = JSON.parse(window.localStorage.getItem('user')) || {};
+    const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
+    if (user.id && salon.id) {
+      // TODO: Load services only when enter into the application
+      this.$store.dispatch('service/getServiceCategories', { salon });
+      this.$store.dispatch('product/getProductCategories', { salon });
+      if (path.indexOf('/login') > -1) {
         this.setLoadingOverlay(true);
         api.get('/auth/validate_token').then((response) => {
           if (response && response.status && response.status === 200) {
@@ -65,8 +68,6 @@ export default {
         }).catch(() => {
           this.setLoadingOverlay(false);
         });
-      } else {
-        this.setLoadingOverlay(false);
       }
     }
   },

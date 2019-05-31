@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { api } from '@/utils/api-connect';
 import PanelTabs from '../PanelTabs.vue';
 
 export default {
@@ -52,55 +51,31 @@ export default {
   },
   methods: {
     loadServiceCategories() {
-      this.$emit('set-loading-overlay', true);
-      api.get(`/salons/${this.salon.id}/service_categories`)
-        .then((response) => {
-          const serviceCategories = response.data || [];
-          this.items.push(serviceCategories.map(sc => ({
-            id: sc.id,
-            title: sc.name,
-            action: () => this.items.push(sc.services.map(service => ({
-              id: service.id,
-              title: service.name,
-              selectable: true,
-              price: service.price,
-            }))),
-          })));
-          this.$emit('set-loading-overlay', false);
-        })
-        .catch(() => {
-          this.$emit('set-loading-overlay', false);
-          this.$toast.open({
-            message: 'Não foi possível encontrar as categorias de serviços!',
-            type: 'is-danger',
-          });
-        });
+      const { serviceCategories } = this.$store.state.service;
+      this.items.push(serviceCategories.map(sc => ({
+        id: sc.id,
+        title: sc.name,
+        action: () => this.items.push(sc.services.map(service => ({
+          id: service.id,
+          title: service.name,
+          selectable: true,
+          price: service.price,
+        }))),
+      })));
     },
 
     loadProductCategories() {
-      this.$emit('set-loading-overlay', true);
-      api.get(`/salons/${this.salon.id}/product_categories`)
-        .then((response) => {
-          const productCategories = response.data || [];
-          this.items.push(productCategories.map(sc => ({
-            id: sc.id,
-            title: sc.name,
-            action: () => this.items.push(sc.products.map(product => ({
-              id: product.id,
-              title: product.name,
-              selectable: true,
-              price: product.price,
-            }))),
-          })));
-          this.$emit('set-loading-overlay', false);
-        })
-        .catch(() => {
-          this.$emit('set-loading-overlay', false);
-          this.$toast.open({
-            message: 'Não foi possível encontrar as categorias dos produtos!',
-            type: 'is-danger',
-          });
-        });
+      const { productCategories } = this.$store.state.product;
+      this.items.push(productCategories.map(pc => ({
+        id: pc.id,
+        title: pc.name,
+        action: () => this.items.push(pc.products.map(product => ({
+          id: product.id,
+          title: product.name,
+          selectable: true,
+          price: product.price,
+        }))),
+      })));
     },
   },
 };
