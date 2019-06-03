@@ -22,7 +22,6 @@
 <script>
 import moment from 'moment';
 import Modal from '@/components/Modal.vue';
-import { api } from '@/utils/api-connect';
 
 moment.updateLocale('en', {
   weekdays: [
@@ -49,27 +48,6 @@ export default {
   props: ['data'],
   components: {
     Modal,
-  },
-  created() {
-    const path = window.location.pathname;
-    const user = JSON.parse(window.localStorage.getItem('user')) || {};
-    const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
-    if (user.id && salon.id) {
-      // TODO: Load services only when enter into the application
-      this.$store.dispatch('service/getServiceCategories', { salon });
-      this.$store.dispatch('product/getProductCategories', { salon });
-      if (path.indexOf('/login') > -1) {
-        this.setLoadingOverlay(true);
-        api.get('/auth/validate_token').then((response) => {
-          if (response && response.status && response.status === 200) {
-            this.$router.replace('/agenda');
-          }
-          this.setLoadingOverlay(false);
-        }).catch(() => {
-          this.setLoadingOverlay(false);
-        });
-      }
-    }
   },
   computed: {
     modals() {

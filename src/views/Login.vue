@@ -76,7 +76,7 @@
 
 <script>
 import Nav from '@/components/Nav.vue';
-import { login } from '@/utils/api-connect';
+import { login, api } from '@/utils/api-connect';
 import validate from '@/mixins/validate';
 
 export default {
@@ -93,6 +93,25 @@ export default {
     Nav,
   },
   mixins: [validate],
+  created() {
+    const path = window.location.pathname;
+    const user = JSON.parse(window.localStorage.getItem('user')) || {};
+    const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
+    if (user.id && salon.id) {
+      // TODO: Load services only when enter into the application
+      if (path.indexOf('/login') > -1) {
+        this.$emit('set-loading-overlay', true);
+        api.get('/auth/validate_token').then((response) => {
+          if (response && response.status && response.status === 200) {
+            this.$router.replace('/agenda');
+          }
+          this.$emit('set-loading-overlay', false);
+        }).catch(() => {
+          this.$emit('set-loading-overlay', false);
+        });
+      }
+    }
+  },
   methods: {
     login() {
       if (this.validateFields()) {
