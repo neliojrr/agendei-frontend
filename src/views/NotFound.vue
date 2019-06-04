@@ -10,7 +10,7 @@
       </h2>
       <div class="columns">
         <div class="column">
-          <img alt="not-found" title="Nao encontrado" src="../assets/images/lost.svg">
+          <img alt="not-found" title="Nao encontrado" src="../assets/images/lost.svg" />
         </div>
       </div>
     </div>

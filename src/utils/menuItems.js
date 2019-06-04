@@ -36,10 +36,10 @@ const menuItems = [
     path: '/products',
   },
   {
-    id: 'sales',
-    title: 'Vendas',
+    id: 'reports',
+    title: 'Relatórios',
     icon: 'file-invoice-dollar',
-    path: '/sales',
+    path: '/reports',
   },
 ];
 

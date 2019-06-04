@@ -1,203 +1,88 @@
 <template>
-  <div>
+  <section>
     <Menu />
-    <NavApp :title="title" />
+    <NavApp :title="pageTitle" />
     <div class="sales app-content">
-      <div class="columns is-mobile top-actions">
-        <div class="column">&nbsp;</div>
-        <div class="column is-narrow">
-          <DateSelector :daySelected="daySelected" @change-date="changeDate" />
+      <div class="columns">
+        <div class="column is-two-thirds">
+          <SaleItem
+            v-for="item in items"
+            :key="item.id"
+            :item="item"
+          />
+          <div class="columns" v-if="items.length > 0">
+            <div class="column add-new-item has-text-left-desktop has-text-left-tablet">
+              <button
+                @click="openModalSelectItem"
+                class="button is-text has-text-link"
+              >
+                + Adicionar novo item
+              </button>
+            </div>
+            <div class="total column">
+              <div class="columns is-mobile">
+                <p
+                  class="column is-half-mobile has-text-grey-dark has-text-weight-semibold"
+                >
+                  Total:
+                </p>
+                <p class="column is-half-mobile has-text-grey-dark">R$130</p>
+              </div>
+            </div>
+          </div>
+          <div v-if="items.length === 0" class="is-empty">
+            <img
+              alt="add-to-cart"
+              title="Adicionar item para venda"
+              src="../assets/images/add_to_cart.svg"
+            />
+            <p class="has-text-grey-dark">
+              Adicione algum item para realizar uma venda.
+            </p>
+            <button @click="openModalSelectItem" class="button is-primary">
+              Adicionar um novo item
+            </button>
+          </div>
         </div>
       </div>
-      <div class="columns sales-title">
-        <div class="column">
-          <h2 class="title is-4">
-            Vendas Diárias
-          </h2>
-          <p class="subtitle is-5">
-            {{ daySelected.format('dddd, D MMM YYYY') }}
-          </p>
-        </div>
-      </div>
-      <div class="columns is-multiline sales-tables">
-        <div class="column is-half">
-          <h2 class="subtitle is-5">Resumo de Vendas</h2>
-          <Table
-            :isBordered="true"
-            :isStriped="true"
-            :headers="summaryHeaders"
-            :data="summaryData"
-            :mobileHidden="2"
-          />
-        </div>
-        <div class="column is-half">
-          <h2 class="subtitle is-5">Principais Serviços</h2>
-          <Table
-            :isBordered="true"
-            :isStriped="true"
-            :headers="serviceHeaders"
-            :data="serviceData"
-            :mobileHidden="2"
-          />
-        </div>
-        <div class="column is-half">
-          <h2 class="subtitle is-5">Principais Produtos</h2>
-          <Table
-            :isBordered="true"
-            :isStriped="true"
-            :headers="serviceHeaders"
-            :data="serviceData"
-            :mobileHidden="2"
-          />
-        </div>
-        <div class="column is-half">
-          <h2 class="subtitle is-5">Principais Pacotes</h2>
-          <Table
-            :isBordered="true"
-            :isStriped="true"
-            :headers="serviceHeaders"
-            :data="serviceData"
-            :mobileHidden="2"
-          />
-        </div>
-        <div class="column is-half">
-          <h2 class="subtitle is-5">Comissões</h2>
-          <Table
-            :isBordered="true"
-            :isStriped="true"
-            :headers="serviceHeaders"
-            :data="serviceData"
-            :mobileHidden="2"
-          />
-        </div>
-      </div>
-      <p class="subtitle is-7">
-        Gerado: {{ moment().format('dddd, D MMM YYYY - H:mm') }}
-      </p>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
-import moment from 'moment';
-import { api } from '@/utils/api-connect';
-import Table from '@/components/Table.vue';
-import Menu from '@/components/Menu.vue';
-import NavApp from '@/components/NavApp.vue';
-import DateSelector from '@/components/DateSelector.vue';
+import { mapMutations, mapGetters } from 'vuex';
+import modalId from '@/utils/modalId';
+import Menu from '../components/Menu.vue';
+import NavApp from '../components/NavApp.vue';
+import SaleItem from '../components/sales/SaleItem.vue';
+import FormSelectItem from '../components/sales/Form.vue';
 
 export default {
   data() {
     return {
-      title: this.pageTitle,
-      daySelected: moment(),
-      summaryHeaders: [
-        {
-          name: 'type',
-          title: 'Tipo',
-        },
-        {
-          name: 'sales',
-          title: 'Qtd Vendas',
-        },
-        {
-          name: 'total',
-          title: 'Total Bruto',
-        },
-      ],
-      summaryData: [
-        {
-          id: 1,
-          type: 'Serviços',
-          sales: '9',
-          total: 'R$ 270',
-        },
-        {
-          id: 2,
-          type: 'Pacotes',
-          sales: '2',
-          total: 'R$ 420',
-        },
-        {
-          id: 3,
-          type: 'Total',
-          sales: '11',
-          total: 'R$ 710',
-        },
-      ],
-      serviceHeaders: [
-        {
-          name: 'name',
-          title: 'Nome',
-        },
-        {
-          name: 'sales',
-          title: 'Qtd Vendas',
-        },
-        {
-          name: 'total',
-          title: 'Total Bruto',
-        },
-      ],
-      serviceData: [
-        {
-          id: 1,
-          name: 'Corte de Cabelo',
-          sales: '6',
-          total: 'R$ 180',
-        },
-        {
-          id: 2,
-          name: 'Sobrancelha',
-          sales: '3',
-          total: 'R$ 90',
-        },
-        {
-          id: 3,
-          name: 'Total',
-          sales: '9',
-          total: 'R$ 270',
-        },
-      ],
+      items: [],
     };
   },
-  props: ['pageTitle'],
+  props: {
+    pageTitle: {
+      type: String,
+      default: 'Nova Venda',
+    },
+  },
   components: {
     Menu,
     NavApp,
-    Table,
-    DateSelector,
-  },
-  created() {
-    this.salon = JSON.parse(window.localStorage.getItem('salon'));
-    this.user = JSON.parse(window.localStorage.getItem('user'));
-    if (this.user && this.salon && this.user.id && this.salon.id) {
-      const headers = {
-        'access-token': this.user.token,
-        uid: this.user.email,
-        client: this.user.client,
-      };
-      api.get(`/salons/${this.salon.id}/transactions`, { headers })
-        .then((response) => {
-          const employees = response.data || [];
-          this.data = employees;
-        })
-        .catch(() => {
-          this.$toast.open({
-            message: 'Não foi possível encontrar o cliente!',
-            type: 'is-danger',
-          });
-        });
-    } else {
-      this.$router.push('/login');
-    }
+    SaleItem,
   },
   methods: {
-    changeDate(date) {
-      this.daySelected = moment(date);
-    },
-    moment(date = moment()) {
-      return moment(date);
+    ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
+    ...mapGetters('modal', ['isModalOpen']),
+
+    openModalSelectItem() {
+      const id = modalId.SELECT_ITEM_SALE;
+      const props = { title: 'Selecione um item', content: FormSelectItem };
+      this.addModal({ id, props });
+      this.$router.push('/sales');
     },
   },
 };
@@ -205,14 +90,47 @@ export default {
 
 <style lang="scss">
 .sales {
-  height: calc(100vh - 52px);
   padding: 10px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
 
-  .top-actions {
-    text-align: right;
+  .add-new-item {
+
+    button {
+      text-decoration: none;
+    }
+  }
+
+  .total {
+    margin-top: 8px;
+  }
+
+  .is-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      height: 200px;
+
+      @media screen and (max-width: 768px) {
+        height: 150px;
+      }
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: 18px;
+
+      @media screen and (max-width: 768px) {
+        font-size: 16px;
+      }
+    }
+
+    button {
+      margin-top: 20px;
+    }
   }
 }
 </style>

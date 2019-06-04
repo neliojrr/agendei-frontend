@@ -291,26 +291,7 @@ export default {
       const id = modalId.SELECT_ITEM_SALE;
       const props = { title: 'Selecione um item', content: FormSelectItem };
       this.addModal({ id, props });
-    },
-
-    openModalNewSale() {
-      const buttons = [
-        {
-          title: 'Salvar',
-          class: 'is-success',
-          action: this.saveNewAppointment,
-        },
-      ];
-      this.sale = { ...this.defaultSale };
-      const data = {
-        sale: this.appointment,
-        employees: this.employees,
-      };
-      const id = modalId.NEW_SALE;
-      const props = {
-        title: 'Novo Agendamento', content: Form, data, buttons,
-      };
-      this.addModal({ id, props });
+      this.$router.push('/sales');
     },
 
     openModalNewAppointment() {

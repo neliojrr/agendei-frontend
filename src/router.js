@@ -10,11 +10,12 @@ import Staff from './views/Staff.vue';
 import Clients from './views/Clients.vue';
 import ClientView from './views/ClientView.vue';
 import NotFound from './views/NotFound.vue';
-import Sales from './views/Sales.vue';
+import Report from './views/Report.vue';
 import Services from './views/Services.vue';
 import Products from './views/Products.vue';
 import Packages from './views/Packages.vue';
 import PackageView from './views/PackageView.vue';
+import Sales from './views/Sales.vue';
 import store from './store';
 
 Vue.use(Router);
@@ -81,10 +82,10 @@ const router = new Router({
       meta: { loadData: true },
     },
     {
-      path: '/sales',
-      name: 'sales',
-      component: Sales,
-      props: { pageTitle: 'Vendas' },
+      path: '/reports',
+      name: 'reports',
+      component: Report,
+      props: { pageTitle: 'Relatórios' },
       meta: { loadData: true },
     },
     {
@@ -113,6 +114,13 @@ const router = new Router({
       name: 'package',
       component: PackageView,
       props: { pageTitle: 'Pacote' },
+      meta: { loadData: true },
+    },
+    {
+      path: '/sales',
+      name: 'sales',
+      component: Sales,
+      props: { pageTitle: 'Vendas' },
       meta: { loadData: true },
     },
 
