@@ -38,7 +38,15 @@ export default {
       title: this.pageTitle,
     };
   },
-  props: ['pageTitle'],
+  props: {
+    pageTitle: {
+      type: String,
+    },
+    id: {
+      type: Number,
+      required: true,
+    },
+  },
   components: {
     Menu,
     NavApp,
@@ -50,7 +58,7 @@ export default {
   },
   created() {
     this.$emit('set-loading-overlay', true);
-    this.getClient(this.$route.params.id);
+    this.getClient(this.id);
   },
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal']),
@@ -95,15 +103,16 @@ export default {
     },
 
     updateClient(client) {
+      const updatedClient = { ...client };
       this.$emit('set-loading-overlay', true);
-      delete client.salon;
-      if (client.avatar && !client.avatar.name) delete client.avatar;
+      delete updatedClient.salon;
+      if (updatedClient.avatar && !updatedClient.avatar.name) delete updatedClient.avatar;
       const data = new FormData();
-      const clientAttributes = Object.keys(client);
+      const clientAttributes = Object.keys(updatedClient);
       for (let i = 0; i < clientAttributes.length; i += 1) {
-        data.append(`client[${clientAttributes[i]}]`, client[clientAttributes[i]]);
+        data.append(`client[${clientAttributes[i]}]`, updatedClient[clientAttributes[i]]);
       }
-      api.put(`/clients/${client.id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      api.put(`/clients/${updatedClient.id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
         .then((response) => {
           this.client = response.data || {};
           this.$emit('set-loading-overlay', false);
