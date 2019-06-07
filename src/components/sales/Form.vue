@@ -3,6 +3,7 @@
     :items="itemsToShow"
     :back="items.length > 1"
     @go-back="items.pop()"
+    @add-item="data.addItem"
   />
 </template>
 
@@ -36,6 +37,12 @@ export default {
       salon: {},
     };
   },
+  props: {
+    data: {
+      type: Object,
+      default: () => ({ addItem: () => null }),
+    },
+  },
   components: {
     PanelTabs,
   },
@@ -60,6 +67,7 @@ export default {
           title: service.name,
           selectable: true,
           price: service.price,
+          item: service,
         }))),
       })));
     },
@@ -74,6 +82,7 @@ export default {
           title: product.name,
           selectable: true,
           price: product.price,
+          item: product,
         }))),
       })));
     },

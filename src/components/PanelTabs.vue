@@ -29,7 +29,7 @@
           class="panel-block"
           v-for="item in items"
           :key="item.id"
-          @click="() => itemAction(item.action, item.selectable)"
+          @click="itemAction(item)"
         >
           <span class="panel-icon">
             <font-awesome-icon v-if="!!item.icon" :icon="item.icon" />
@@ -78,13 +78,13 @@ export default {
       this.$emit('go-back');
     },
 
-    itemAction(action, selectable) {
-      if (selectable) {
-        console.log('selectable');
+    itemAction(item) {
+      if (item.selectable) {
+        this.$emit('add-item', item.item);
       } else {
         this.transitionName = 'slide-in';
         this.show = false;
-        action();
+        item.action();
       }
     },
   },

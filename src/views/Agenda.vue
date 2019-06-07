@@ -42,7 +42,6 @@ import MobileBottomMenu from '../components/MobileBottomMenu.vue';
 import CalendarHeader from '../components/agenda/CalendarHeader.vue';
 import Calendar from '../components/agenda/Calendar.vue';
 import Form from '../components/agenda/Form.vue';
-import FormSelectItem from '../components/sales/Form.vue';
 import AppointmentView from '../components/agenda/AppointmentView.vue';
 
 /**
@@ -107,7 +106,7 @@ export default {
         id: 'newSale',
         title: 'Nova Venda',
         icon: 'file-invoice-dollar',
-        action: this.openModalSelectItem,
+        action: () => this.$router.push({ name: 'sales', params: { openSelectItem: true } }),
         class: 'is-info',
       },
       {
@@ -285,13 +284,6 @@ export default {
             type: 'is-danger',
           });
         });
-    },
-
-    openModalSelectItem() {
-      const id = modalId.SELECT_ITEM_SALE;
-      const props = { title: 'Selecione um item', content: FormSelectItem };
-      this.addModal({ id, props });
-      this.$router.push('/sales');
     },
 
     openModalNewAppointment() {

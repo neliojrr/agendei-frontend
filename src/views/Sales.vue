@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapState } from 'vuex';
 import modalId from '@/utils/modalId';
 import Menu from '../components/Menu.vue';
 import NavApp from '../components/NavApp.vue';
@@ -68,21 +68,38 @@ export default {
       type: String,
       default: 'Nova Venda',
     },
+    openSelectItem: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     Menu,
     NavApp,
     SaleItem,
   },
+  mounted() {
+    if (this.openSelectItem) this.openModalSelectItem();
+  },
+  computed: mapState({
+    serviceCategories: state => state.service.serviceCategories,
+    productCategories: state => state.product.productCategories,
+  }),
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
     ...mapGetters('modal', ['isModalOpen']),
 
     openModalSelectItem() {
       const id = modalId.SELECT_ITEM_SALE;
-      const props = { title: 'Selecione um item', content: FormSelectItem };
+      const data = { addItem: this.addItem };
+      const props = { data, title: 'Selecione um item', content: FormSelectItem };
       this.addModal({ id, props });
-      this.$router.push('/sales');
+    },
+
+    addItem(item) {
+      this.items.push(item);
+      const id = modalId.SELECT_ITEM_SALE;
+      this.removeModal({ id });
     },
   },
 };
