@@ -33,25 +33,25 @@ const router = new Router({
       path: '/contato',
       name: 'prospect',
       component: Prospect,
-      props: { default: true, title: 'Prospect' },
+      props: { title: 'Prospect' },
     },
     {
       path: '/obrigado',
       name: 'thanks',
       component: Thanks,
-      props: { default: true, title: 'Thank you' },
+      props: { title: 'Thank you' },
     },
     {
       path: '/signup',
       name: 'signup',
       component: Signup,
-      props: { default: true, title: 'SignUp' },
+      props: { title: 'SignUp' },
     },
     {
       path: '/login',
       name: 'login',
       component: Login,
-      props: { default: true, pageTitle: 'Login' },
+      props: { pageTitle: 'Login' },
     },
     {
       path: '/agenda',
@@ -78,7 +78,7 @@ const router = new Router({
       path: '/clients/:id',
       name: 'clientView',
       component: ClientView,
-      props: { pageTitle: 'Cliente' },
+      props: route => ({ id: Number(route.params.id), pageTitle: 'Cliente' }),
       meta: { loadData: true },
     },
     {
@@ -120,7 +120,10 @@ const router = new Router({
       path: '/sales',
       name: 'sales',
       component: Sales,
-      props: { pageTitle: 'Vendas' },
+      props: route => ({
+        openSelectItem: route.params.openSelectItem || false,
+        pageTitle: 'Vendas',
+      }),
       meta: { loadData: true },
     },
 
