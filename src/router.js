@@ -145,6 +145,7 @@ router.beforeEach((to, from, next) => {
   if (firstTimeLoading && user.id && salon.id && loadData) {
     store.dispatch('service/getServiceCategories', { salon });
     store.dispatch('product/getProductCategories', { salon });
+    store.dispatch('employee/getEmployees', { salon });
     firstTimeLoading = false;
   }
   next();
