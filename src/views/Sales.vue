@@ -8,7 +8,7 @@
           <SaleItem
             v-for="item in items"
             :key="item.id"
-            :item="item"
+            :cartItem="item"
           />
           <div class="columns" v-if="items.length > 0">
             <div class="column add-new-item has-text-left-desktop has-text-left-tablet">
@@ -26,7 +26,9 @@
                 >
                   Total:
                 </p>
-                <p class="column is-half-mobile has-text-grey-dark">R$130</p>
+                <p class="column is-half-mobile has-text-grey-dark">
+                  {{ displayMoney(totalValue)}}
+                </p>
               </div>
             </div>
           </div>
@@ -81,10 +83,15 @@ export default {
   mounted() {
     if (this.openSelectItem) this.openModalSelectItem();
   },
-  computed: mapState({
-    serviceCategories: state => state.service.serviceCategories,
-    productCategories: state => state.product.productCategories,
-  }),
+  computed: {
+    totalValue() {
+      return this.items.reduce((total, item) => (total + item.price), 0);
+    },
+    ...mapState({
+      serviceCategories: state => state.service.serviceCategories,
+      productCategories: state => state.product.productCategories,
+    }),
+  },
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
     ...mapGetters('modal', ['isModalOpen']),

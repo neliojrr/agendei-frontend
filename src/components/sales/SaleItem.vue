@@ -10,39 +10,59 @@
       </div>
       <div class="column item-price">
         <p class="is-size-6 has-text-dark has-text-weight-semibold">
-          R${{ item.price }}
+          {{ displayMoney(item.price) }}
         </p>
     </div>
       <span class="delete-item column">
         <button type="button" class="delete"></button>
       </span>
-      <p class="box-header-subtitle column is-11 subtitle is-6 has-text-grey">
-        1h e meia com Nelio
+      <p v-if="!!item.employee && !!item.service_category_id" class="box-header-subtitle column is-11 subtitle is-6 has-text-grey">
+        {{ duration(item.duration) }} com {{ item.employee.name }}
       </p>
     </header>
-    <div class="box-content columns is-mobile is-multiline">
-      <div class="field column is-one-quarter-mobile">
+    <div class="box-content field columns is-mobile is-multiline">
+      <div class="column control is-one-quarter-mobile">
         <label class="label has-text-weight-medium">Qtd</label>
         <div class="control">
-          <input class="input" type="text" placeholder="1">
+          <input v-model="item.quantity" :disabled="!!item.service_category_id" class="input" type="text">
         </div>
       </div>
-      <div class="field column is-half-desktop is-one-third-tablet is-three-quarters-mobile">
+      <div class="column control is-half-desktop is-one-third-tablet is-three-quarters-mobile">
         <label class="label">Profissional</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Nelio">
+          <b-autocomplete
+            v-model="name"
+            :data="filteredDataObj"
+            :open-on-focus="true"
+            ref="autocomplete"
+            field="name"
+            placeholder="Digite para pesquisar"
+            @select="setEmployee">
+            <template slot="header">
+              <a>
+                <span> Adicionar novo profissional </span>
+              </a>
+            </template>
+            <template slot="empty">Sem resultados para {{name}}</template>
+          </b-autocomplete>
         </div>
       </div>
-      <div class="field column is-one-fifth-desktop is-one-fourth-tablet">
+      <div class="column is-one-fifth-desktop is-one-fourth-tablet control">
         <label class="label">Preço</label>
-        <div class="control">
-          <input class="input" type="text" placeholder="R$4,45">
+        <div class="control has-icons-left">
+          <input :value="displayRawMoney(item.price)" class="input" type="text" placeholder="R$4,45" />
+          <span class="icon is-small is-left">
+            <font-awesome-icon icon="dollar-sign" />
+          </span>
         </div>
       </div>
-      <div class="field column is-one-fifth-desktop is-one-fourth-tablet">
+      <div class="column control is-one-fifth-desktop is-one-fourth-tablet">
         <label class="label">Desconto</label>
-        <div class="control">
-          <input class="input" type="text" placeholder="R$5,00">
+        <div class="control has-icons-left">
+          <input :value="displayRawMoney(item.discount)" class="input" type="text" placeholder="R$5,00">
+          <span class="icon is-small is-left">
+            <font-awesome-icon icon="dollar-sign" />
+          </span>
         </div>
       </div>
     </div>
@@ -50,14 +70,40 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   data() {
-    return {};
+    return {
+      item: this.cartItem,
+      name: '',
+    };
   },
   props: {
-    item: {
+    cartItem: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    filteredDataObj() {
+      return this.employees.filter(option => option.name
+        .toString()
+        .toLowerCase()
+        .indexOf(this.name.toLowerCase()) >= 0);
+    },
+    employees() {
+      return this.$store.state.employee.all;
+    },
+  },
+  methods: {
+    duration(duration) {
+      return moment.duration(duration, 's').locale('pt').humanize();
+    },
+
+    setEmployee(employee) {
+      this.item.employee = employee;
+      this.item.employee_id = employee.id;
     },
   },
 };

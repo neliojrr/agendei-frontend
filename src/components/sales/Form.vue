@@ -63,11 +63,11 @@ export default {
         id: sc.id,
         title: sc.name,
         action: () => this.items.push(sc.services.map(service => ({
-          id: service.id,
-          title: service.name,
+          ...service,
+          id: `s-${service.id}`,
           selectable: true,
-          price: service.price,
-          item: service,
+          quantity: 1,
+          discount: 0,
         }))),
       })));
     },
@@ -78,11 +78,11 @@ export default {
         id: pc.id,
         title: pc.name,
         action: () => this.items.push(pc.products.map(product => ({
-          id: product.id,
-          title: product.name,
+          ...product,
+          id: `p-${product.id}`,
           selectable: true,
-          price: product.price,
-          item: product,
+          quantity: 1,
+          discount: 0,
         }))),
       })));
     },

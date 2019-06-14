@@ -80,7 +80,7 @@ export default {
 
     itemAction(item) {
       if (item.selectable) {
-        this.$emit('add-item', item.item);
+        this.$emit('add-item', item);
       } else {
         this.transitionName = 'slide-in';
         this.show = false;
