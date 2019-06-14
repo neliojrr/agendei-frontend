@@ -31,7 +31,7 @@
 
 <script>
 import moment from 'moment';
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapState } from 'vuex';
 import { api } from '@/utils/api-connect';
 import AppointmentStatus from '@/utils/AppointmentStatus';
 import modalId from '@/utils/modalId';
@@ -78,7 +78,6 @@ export default {
       employeeSelected: null,
       columnsBooked: {},
       bookingInfo: {},
-      employees: [],
       appointments: [],
       defaultAppointment: {
         service: {},
@@ -122,7 +121,11 @@ export default {
     const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
     this.getAppointments();
-    this.getEmployees();
+  },
+  computed: {
+    ...mapState({
+      employees: state => state.employee.all,
+    }),
   },
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
@@ -265,22 +268,6 @@ export default {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
             message: 'Não foi possível carregar seus agendamentos. Faça seu login novamente!',
-            type: 'is-danger',
-          });
-        });
-    },
-
-    getEmployees() {
-      this.$emit('set-loading-overlay', true);
-      api.get(`/salons/${this.salon.id}/employees`)
-        .then((response) => {
-          this.employees = response.data || [];
-          this.$emit('set-loading-overlay', false);
-        })
-        .catch(() => {
-          this.$emit('set-loading-overlay', false);
-          this.$toast.open({
-            message: 'Não foi possível encontrar os profissionais para este salão!',
             type: 'is-danger',
           });
         });
