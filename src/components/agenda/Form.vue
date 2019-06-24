@@ -111,8 +111,8 @@
 <script>
 import Datepicker from 'vuejs-datepicker';
 import { ptBR } from 'vuejs-datepicker/dist/locale';
+import { mapState } from 'vuex';
 import moment from 'moment';
-import { api } from '@/utils/api-connect';
 import serviceDuration from '@/utils/serviceDuration';
 
 export default {
@@ -120,10 +120,8 @@ export default {
     return {
       ptBR,
       appointment: this.data.appointment,
-      employees: this.data.employees,
       durationOptions: serviceDuration,
       name: '',
-      clients: [],
       timeRows: (this.data.end - this.data.start) * 4,
       hourSelected: this.data.start * 3600,
     };
@@ -151,15 +149,18 @@ export default {
     Datepicker,
   },
   created() {
-    this.$emit('set-loading-overlay', true);
     const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
     if (this.appointment && this.appointment.client) {
       this.name = this.appointment.client.name || '';
     }
-    this.getClients();
   },
   computed: {
+    ...mapState({
+      clients: state => state.client.all,
+      employees: state => state.employee.all,
+      serviceCategories: state => state.service.serviceCategories,
+    }),
     filteredDataObj() {
       return this.clients.filter(option => option.name
         .toString()
@@ -169,7 +170,6 @@ export default {
     moment() {
       return moment;
     },
-    serviceCategories() { return this.$store.state.service.serviceCategories; },
   },
   methods: {
     // Get the time based on the counting between start and end of the day (15 in 15 min)
@@ -182,36 +182,6 @@ export default {
       const minutes = ((t - 1) * 15) % 60;
       const hours = parseInt((t - 1) / 4, 10) + this.data.start;
       return `${hours}:${minutes === 0 ? '00' : minutes}h`;
-    },
-
-    getClients() {
-      api.get(`/salons/${this.salon.id}/clients`)
-        .then((response) => {
-          this.clients = response.data || [];
-          this.$emit('set-loading-overlay', false);
-        })
-        .catch(() => {
-          this.$emit('set-loading-overlay', false);
-          this.$toast.open({
-            message: 'Não foi possível encontrar os clientes deste salão!',
-            type: 'is-danger',
-          });
-        });
-    },
-
-    getServiceCategories() {
-      api.get(`/salons/${this.salon.id}/service_categories`)
-        .then((response) => {
-          this.serviceCategories = response.data || [];
-          this.$emit('set-loading-overlay', false);
-        })
-        .catch(() => {
-          this.$emit('set-loading-overlay', false);
-          this.$toast.open({
-            message: 'Não foi possível encontrar as categorias de serviços!',
-            type: 'is-danger',
-          });
-        });
     },
 
     setClient(client) {
