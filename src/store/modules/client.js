@@ -6,8 +6,11 @@ const client = {
     all: [],
   },
   mutations: {
-    addClient(state, client) {
-      state.all.push(client);
+    addClient(state, newClient) {
+      state.all.push(newClient);
+    },
+    loadClients(state, clients) {
+      state.all = clients;
     },
   },
   actions: {
@@ -18,6 +21,22 @@ const client = {
         const newClient = response.data;
         context.commit('addClient', newClient);
         return newClient;
+      } catch (error) {
+        let errors = {};
+        if (error.response) {
+          errors = error.response.data || {};
+        } else {
+          errors.message = error.message;
+        }
+        throw new Error(errors);
+      }
+    },
+    async getClients(context, payload) {
+      const { salon } = payload;
+      try {
+        const response = await api.get(`/salons/${salon.id}/clients`);
+        const clients = response.data || [];
+        context.commit('loadClients', clients);
       } catch (error) {
         let errors = {};
         if (error.response) {
