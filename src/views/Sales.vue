@@ -3,14 +3,14 @@
     <Menu />
     <NavApp :title="pageTitle" />
     <div class="sales app-content">
-      <div class="columns">
-        <div class="column is-two-thirds">
+      <div class="columns content">
+        <div class="column is-two-thirds sales-items">
           <SaleItem
-            v-for="item in items"
+            v-for="item in sale.items"
             :key="item.id"
             :cartItem="item"
           />
-          <div class="columns" v-if="items.length > 0">
+          <div class="columns" v-if="sale.items.length > 0">
             <div class="column add-new-item has-text-left-desktop has-text-left-tablet">
               <button
                 @click="openModalSelectItem"
@@ -32,7 +32,7 @@
               </div>
             </div>
           </div>
-          <div v-if="items.length === 0" class="is-empty">
+          <div v-if="sale.items.length === 0" class="is-empty">
             <img
               alt="add-to-cart"
               title="Adicionar item para venda"
@@ -46,6 +46,13 @@
             </button>
           </div>
         </div>
+        <div class="column" v-if="sale.items.length > 0">
+          <CheckoutArea
+            @set-client="setClient"
+            @set-payment="setPaymentType"
+            :total="totalValue"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -58,11 +65,16 @@ import Menu from '../components/Menu.vue';
 import NavApp from '../components/NavApp.vue';
 import SaleItem from '../components/sales/SaleItem.vue';
 import FormSelectItem from '../components/sales/Form.vue';
+import CheckoutArea from '../components/sales/CheckoutArea.vue';
 
 export default {
   data() {
     return {
-      items: [],
+      sale: {
+        items: [],
+        client: null,
+        payment: null,
+      },
     };
   },
   props: {
@@ -79,13 +91,14 @@ export default {
     Menu,
     NavApp,
     SaleItem,
+    CheckoutArea,
   },
   mounted() {
     if (this.openSelectItem) this.openModalSelectItem();
   },
   computed: {
     totalValue() {
-      return this.items.reduce((total, item) => (total + item.price), 0);
+      return this.sale.items.reduce((total, item) => (total + item.price), 0);
     },
     ...mapState({
       serviceCategories: state => state.service.serviceCategories,
@@ -104,9 +117,17 @@ export default {
     },
 
     addItem(item) {
-      this.items.push(item);
+      this.sale.items.push(item);
       const id = modalId.SELECT_ITEM_SALE;
       this.removeModal({ id });
+    },
+
+    setClient(client) {
+      this.sale.client = client;
+    },
+
+    setPaymentType(payment) {
+      this.sale.payment = payment;
     },
   },
 };
@@ -115,6 +136,15 @@ export default {
 <style lang="scss">
 .sales {
   padding: 10px;
+  overflow: none;
+
+  .content {
+    height: 100%;
+
+    .sales-items {
+      overflow-y: auto;
+    }
+  }
 
   .add-new-item {
 
