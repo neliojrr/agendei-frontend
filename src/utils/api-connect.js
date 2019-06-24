@@ -1,15 +1,17 @@
 import axios from 'axios';
 
-const prodServer = 'https://super.agendei.io/api/';
-// const localServer = 'http://192.168.0.189:3000/api/';
+const server = process.env.NODE_ENV === 'production'
+  ? 'https://super.agendei.io/api/'
+  : process.env.VUE_APP_AGENDEI_API_ROOT;
 const VERSION = 'v1';
+//
 
 export const api = axios.create({
-  baseURL: `${prodServer}${VERSION}`,
+  baseURL: `${server}${VERSION}`,
 });
 
 export const login = axios.create({
-  baseURL: `${prodServer}${VERSION}`,
+  baseURL: `${server}${VERSION}`,
 });
 
 // Add a request interceptor for api
