@@ -34,7 +34,7 @@
           <span class="panel-icon">
             <font-awesome-icon v-if="!!item.icon" :icon="item.icon" />
           </span>
-          {{ item.title }}
+          {{ item.title || item.name }}
           <span v-if="item.selectable" class="panel-icon to-right price">
             {{ displayMoney(item.price) }}
           </span>
