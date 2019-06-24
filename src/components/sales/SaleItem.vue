@@ -1,8 +1,9 @@
 <template>
   <div class="sale-item box">
-    <header class="box-header columns is-multiline is-mobile">
+    <header class="box-header columns is-mobile">
       <div
-        class="box-header-title column is-two-thirds-mobile is-three-quarters-desktop is-three-quarters-tablet"
+        class="box-header-title column is-two-thirds-mobile
+              is-three-quarters-desktop is-three-quarters-tablet"
       >
         <p class="title is-5">
           {{ item.name }}
@@ -12,11 +13,14 @@
         <p class="is-size-6 has-text-dark has-text-weight-semibold">
           {{ displayMoney(item.price) }}
         </p>
-    </div>
+      </div>
       <span class="delete-item column">
         <button type="button" class="delete"></button>
       </span>
-      <p v-if="!!item.employee && !!item.service_category_id" class="box-header-subtitle column is-11 subtitle is-6 has-text-grey">
+      <p
+        v-if="!!item.employee && !!item.service_category_id"
+        class="box-header-subtitle column is-11 subtitle is-6 has-text-grey"
+      >
         {{ duration(item.duration) }} com {{ item.employee.name }}
       </p>
     </header>
@@ -24,7 +28,12 @@
       <div class="column control is-one-quarter-mobile">
         <label class="label has-text-weight-medium">Qtd</label>
         <div class="control">
-          <input v-model="item.quantity" :disabled="!!item.service_category_id" class="input" type="text">
+          <input
+            v-model="item.quantity"
+            :disabled="!!item.service_category_id"
+            class="input"
+            type="text"
+          />
         </div>
       </div>
       <div class="column control is-half-desktop is-one-third-tablet is-three-quarters-mobile">
@@ -37,20 +46,26 @@
             ref="autocomplete"
             field="name"
             placeholder="Digite para pesquisar"
-            @select="setEmployee">
+            @select="setEmployee"
+          >
             <template slot="header">
               <a>
                 <span> Adicionar novo profissional </span>
               </a>
             </template>
-            <template slot="empty">Sem resultados para {{name}}</template>
+            <template slot="empty">Sem resultados para {{ name }}</template>
           </b-autocomplete>
         </div>
       </div>
       <div class="column is-one-fifth-desktop is-one-fourth-tablet control">
         <label class="label">Preço</label>
         <div class="control has-icons-left">
-          <input :value="displayRawMoney(item.price)" class="input" type="text" placeholder="R$4,45" />
+          <input
+            :value="displayRawMoney(item.price)"
+            class="input"
+            type="text"
+            placeholder="R$4,45"
+          />
           <span class="icon is-small is-left">
             <font-awesome-icon icon="dollar-sign" />
           </span>
@@ -59,7 +74,12 @@
       <div class="column control is-one-fifth-desktop is-one-fourth-tablet">
         <label class="label">Desconto</label>
         <div class="control has-icons-left">
-          <input :value="displayRawMoney(item.discount)" class="input" type="text" placeholder="R$5,00">
+          <input
+            :value="displayRawMoney(item.discount)"
+            class="input"
+            type="text"
+            placeholder="R$5,00"
+          />
           <span class="icon is-small is-left">
             <font-awesome-icon icon="dollar-sign" />
           </span>
