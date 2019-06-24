@@ -4,7 +4,7 @@ import VueI18n from 'vue-i18n';
 import Buefy from 'buefy';
 import VueAnalytics from 'vue-analytics';
 import VTooltip from 'v-tooltip';
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
   faCalendarAlt,
   faUsers,
@@ -46,44 +46,48 @@ import store from './store';
 import './registerServiceWorker';
 
 /* Icons used */
-library.add(faCalendarAlt);
-library.add(faUsers);
-library.add(faUsersCog);
-library.add(faSprayCan);
-library.add(faFileInvoiceDollar);
-library.add(faCut);
-library.add(faUser);
-library.add(faSignOutAlt);
-library.add(faPlus);
-library.add(faCheck);
-library.add(faSearch);
-library.add(faBox);
-library.add(faEnvelope);
-library.add(faFacebookSquare);
-library.add(faTwitterSquare);
-library.add(faInstagram);
-library.add(faArrowLeft);
-library.add(faArrowRight);
-library.add(faMinus);
-library.add(faClipboardList);
-library.add(faStore);
-library.add(faCog);
-library.add(faChevronUp);
-library.add(faChevronDown);
-library.add(faChevronRight);
-library.add(faChevronLeft);
-library.add(faDollarSign);
-library.add(faEdit);
-library.add(faTrashAlt);
+library.add(
+  faCalendarAlt,
+  faUsers,
+  faUsersCog,
+  faSprayCan,
+  faFileInvoiceDollar,
+  faCut,
+  faUser,
+  faSignOutAlt,
+  faPlus,
+  faCheck,
+  faSearch,
+  faBox,
+  faEnvelope,
+  faFacebookSquare,
+  faTwitterSquare,
+  faInstagram,
+  faArrowLeft,
+  faArrowRight,
+  faMinus,
+  faClipboardList,
+  faStore,
+  faCog,
+  faChevronUp,
+  faChevronDown,
+  faChevronRight,
+  faChevronLeft,
+  faDollarSign,
+  faEdit,
+  faTrashAlt,
+);
 /* end icons */
 
 Vue.mixin(dinero);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
+dom.watch();
 
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(Buefy, {
+  defaultIconComponent: 'font-awesome-icon',
   defaultIconPack: 'fa',
 });
 Vue.use(VueAnalytics, {
