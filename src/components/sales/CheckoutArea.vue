@@ -2,13 +2,18 @@
   <div class="checkout-area box">
     <section class="columns is-multiline">
       <section class="column is-full client-section">
-        <ClientSelect @setClient="$emit('set-client')" />
+        <ClientSelect @set-client="setClient" />
       </section>
       <section class="column is-full">
         <div class="field">
           <label class="label">Valor</label>
           <div class="control has-icons-left">
-            <input class="input is-medium" type="text" :value="displayRawMoney(total)" />
+            <input
+              class="input is-medium"
+              type="text"
+              :value="displayRawMoney(total)"
+              @change="setPrice"
+            />
             <span class="icon is-small is-left">
               <font-awesome-icon icon="dollar-sign" />
             </span>
@@ -17,18 +22,34 @@
       </section>
       <section class="column is-full payment-type">
         <div class="payment-buttons">
-          <button class="button is-primary is-medium">
+          <button
+            type="button"
+            class="button is-primary is-medium"
+            @click="$emit('set-payment-type', 'cash')"
+          >
             Dinheiro
           </button>
-          <button class="button is-primary is-medium">
+          <button
+            type="button"
+            class="button is-primary is-medium"
+            @click="$emit('set-payment-type', 'other')"
+          >
             Outro
           </button>
         </div>
         <div class="payment-buttons">
-          <button class="button is-primary is-medium">
+          <button
+            type="button"
+            class="button is-primary is-medium"
+            @click="$emit('set-payment-type', 'debit_card')"
+          >
             Cartão Débito
           </button>
-          <button class="button is-primary is-medium">
+          <button
+            type="button"
+            class="button is-primary is-medium"
+            @click="$emit('set-payment-type', 'credit_card')"
+          >
             Cartão Crédito
           </button>
         </div>
@@ -52,6 +73,15 @@ export default {
   },
   components: {
     ClientSelect,
+  },
+  methods: {
+    setClient(client) {
+      this.$emit('set-client', client);
+    },
+
+    setPrice(e) {
+      this.$emit('set-sale-price', parseInt(e.target.value * 100, 10));
+    },
   },
 };
 </script>

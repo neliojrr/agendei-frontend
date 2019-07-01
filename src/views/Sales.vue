@@ -49,7 +49,8 @@
         <div class="column" v-if="sale.items.length > 0">
           <CheckoutArea
             @set-client="setClient"
-            @set-payment="setPaymentType"
+            @set-payment-type="setPaymentType"
+            @set-sale-price="setSalePrice"
             :total="totalValue"
           />
         </div>
@@ -61,11 +62,12 @@
 <script>
 import { mapMutations, mapGetters, mapState } from 'vuex';
 import modalId from '@/utils/modalId';
-import Menu from '../components/Menu.vue';
-import NavApp from '../components/NavApp.vue';
-import SaleItem from '../components/sales/SaleItem.vue';
-import FormSelectItem from '../components/sales/Form.vue';
-import CheckoutArea from '../components/sales/CheckoutArea.vue';
+import { api } from '@/utils/api-connect';
+import Menu from '@/components/Menu.vue';
+import NavApp from '@/components/NavApp.vue';
+import SaleItem from '@/components/sales/SaleItem.vue';
+import FormSelectItem from '@/components/sales/Form.vue';
+import CheckoutArea from '@/components/sales/CheckoutArea.vue';
 
 export default {
   data() {
@@ -74,6 +76,7 @@ export default {
         items: [],
         client: null,
         payment: null,
+        price: 0,
       },
     };
   },
@@ -101,6 +104,8 @@ export default {
       return this.sale.items.reduce((total, item) => (total + item.price), 0);
     },
     ...mapState({
+      salon: state => state.salon,
+      user: state => state.user,
       serviceCategories: state => state.service.serviceCategories,
       productCategories: state => state.product.productCategories,
     }),
@@ -118,6 +123,7 @@ export default {
 
     addItem(item) {
       this.sale.items.push(item);
+      this.sale.price += item.price;
       const id = modalId.SELECT_ITEM_SALE;
       this.removeModal({ id });
     },
@@ -126,8 +132,55 @@ export default {
       this.sale.client = client;
     },
 
+    setSalePrice(price) {
+      this.sale.price = price;
+    },
+
     setPaymentType(payment) {
       this.sale.payment = payment;
+      this.$dialog.confirm({
+        message: 'Finalizar venda?',
+        cancelText: 'Cancelar',
+        confirmText: 'Ok',
+        onConfirm: () => this.checkout(),
+      });
+    },
+
+    checkout() {
+      const newSale = {
+        payment_type: this.sale.payment,
+        client_id: this.sale.client ? this.sale.client.id : null,
+        price: this.sale.price,
+        transactions_attributes: this.sale.items.map(transaction => ({
+          user_id: transaction.employee ? transaction.employee.id : null,
+          value: transaction.price,
+          discount: transaction.discount,
+          service_id: transaction.service_id,
+          product_id: transaction.product_id,
+          quantity: transaction.quantity,
+        })),
+      };
+      this.$emit('set-loading-overlay', true);
+      api.post(`salons/${this.salon.id}/sales/`, { sale: newSale })
+        .then((response) => {
+          const sale = response.data || {};
+          this.$router.push(`/sales/${sale.id}`);
+          this.$emit('set-loading-overlay', false);
+          this.$toast.open({
+            message: 'Venda finalizada com sucesso!',
+            type: 'is-success',
+          });
+        })
+        .catch((error) => {
+          const message = error && error.response && error.response.data ?
+            error.response.data.message :
+            null;
+          this.$toast.open({
+            message: `Impossível realizer o checkout para esse agendamento! ${message}`,
+            type: 'is-danger',
+          });
+          this.$emit('set-loading-overlay', false);
+        });
     },
   },
 };

@@ -68,6 +68,7 @@ export default {
           selectable: true,
           quantity: 1,
           discount: 0,
+          service_id: service.id,
         }))),
       })));
     },
@@ -83,6 +84,7 @@ export default {
           selectable: true,
           quantity: 1,
           discount: 0,
+          product_id: product.id,
         }))),
       })));
     },

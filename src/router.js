@@ -143,6 +143,8 @@ router.beforeEach((to, from, next) => {
   const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
   const loadData = to.matched.some(record => record.meta.loadData);
   if (firstTimeLoading && user.id && salon.id && loadData) {
+    store.commit('addSalon', salon);
+    store.commit('addUser', user);
     store.dispatch('service/getServiceCategories', { salon });
     store.dispatch('product/getProductCategories', { salon });
     store.dispatch('employee/getEmployees', { salon });

@@ -31,6 +31,7 @@
           <input
             v-model="item.quantity"
             :disabled="!!item.service_category_id"
+            @change="setQuantity"
             class="input"
             type="text"
           />
@@ -62,6 +63,7 @@
         <div class="control has-icons-left">
           <input
             :value="displayRawMoney(item.price)"
+            @change="setPrice"
             class="input"
             type="text"
             placeholder="R$4,45"
@@ -76,6 +78,7 @@
         <div class="control has-icons-left">
           <input
             :value="displayRawMoney(item.discount)"
+            @change="setDiscount"
             class="input"
             type="text"
             placeholder="R$5,00"
@@ -124,6 +127,18 @@ export default {
     setEmployee(employee) {
       this.item.employee = employee;
       this.item.employee_id = employee.id;
+    },
+
+    setPrice(e) {
+      this.item.price = parseInt(e.target.value * 100, 10);
+    },
+
+    setDiscount(e) {
+      this.item.discount = parseInt(e.target.value * 100, 10);
+    },
+
+    setQuantity(e) {
+      this.item.quantity = parseInt(e.target.value, 10);
     },
   },
 };
