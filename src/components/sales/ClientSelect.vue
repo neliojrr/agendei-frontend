@@ -25,8 +25,14 @@
 export default {
   data() {
     return {
-      name: '',
+      name: this.client.name || '',
     };
+  },
+  props: {
+    client: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     filteredDataObj() {

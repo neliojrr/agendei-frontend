@@ -15,7 +15,12 @@
         </p>
       </div>
       <span class="delete-item column">
-        <button type="button" class="delete"></button>
+        <button
+          type="button"
+          class="delete"
+          @click="$emit('remove-item', item)"
+        >
+        </button>
       </span>
       <p
         v-if="!!item.employee && !!item.service_category_id"
@@ -99,7 +104,7 @@ export default {
   data() {
     return {
       item: this.cartItem,
-      name: '',
+      name: this.cartItem.employee ? this.cartItem.employee.name : '',
     };
   },
   props: {

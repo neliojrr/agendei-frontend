@@ -122,6 +122,7 @@ const router = new Router({
       component: Sales,
       props: route => ({
         openSelectItem: route.params.openSelectItem || false,
+        appointment: route.params.appointment || {},
         pageTitle: 'Vendas',
       }),
       meta: { loadData: true },

@@ -2,7 +2,7 @@
   <div class="checkout-area box">
     <section class="columns is-multiline">
       <section class="column is-full client-section">
-        <ClientSelect @set-client="setClient" />
+        <ClientSelect @set-client="setClient" :client="sale.client" />
       </section>
       <section class="column is-full">
         <div class="field">
@@ -11,7 +11,7 @@
             <input
               class="input is-medium"
               type="text"
-              :value="displayRawMoney(total)"
+              :value="displayRawMoney(sale.price)"
               @change="setPrice"
             />
             <span class="icon is-small is-left">
@@ -66,9 +66,9 @@ export default {
     return {};
   },
   props: {
-    total: {
-      type: Number,
-      default: 0,
+    sale: {
+      type: Object,
+      required: true,
     },
   },
   components: {

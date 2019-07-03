@@ -9,6 +9,7 @@
             v-for="item in sale.items"
             :key="item.id"
             :cartItem="item"
+            @remove-item="removeItem"
           />
           <div class="columns" v-if="sale.items.length > 0">
             <div class="column add-new-item has-text-left-desktop has-text-left-tablet">
@@ -27,7 +28,7 @@
                   Total:
                 </p>
                 <p class="column is-half-mobile has-text-grey-dark">
-                  {{ displayMoney(totalValue)}}
+                  {{ displayMoney(this.sale.price)}}
                 </p>
               </div>
             </div>
@@ -51,7 +52,7 @@
             @set-client="setClient"
             @set-payment-type="setPaymentType"
             @set-sale-price="setSalePrice"
-            :total="totalValue"
+            :sale="sale"
           />
         </div>
       </div>
@@ -74,7 +75,7 @@ export default {
     return {
       sale: {
         items: [],
-        client: null,
+        client: {},
         payment: null,
         price: 0,
       },
@@ -89,6 +90,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    appointment: {
+      type: Object,
+      default: () => {},
+    },
   },
   components: {
     Menu,
@@ -96,13 +101,26 @@ export default {
     SaleItem,
     CheckoutArea,
   },
-  mounted() {
+  created() {
     if (this.openSelectItem) this.openModalSelectItem();
+
+    if (this.appointment && this.appointment.id) {
+      const { client, service, employee } = this.appointment;
+      this.sale.client = client;
+      const item = {
+        ...service,
+        employee,
+        employee_id: employee.id,
+        id: `s-${service.id}`,
+        service_id: service.id,
+        appointment_id: this.appointment.id,
+        quantity: 1,
+        discount: 0,
+      };
+      this.addItem(item);
+    }
   },
   computed: {
-    totalValue() {
-      return this.sale.items.reduce((total, item) => (total + item.price), 0);
-    },
     ...mapState({
       salon: state => state.salon,
       user: state => state.user,
@@ -125,7 +143,7 @@ export default {
       this.sale.items.push(item);
       this.sale.price += item.price;
       const id = modalId.SELECT_ITEM_SALE;
-      this.removeModal({ id });
+      if (this.isModalOpen(id)) this.removeModal({ id });
     },
 
     setClient(client) {
@@ -146,6 +164,11 @@ export default {
       });
     },
 
+    removeItem(item) {
+      this.sale.items = this.sale.items.filter(i => i.id !== item.id);
+      this.sale.price -= item.price;
+    },
+
     checkout() {
       const newSale = {
         payment_type: this.sale.payment,
@@ -158,6 +181,7 @@ export default {
           service_id: transaction.service_id,
           product_id: transaction.product_id,
           quantity: transaction.quantity,
+          appointment_id: transaction.appointment_id,
         })),
       };
       this.$emit('set-loading-overlay', true);

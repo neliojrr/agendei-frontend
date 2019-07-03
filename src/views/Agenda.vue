@@ -425,30 +425,8 @@ export default {
     },
 
     checkout(appointment) {
-      this.$emit('set-loading-overlay', true);
-      api.post(`/appointments/${appointment.id}/checkout`)
-        .then((response) => {
-          const updatedAppointment = response.data || {};
-          this.appointments = this.appointments.map((apt) => {
-            if (apt.id === updatedAppointment.id) {
-              return updatedAppointment;
-            }
-            return apt;
-          });
-          this.fillColumnsBooked();
-          this.$emit('set-loading-overlay', false);
-          this.removeModal({ id: modalId.CHECKOUT_APPOINTMENT });
-        })
-        .catch((error) => {
-          const message = error && error.response && error.response.data ?
-            error.response.data.message :
-            null;
-          this.$toast.open({
-            message: `Impossível realizer o checkout para esse agendamento! ${message}`,
-            type: 'is-danger',
-          });
-          this.$emit('set-loading-overlay', false);
-        });
+      this.$router.push({ name: 'sales', params: { appointment } });
+      this.removeModal({ id: modalId.CHECKOUT_APPOINTMENT });
     },
   },
 };
