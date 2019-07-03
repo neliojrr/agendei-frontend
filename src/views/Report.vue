@@ -168,30 +168,6 @@ export default {
     Table,
     DateSelector,
   },
-  created() {
-    this.salon = JSON.parse(window.localStorage.getItem('salon'));
-    this.user = JSON.parse(window.localStorage.getItem('user'));
-    if (this.user && this.salon && this.user.id && this.salon.id) {
-      const headers = {
-        'access-token': this.user.token,
-        uid: this.user.email,
-        client: this.user.client,
-      };
-      api.get(`/salons/${this.salon.id}/transactions`, { headers })
-        .then((response) => {
-          const employees = response.data || [];
-          this.data = employees;
-        })
-        .catch(() => {
-          this.$toast.open({
-            message: 'Não foi possível encontrar o cliente!',
-            type: 'is-danger',
-          });
-        });
-    } else {
-      this.$router.push('/login');
-    }
-  },
   methods: {
     changeDate(date) {
       this.daySelected = moment(date);
