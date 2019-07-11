@@ -8,6 +8,12 @@
         <p class="title is-5">
           {{ item.name }}
         </p>
+        <p
+          v-if="!!item.employee && !!item.service_category_id"
+          class="box-header-subtitle column is-11 subtitle is-6 has-text-grey"
+        >
+          {{ duration(item.duration) }} com {{ item.employee.name }}
+        </p>
       </div>
       <div class="column item-price">
         <p class="is-size-6 has-text-dark has-text-weight-semibold">
@@ -22,12 +28,7 @@
         >
         </button>
       </span>
-      <p
-        v-if="!!item.employee && !!item.service_category_id"
-        class="box-header-subtitle column is-11 subtitle is-6 has-text-grey"
-      >
-        {{ duration(item.duration) }} com {{ item.employee.name }}
-      </p>
+
     </header>
     <div class="box-content field columns is-mobile is-multiline">
       <div class="column control is-one-quarter-mobile">
@@ -164,7 +165,8 @@ export default {
 
   .box-header-subtitle {
     text-align: left;
-    padding-top: 0;
+    padding: 0;
+    padding-top: 0.5em;
   }
 
   .item-price {

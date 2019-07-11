@@ -89,6 +89,7 @@ export default {
 <style lang="scss">
 .checkout-area {
   height: 100%;
+  overflow-y: auto;
 
   .client-section {
     padding-top: 1em;

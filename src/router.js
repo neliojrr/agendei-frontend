@@ -16,6 +16,7 @@ import Products from './views/Products.vue';
 import Packages from './views/Packages.vue';
 import PackageView from './views/PackageView.vue';
 import Sales from './views/Sales.vue';
+import SaleView from './views/SaleView.vue';
 import store from './store';
 
 Vue.use(Router);
@@ -123,6 +124,16 @@ const router = new Router({
       props: route => ({
         openSelectItem: route.params.openSelectItem || false,
         appointment: route.params.appointment || {},
+        pageTitle: 'Vendas',
+      }),
+      meta: { loadData: true },
+    },
+    {
+      path: '/sales/:id',
+      name: 'sale',
+      component: SaleView,
+      props: route => ({
+        id: Number(route.params.id),
         pageTitle: 'Vendas',
       }),
       meta: { loadData: true },
