@@ -76,10 +76,15 @@
                 <label class="label">Enviar invoice</label>
                 <div class="field has-addons">
                   <p class="control is-expanded">
-                    <input class="input" type="email" placeholder="Email">
+                    <input
+                      v-model="email"
+                      class="input"
+                      type="email"
+                      placeholder="Email"
+                    >
                   </p>
                   <p class="control">
-                    <a class="button">
+                    <a class="button" @click="sendInvoice">
                       Enviar
                     </a>
                   </p>
@@ -107,6 +112,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import moment from 'moment';
+import { api } from '@/utils/api-connect';
 import paymentType from '@/constants/payment-type';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
@@ -115,6 +121,7 @@ export default {
   data() {
     return {
       sale: {},
+      email: '',
     };
   },
   props: {
@@ -167,6 +174,18 @@ export default {
   },
   methods: {
     ...mapActions('sale', ['getSale']),
+
+    sendInvoice() {
+      api.post(
+        `sales/${this.sale.id}/send-invoice/`,
+        { id: this.sale.id, email: this.email },
+      )
+        .then((response) => {
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>
