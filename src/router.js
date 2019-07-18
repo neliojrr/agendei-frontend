@@ -4,8 +4,6 @@ import Home from './views/Home.vue';
 import Signup from './views/Signup.vue';
 import ForgotPassword from './views/ForgotPassword.vue';
 import ResetPassword from './views/ResetPassword.vue';
-import Prospect from './views/Prospect.vue';
-import Thanks from './views/Thanks.vue';
 import Login from './views/Login.vue';
 import Agenda from './views/Agenda.vue';
 import Staff from './views/Staff.vue';
@@ -33,22 +31,10 @@ const router = new Router({
       component: Home,
     },
     {
-      path: '/contato',
-      name: 'prospect',
-      component: Prospect,
-      props: { title: 'Prospect' },
-    },
-    {
-      path: '/obrigado',
-      name: 'thanks',
-      component: Thanks,
-      props: { title: 'Thank you' },
-    },
-    {
-      path: '/signup',
+      path: '/cadastrar',
       name: 'signup',
       component: Signup,
-      props: { title: 'SignUp' },
+      props: { title: 'Cadastrar' },
     },
     {
       path: '/login',

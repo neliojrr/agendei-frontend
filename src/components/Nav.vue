@@ -22,7 +22,7 @@
       </div>
       <div class="navbar-menu" v-bind:class="{ 'is-active': isOpen }">
         <div class="navbar-end">
-          <a name="cadastrar" href="https://agendei.io/contato" class="navbar-item is-flex">
+          <a name="cadastrar" href="https://agendei.io/cadastar" class="navbar-item is-flex">
             <span>{{ $t('sign-up') }}</span>
           </a>
           <a name="login" href="https://agendei.io/login" class="navbar-item is-flex">

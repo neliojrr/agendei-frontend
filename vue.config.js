@@ -8,7 +8,7 @@ module.exports = {
         // Required - The path to the webpack-outputted app to prerender.
         staticDir: path.join(__dirname, 'dist'),
         // Required - Routes to render.
-        routes: ['/', '/contato', '/login', '/obrigado'],
+        routes: ['/', '/login', '/cadastrar'],
       }),
     ],
   },
