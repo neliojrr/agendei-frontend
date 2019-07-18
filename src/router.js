@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Signup from './views/Signup.vue';
+import ForgotPassword from './views/ForgotPassword.vue';
+import ResetPassword from './views/ResetPassword.vue';
 import Prospect from './views/Prospect.vue';
 import Thanks from './views/Thanks.vue';
 import Login from './views/Login.vue';
@@ -53,6 +55,21 @@ const router = new Router({
       name: 'login',
       component: Login,
       props: { pageTitle: 'Login' },
+    },
+    {
+      path: '/forgot',
+      name: 'forgot',
+      component: ForgotPassword,
+      props: { pageTitle: 'Esqueceu sua senha' },
+    },
+    {
+      path: '/reset-password',
+      name: 'resetPassword',
+      component: ResetPassword,
+      props: route => ({
+        token: route.query.reset_password_token,
+        pageTitle: 'Redefinir Senha',
+      }),
     },
     {
       path: '/agenda',

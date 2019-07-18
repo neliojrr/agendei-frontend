@@ -4,11 +4,21 @@
     <div class="login container">
       <div class="columns">
         <div class="column">
-          <img src="../assets/images/login.svg">
+          <img v-if="showSuccessMessage" src="../assets/images/reset_password_sent.svg">
+          <img v-else src="../assets/images/forgot.svg">
         </div>
         <div class="column">
           <h1 class="title">{{ $t('title') }}</h1>
           <h2 class="subtitle">{{ $t('subtitle') }}</h2>
+          <div
+            v-if="showSuccessMessage"
+            class="notification is-success"
+          >
+            <span>
+              Enviamos um email com instruções de como redefinir sua senha.<br />
+              Por favor, verifique sua caixa de entrada.
+            </span>
+          </div>
           <div
             v-if="errors.message"
             class="notification is-danger"
@@ -21,11 +31,14 @@
           <form
             role="presentation"
             class="form"
-            @submit.prevent="login"
+            @submit.prevent="forgotPasswordEmail"
           >
             <div class="field">
               <label class="label">Email</label>
-              <div class="control">
+              <div
+                class="control"
+                :class="{ 'has-icons-right': showSuccessMessage }"
+              >
                 <input
                   class="input"
                   :class="{ 'is-danger': !!errors.email }"
@@ -35,35 +48,23 @@
                   v-model="email"
                   autofocus
                 />
+                <span v-if="showSuccessMessage" class="icon is-small is-right">
+                  <font-awesome-icon icon="check" />
+                </span>
               </div>
               <p v-if="errors.email" class="help is-danger">
                 {{ errors.email }}
               </p>
             </div>
-            <div class="field">
-              <label class="label">{{ $t('password') }}</label>
-              <div class="control">
-                <input
-                  class="input"
-                  :class="{ 'is-danger': !!errors.password }"
-                  type="password"
-                  name="password"
-                  v-model="password"
-                />
-              </div>
-              <p v-if="errors.password" class="help is-danger">
-                {{ errors.password }}
-              </p>
-            </div>
             <div class="field is-grouped">
               <div class="control">
                 <button class="button is-link" :class="{ 'is-loading': isLoading }">
-                  {{ $t('sign-in') }}
+                  {{ $t('send') }}
                 </button>
               </div>
               <div class="control">
-                <a href="/forgot" class="button is-text">
-                  {{ $t('forgot') }}
+                <a href="/login" class="button is-text">
+                  {{ $t('login') }}
                 </a>
               </div>
             </div>
@@ -76,7 +77,7 @@
 
 <script>
 import Nav from '@/components/Nav.vue';
-import { login, api } from '@/utils/api-connect';
+import { api } from '@/utils/api-connect';
 import validate from '@/mixins/validate';
 
 export default {
@@ -84,55 +85,29 @@ export default {
     return {
       locale: 'pt-br',
       email: '',
-      password: '',
       errors: {},
       isLoading: false,
+      showSuccessMessage: false,
     };
   },
   components: {
     Nav,
   },
   mixins: [validate],
-  created() {
-    const path = window.location.pathname;
-    const user = JSON.parse(window.localStorage.getItem('user')) || {};
-    const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
-    if (user.id && salon.id) {
-      // TODO: Load services only when enter into the application
-      if (path.indexOf('/login') > -1) {
-        this.$emit('set-loading-overlay', true);
-        api.get('/auth/validate_token').then((response) => {
-          if (response && response.status && response.status === 200) {
-            this.$router.replace('/agenda');
-          }
-          this.$emit('set-loading-overlay', false);
-        }).catch(() => {
-          this.$emit('set-loading-overlay', false);
-        });
-      }
-    }
-  },
   methods: {
-    login() {
+    forgotPasswordEmail() {
       if (this.validateFields()) {
         this.isLoading = true;
         const {
           email,
-          password,
         } = this;
-        login.post('/auth/sign_in', {
+        api.post('/auth/password', {
           email,
-          password,
+          redirect_url: '/reset-password',
         })
-          .then((response) => {
+          .then(() => {
             this.isLoading = false;
-            if (response.status === 200) {
-              this.$toast.open({
-                message: 'Seja bem vindo!',
-                type: 'is-success',
-              });
-              this.$router.push('/agenda');
-            }
+            this.showSuccessMessage = true;
           })
           .catch((error) => {
             this.isLoading = false;
@@ -155,16 +130,11 @@ export default {
     validateFields() {
       const {
         email,
-        password,
       } = this;
       const errors = {};
       let isValid = true;
       if (!this.validateEmail(email)) {
         errors.email = 'Ops! Por favor, digite um email válido';
-        isValid = false;
-      }
-      if (password === '') {
-        errors.password = 'Sua senha deve conter pelo menos 6 caracteres';
         isValid = false;
       }
       this.errors = errors;
@@ -228,20 +198,18 @@ export default {
 <i18n>
 {
   "en": {
-    "title": "Sign in to your account",
+    "title": "Enter your email below",
     "subtitle": "Fill in your email and password to proceed",
     "email-placeholder": "you@example.com",
-    "password": "Password",
-    "sign-ip": "Sign ip",
-    "forgot": "Forgot your password?"
+    "send": "Send",
+    "login": "Back to login"
   },
   "pt-br": {
-    "title": "Faça seu login no agendei",
-    "subtitle": "Digite seu email e senha para entrar",
+    "title": "Digite seu email de cadastro",
+    "subtitle": "Esqueceu sua senha? Enviaremos um email com intruções para redefiní-la",
     "email-placeholder": "seuemail@exemplo.com",
-    "password": "Senha",
-    "sign-in": "Entrar",
-    "forgot": "Esqueceu sua senha?"
+    "send": "Enviar",
+    "login": "Voltar para Login"
   }
 }
 </i18n>
