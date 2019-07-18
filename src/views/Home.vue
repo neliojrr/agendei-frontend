@@ -148,7 +148,7 @@ export default {
   methods: {
     goToRegister() {
       this.$ga.event('Home', 'Button click', 'Go to register');
-      this.$router.push('/contato');
+      this.$router.push('/cadastrar');
     },
     handleScroll() {
       this.transparent = window.pageYOffset;
