@@ -24,7 +24,6 @@
           >
             <span>Novo Cliente</span>
           </button>
-          <MobileBottomMenu :buttons="buttons" />
         </div>
       </div>
       <Table
@@ -43,6 +42,7 @@
           />
         </p>
       </div>
+      <MobileBottomMenu :buttons="buttons" />
     </div>
   </div>
 </template>
