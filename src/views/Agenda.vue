@@ -82,10 +82,10 @@ export default {
       defaultAppointment: {
         service: {},
         client: {},
-        employee: {},
+        employee: {}
       },
       appointment: {},
-      buttons: [],
+      buttons: []
     };
   },
   props: ['pageTitle'],
@@ -96,7 +96,7 @@ export default {
     CalendarHeader,
     Calendar,
     Form,
-    AppointmentView,
+    AppointmentView
   },
   mixins: [log],
   created() {
@@ -105,17 +105,24 @@ export default {
         id: 'newSale',
         title: 'Nova Venda',
         icon: 'file-invoice-dollar',
-        action: () => this.$router.push({ name: 'sales', params: { openSelectItem: true } }),
-        class: 'is-info',
+        action: () =>
+          this.$router.push({
+            name: 'sales',
+            params: { openSelectItem: true }
+          }),
+        class: 'is-info'
       },
       {
         id: 'newAppointment',
         title: 'Novo Agendamento',
         icon: 'calendar-alt',
-        action: this.openModalNewAppointment,
-      },
+        action: this.openModalNewAppointment
+      }
     ];
-    const startDate = moment().hour(0).minute(0).seconds(this.start * 3600);
+    const startDate = moment()
+      .hour(0)
+      .minute(0)
+      .seconds(this.start * 3600);
     this.defaultAppointment.start_at = startDate.unix();
     this.appointment = { ...this.defaultAppointment };
     const salon = window.localStorage.getItem('salon') || '{}';
@@ -124,8 +131,8 @@ export default {
   },
   computed: {
     ...mapState({
-      employees: state => state.employee.all,
-    }),
+      employees: state => state.employee.all
+    })
   },
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
@@ -164,10 +171,11 @@ export default {
       const columnsBooked = {};
       const bookingInfo = {};
       if (employeeSelected) {
-        allAppointments = this.appointments
-          .filter(book => book.employee.id === employeeSelected.id);
+        allAppointments = this.appointments.filter(
+          book => book.employee.id === employeeSelected.id
+        );
       }
-      allAppointments.forEach((book) => {
+      allAppointments.forEach(book => {
         const start = moment.unix(book.start_at);
         const end = moment.unix(book.start_at).add(book.duration, 's');
         let infoOrder = 0;
@@ -201,9 +209,11 @@ export default {
     },
 
     modalButtons() {
-      const canComplete = this.appointment.status === AppointmentStatus.NEW ||
+      const canComplete =
+        this.appointment.status === AppointmentStatus.NEW ||
         this.appointment.status === AppointmentStatus.STARTED;
-      const canEdit = this.appointment.status === AppointmentStatus.NEW ||
+      const canEdit =
+        this.appointment.status === AppointmentStatus.NEW ||
         this.appointment.status === AppointmentStatus.STARTED;
       const canNoShow = this.appointment.status === AppointmentStatus.NEW;
       const canStart = this.appointment.status === AppointmentStatus.NEW;
@@ -213,7 +223,7 @@ export default {
         buttons.push({
           title: 'Finalizar',
           class: 'is-primary',
-          action: this.checkout,
+          action: this.checkout
         });
       }
 
@@ -221,7 +231,7 @@ export default {
       if (canEdit) {
         dropdown.push({
           title: 'Editar',
-          action: () => this.openModalEdit(this.appointment),
+          action: () => this.openModalEdit(this.appointment)
         });
       }
       if (canStart) {
@@ -231,7 +241,7 @@ export default {
           action: () => {
             this.appointment.status = AppointmentStatus.STARTED;
             this.updateAppointment({ appointment: this.appointment });
-          },
+          }
         });
       }
       if (canNoShow) {
@@ -241,25 +251,26 @@ export default {
           action: () => {
             this.appointment.status = AppointmentStatus.NO_SHOW;
             this.updateAppointment({ appointment: this.appointment });
-          },
+          }
         });
       }
       dropdown.push({
         title: 'Deletar',
         class: 'has-text-danger',
-        action: this.deleteAppointment,
+        action: this.deleteAppointment
       });
       return { buttons, dropdown };
     },
 
     getAppointments(day = moment()) {
       this.$emit('set-loading-overlay', true);
-      api.get(`/salons/${this.salon.id}/appointments`, {
-        params: {
-          day: day.format('YYYY-MM-DD'),
-        },
-      })
-        .then((response) => {
+      api
+        .get(`/salons/${this.salon.id}/appointments`, {
+          params: {
+            day: day.format('YYYY-MM-DD')
+          }
+        })
+        .then(response => {
           this.appointments = response.data || [];
           this.fillColumnsBooked();
           this.$emit('set-loading-overlay', false);
@@ -267,8 +278,9 @@ export default {
         .catch(() => {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
-            message: 'Não foi possível carregar seus agendamentos. Faça seu login novamente!',
-            type: 'is-danger',
+            message:
+              'Não foi possível carregar seus agendamentos. Faça seu login novamente!',
+            type: 'is-danger'
           });
         });
     },
@@ -278,19 +290,22 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.saveNewAppointment,
-        },
+          action: this.saveNewAppointment
+        }
       ];
       this.appointment = { ...this.defaultAppointment };
       const data = {
         appointment: this.appointment,
         employees: this.employees,
         start: this.start,
-        end: this.end,
+        end: this.end
       };
       const id = modalId.NEW_APPOINTMENT;
       const props = {
-        title: 'Novo Agendamento', content: Form, data, buttons,
+        title: 'Novo Agendamento',
+        content: Form,
+        data,
+        buttons
       };
       this.addModal({ id, props });
     },
@@ -300,20 +315,22 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.updateAppointment,
-        },
+          action: this.updateAppointment
+        }
       ];
       const data = {
         appointment: { ...appointment },
         employees: this.employees,
         start: this.start,
-        end: this.end,
+        end: this.end
       };
       const id = modalId.EDIT_APPOINTMENT;
-      const props =
-        {
-          title: 'Editar Agendamento', content: Form, data, buttons,
-        };
+      const props = {
+        title: 'Editar Agendamento',
+        content: Form,
+        data,
+        buttons
+      };
       this.addModal({ id, props });
     },
 
@@ -327,97 +344,108 @@ export default {
         content: AppointmentView,
         data,
         buttons,
-        dropdown,
+        dropdown
       };
       this.addModal({ id, props });
     },
 
     saveNewAppointment() {
       this.$emit('set-loading-overlay', true);
-      const startAt =
-        moment.unix(this.appointment.start_at);
-      api.post(
-        `/salons/${this.salon.id}/appointments`,
-        { ...this.appointment, start_at: startAt },
-      ).then((response) => {
-        const newAppointment = response.data;
-        this.appointments.push(newAppointment);
-        this.fillColumnsBooked();
-        this.$emit('set-loading-overlay', false);
-        this.removeModal({ id: modalId.NEW_APPOINTMENT });
-      }).catch((error) => {
-        this.$emit('set-loading-overlay', false);
-        let errors = {};
-        if (error.response) {
-          errors = error.response.data || {};
-        } else {
-          errors.message = error.message;
-        }
-        this.errors = errors;
-        this.$emit('set-form-errors', this.errors);
-      });
+      const startAt = moment.unix(this.appointment.start_at);
+      api
+        .post(`/salons/${this.salon.id}/appointments`, {
+          ...this.appointment,
+          start_at: startAt
+        })
+        .then(response => {
+          const newAppointment = response.data;
+          this.appointments.push(newAppointment);
+          this.fillColumnsBooked();
+          this.$emit('set-loading-overlay', false);
+          this.removeModal({ id: modalId.NEW_APPOINTMENT });
+        })
+        .catch(error => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.updateModalProps({
+            id: modalId.NEW_APPOINTMENT,
+            errors: this.errors
+          });
+        });
     },
 
     updateAppointment(data) {
       this.$emit('set-loading-overlay', true);
       const { appointment } = data;
-      const startAt =
-        moment.unix(appointment.start_at);
-      api.put(
-        `/appointments/${appointment.id}`,
-        { ...appointment, start_at: startAt },
-      ).then((response) => {
-        const updatedAppointment = response.data || {};
-        this.appointments = this.appointments.map((apt) => {
-          if (apt.id === updatedAppointment.id) {
-            return updatedAppointment;
+      const startAt = moment.unix(appointment.start_at);
+      api
+        .put(`/appointments/${appointment.id}`, {
+          ...appointment,
+          start_at: startAt
+        })
+        .then(response => {
+          const updatedAppointment = response.data || {};
+          this.appointments = this.appointments.map(apt => {
+            if (apt.id === updatedAppointment.id) {
+              return updatedAppointment;
+            }
+            return apt;
+          });
+          this.fillColumnsBooked();
+          this.$emit('set-loading-overlay', false);
+          this.removeModal({ id: modalId.EDIT_APPOINTMENT });
+          const { buttons, dropdown } = this.modalButtons();
+          this.updateModalProps({
+            buttons,
+            dropdown,
+            id: modalId.CHECKOUT_APPOINTMENT,
+            data: updatedAppointment
+          });
+        })
+        .catch(error => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
           }
-          return apt;
+          this.errors = errors;
+          this.$emit('set-form-errors', this.errors);
         });
-        this.fillColumnsBooked();
-        this.$emit('set-loading-overlay', false);
-        this.removeModal({ id: modalId.EDIT_APPOINTMENT });
-        const { buttons, dropdown } = this.modalButtons();
-        this.updateModalProps({
-          buttons,
-          dropdown,
-          id: modalId.CHECKOUT_APPOINTMENT,
-          data: updatedAppointment,
-        });
-      }).catch((error) => {
-        this.$emit('set-loading-overlay', false);
-        let errors = {};
-        if (error.response) {
-          errors = error.response.data || {};
-        } else {
-          errors.message = error.message;
-        }
-        this.errors = errors;
-        this.$emit('set-form-errors', this.errors);
-      });
     },
 
     deleteAppointment(appointment) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
-        api.delete(`/appointments/${appointment.id}`)
+        api
+          .delete(`/appointments/${appointment.id}`)
           .then(() => {
-            this.appointments = this.appointments.filter(app => app.id !== appointment.id);
+            this.appointments = this.appointments.filter(
+              app => app.id !== appointment.id
+            );
             this.fillColumnsBooked();
             this.$toast.open({
               message: 'O agendamento foi excluído!',
-              type: 'is-success',
+              type: 'is-success'
             });
             this.$emit('set-loading-overlay', false);
             this.removeModal({ id: modalId.CHECKOUT_APPOINTMENT });
           })
-          .catch((error) => {
-            const message = error && error.response && error.response.data ?
-              error.response.data.message :
-              null;
+          .catch(error => {
+            const message =
+              error && error.response && error.response.data
+                ? error.response.data.message
+                : null;
             this.$toast.open({
               message: `Impossível deletar este agendamento! ${message}`,
-              type: 'is-danger',
+              type: 'is-danger'
             });
             this.$emit('set-loading-overlay', false);
           });
@@ -427,15 +455,13 @@ export default {
     checkout(appointment) {
       this.$router.push({ name: 'sales', params: { appointment } });
       this.removeModal({ id: modalId.CHECKOUT_APPOINTMENT });
-    },
-  },
+    }
+  }
 };
-
 </script>
 
 <style lang="scss">
 .agenda {
-
   .new-appointment-button {
     position: fixed;
     bottom: 21px;

@@ -74,7 +74,13 @@
             </optgroup>
           </select>
         </div>
-        <p v-if="errors.service" class="help is-danger">{{ errors.service }}</p>
+        <p
+          v-for="message in errors.service"
+          :key="message"
+          class="help is-danger"
+        >
+          {{ message }}
+        </p>
       </div>
     </div>
     <div class="field columns">
@@ -117,8 +123,12 @@
             </option>
           </select>
         </div>
-        <p v-if="errors.employee" class="help is-danger">
-          {{ errors.employee }}
+        <p
+          v-for="message in errors.employee"
+          :key="message"
+          class="help is-danger"
+        >
+          {{ message }}
         </p>
       </div>
     </div>

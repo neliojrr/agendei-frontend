@@ -13,8 +13,8 @@ import NotFound from './views/NotFound.vue';
 import Report from './views/Report.vue';
 import Services from './views/Services.vue';
 import Products from './views/Products.vue';
-import Packages from './views/Packages.vue';
-import PackageView from './views/PackageView.vue';
+// import Packages from './views/Packages.vue';
+// import PackageView from './views/PackageView.vue';
 import Sales from './views/Sales.vue';
 import SaleView from './views/SaleView.vue';
 import store from './store';
@@ -28,25 +28,25 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home,
+      component: Home
     },
     {
       path: '/cadastrar',
       name: 'signup',
       component: Signup,
-      props: { title: 'Cadastrar' },
+      props: { title: 'Cadastrar' }
     },
     {
       path: '/login',
       name: 'login',
       component: Login,
-      props: { pageTitle: 'Login' },
+      props: { pageTitle: 'Login' }
     },
     {
       path: '/forgot',
       name: 'forgot',
       component: ForgotPassword,
-      props: { pageTitle: 'Esqueceu sua senha' },
+      props: { pageTitle: 'Esqueceu sua senha' }
     },
     {
       path: '/reset-password',
@@ -54,58 +54,59 @@ const router = new Router({
       component: ResetPassword,
       props: route => ({
         token: route.query.reset_password_token,
-        pageTitle: 'Redefinir Senha',
-      }),
+        pageTitle: 'Redefinir Senha'
+      })
     },
     {
       path: '/agenda',
       name: 'agenda',
       component: Agenda,
       props: { pageTitle: 'Agenda' },
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
     {
       path: '/staff',
       name: 'staff',
       component: Staff,
       props: { pageTitle: 'Profissionais' },
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
     {
       path: '/clients',
       name: 'clients',
       component: Clients,
       props: { pageTitle: 'Clientes' },
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
     {
       path: '/clients/:id',
       name: 'clientView',
       component: ClientView,
       props: route => ({ id: Number(route.params.id), pageTitle: 'Cliente' }),
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
     {
       path: '/reports',
       name: 'reports',
       component: Report,
       props: { pageTitle: 'Relatórios' },
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
     {
       path: '/services',
       name: 'services',
       component: Services,
       props: { pageTitle: 'Serviços' },
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
     {
       path: '/products',
       name: 'products',
       component: Products,
       props: { pageTitle: 'Produtos' },
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
+    /*
     {
       path: '/packages',
       name: 'packages',
@@ -120,6 +121,7 @@ const router = new Router({
       props: { pageTitle: 'Pacote' },
       meta: { loadData: true },
     },
+    */
     {
       path: '/sales',
       name: 'sales',
@@ -127,9 +129,9 @@ const router = new Router({
       props: route => ({
         openSelectItem: route.params.openSelectItem || false,
         appointment: route.params.appointment || {},
-        pageTitle: 'Vendas',
+        pageTitle: 'Vendas'
       }),
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
     {
       path: '/sales/:id',
@@ -137,9 +139,9 @@ const router = new Router({
       component: SaleView,
       props: route => ({
         id: Number(route.params.id),
-        pageTitle: 'Vendas',
+        pageTitle: 'Vendas'
       }),
-      meta: { loadData: true },
+      meta: { loadData: true }
     },
 
     /* not found */
@@ -147,9 +149,9 @@ const router = new Router({
       path: '/*',
       name: 'not-found',
       component: NotFound,
-      props: { pageTitle: 'Not found' },
-    },
-  ],
+      props: { pageTitle: 'Not found' }
+    }
+  ]
 });
 
 let firstTimeLoading = true;

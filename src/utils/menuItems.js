@@ -3,44 +3,38 @@ const menuItems = [
     id: 'agenda',
     title: 'Agenda',
     icon: 'calendar-alt',
-    path: '/agenda',
+    path: '/agenda'
   },
   {
     id: 'clients',
     title: 'Clientes',
     icon: 'users',
-    path: '/clients',
+    path: '/clients'
   },
   {
     id: 'staff',
-    title: 'Staff',
+    title: 'Profissionais',
     icon: 'users-cog',
-    path: '/staff',
+    path: '/staff'
   },
   {
     id: 'services',
     title: 'Serviços',
     icon: 'cut',
-    path: '/services',
-  },
-  {
-    id: 'packages',
-    title: 'Pacotes',
-    icon: 'box',
-    path: '/packages',
+    path: '/services'
   },
   {
     id: 'products',
     title: 'Produtos',
     icon: 'spray-can',
-    path: '/products',
+    path: '/products'
   },
   {
     id: 'reports',
     title: 'Relatórios',
     icon: 'file-invoice-dollar',
-    path: '/reports',
-  },
+    path: '/reports'
+  }
 ];
 
 export default menuItems;

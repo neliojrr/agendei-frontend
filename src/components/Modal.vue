@@ -4,7 +4,11 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">{{ title }}</p>
-        <button class="delete" aria-label="close" @click="removeModal({ id })"></button>
+        <button
+          class="delete"
+          aria-label="close"
+          @click="removeModal({ id })"
+        ></button>
       </header>
       <section class="modal-card-body">
         <component
@@ -66,54 +70,54 @@ import { mapMutations } from 'vuex';
 export default {
   data() {
     return {
-      statusDisplay: 'none',
+      statusDisplay: 'none'
     };
   },
   props: {
     id: {
       type: String,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      default: '',
+      default: ''
     },
     content: {
       type: Object,
-      default: null,
+      default: null
     },
     data: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     errors: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     buttons: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     dropdown: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     cancelButtonText: {
       type: String,
-      default: 'Cancelar',
+      default: 'Cancelar'
     },
     show: {
       type: Boolean,
-      default: false,
+      default: false
     },
     allDisabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   methods: {
-    ...mapMutations('modal', ['removeModal']),
-  },
+    ...mapMutations('modal', ['removeModal'])
+  }
 };
 </script>
 
@@ -122,7 +126,6 @@ export default {
   z-index: 100;
 
   .dropdown-content {
-
     a {
       padding-right: 0;
       padding-left: 0;

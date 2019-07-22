@@ -27,7 +27,10 @@
         </div>
       </div>
     </div>
-    <div class="navbar-menu is-hidden-desktop" v-bind:class="{ 'is-active': isOpen }">
+    <div
+      class="navbar-menu is-hidden-desktop"
+      v-bind:class="{ 'is-active': isOpen }"
+    >
       <div class="navbar-start">
         <router-link
           v-bind:to="item.path"
@@ -48,19 +51,26 @@ import { api } from '@/utils/api-connect';
 import menuItems from '../utils/menuItems';
 
 export default {
+  props: {
+    title: {
+      type: String,
+      required: false,
+      default: ''
+    }
+  },
   data() {
     return {
       items: menuItems,
-      isOpen: false,
+      isOpen: false
     };
   },
-  props: ['title'],
   methods: {
     toggleBurgerMenu() {
       this.isOpen = !this.isOpen;
     },
     logout() {
-      api.delete('/auth/sign_out')
+      api
+        .delete('/auth/sign_out')
         .then(() => {
           this.$router.push('/login');
         })
@@ -70,13 +80,13 @@ export default {
           window.localStorage.setItem('agendeiAuth', null);
           this.$router.push('/login');
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss">
-@import "../assets/sass/variables";
+@import '../assets/sass/variables';
 
 .navbar-app {
   position: fixed;
@@ -90,7 +100,6 @@ export default {
   }
 
   .navbar-brand {
-
     .navbar-burger {
       color: white;
       margin-left: initial;
@@ -98,11 +107,11 @@ export default {
     }
 
     .navbar-burger:hover {
-      color: #FFFFFF;
+      color: #ffffff;
     }
 
     .navbar-burger:active {
-      color: #FFFFFF;
+      color: #ffffff;
     }
 
     .navbar-title {
@@ -114,7 +123,7 @@ export default {
       align-items: center;
 
       h2 {
-        color: #FFFFFF;
+        color: #ffffff;
         margin: 0;
         font-size: 24px;
       }
@@ -123,17 +132,19 @@ export default {
         position: absolute;
         right: 0;
 
-        a, button {
+        a,
+        button {
           font-size: 22px;
-          color: #FFFFFF;
+          color: #ffffff;
           @media screen and (max-width: 768px) {
             font-size: 18px;
             width: 38px;
           }
         }
 
-        a:hover, button:hover {
-          background-color: #FFFFFF;
+        a:hover,
+        button:hover {
+          background-color: #ffffff;
           color: $primary;
         }
 
@@ -145,7 +156,6 @@ export default {
   }
 
   .navbar-menu {
-
     .navbar-item {
       width: 50%;
       margin: auto;
@@ -159,4 +169,3 @@ export default {
   }
 }
 </style>
-

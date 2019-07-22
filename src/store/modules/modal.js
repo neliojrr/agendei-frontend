@@ -1,10 +1,10 @@
 const modal = {
   namespaced: true,
   state: {
-    items: [],
+    items: []
   },
   getters: {
-    isModalOpen: state => id => !!state.items.find(item => item.id === id),
+    isModalOpen: state => id => !!state.items.find(item => item.id === id)
   },
   mutations: {
     addModal(state, payload) {
@@ -18,33 +18,21 @@ const modal = {
     },
 
     updateModalProps(state, payload) {
-      const {
-        id, data, buttons, dropdown,
-      } = payload;
+      const { id, data, buttons, dropdown, errors } = payload;
       const index = state.items.findIndex(item => item.id === id);
       if (index > -1) {
         const currentModal = { ...state.items[index] };
         currentModal.props = {
           ...currentModal.props,
-          buttons,
-          dropdown,
-          data: { ...currentModal.props.data, ...data },
+          errors,
+          buttons: buttons || currentModal.props.buttons,
+          dropdown: dropdown || currentModal.props.dropdown,
+          data: { ...currentModal.props.data, ...data }
         };
         state.items.splice(index, 1, currentModal);
       }
-    },
-
-    addFormErrors(state, payload) {
-      const { id, errors } = payload;
-      const items = state.items.map((item) => {
-        if (item.id === id) {
-          item.errors = errors;
-        }
-        return item;
-      });
-      state.items = items;
-    },
-  },
+    }
+  }
 };
 
 export default modal;

@@ -1,10 +1,7 @@
 <template>
   <div id="app">
     <section>
-      <b-loading
-        :is-full-page="true"
-        :active.sync="isLoading"
-      ></b-loading>
+      <b-loading :is-full-page="true" :active.sync="isLoading"></b-loading>
       <Modal
         v-if="currentModal && currentModal.id"
         v-bind:key="currentModal.id"
@@ -25,29 +22,55 @@ import Modal from '@/components/Modal.vue';
 
 moment.updateLocale('en', {
   weekdays: [
-    'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado',
+    'Domingo',
+    'Segunda',
+    'Terça',
+    'Quarta',
+    'Quinta',
+    'Sexta',
+    'Sábado'
   ],
   weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
   months: [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho',
-    'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro'
   ],
   monthsShort: [
-    'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov',
-    'Dez',
-  ],
+    'Jan',
+    'Fev',
+    'Mar',
+    'Abr',
+    'Mai',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Set',
+    'Out',
+    'Nov',
+    'Dez'
+  ]
 });
 
 export default {
   data() {
     return {
       modalProps: {},
-      isLoading: false,
+      isLoading: false
     };
   },
   props: ['data'],
   components: {
-    Modal,
+    Modal
   },
   computed: {
     modals() {
@@ -59,24 +82,24 @@ export default {
         return this.$store.state.modal.items[modalsCount - 1];
       }
       return null;
-    },
+    }
   },
   methods: {
     setFormErrors(errors) {
       this.modalProps = {
         ...this.modalProps,
-        errors,
+        errors
       };
     },
     setLoadingOverlay(isLoading) {
       this.isLoading = isLoading;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss">
-@import "assets/sass/variables";
+@import 'assets/sass/variables';
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -122,7 +145,6 @@ export default {
     width: 300px;
 
     .columns {
-
       .column {
         color: $text;
 
@@ -137,7 +159,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        border: 1px solid #CCC;
+        border: 1px solid #ccc;
         border-radius: 100%;
         font-size: 18px !important;
       }
@@ -181,7 +203,7 @@ export default {
     }
 
     .columns + .columns {
-      border-top: 1px solid #CCCCCC;
+      border-top: 1px solid #cccccc;
     }
   }
 
@@ -195,7 +217,7 @@ export default {
     z-index: 1;
   }
 
-  &[x-placement^="top"] {
+  &[x-placement^='top'] {
     margin-bottom: 5px;
 
     .tooltip-arrow {
@@ -210,7 +232,7 @@ export default {
     }
   }
 
-  &[x-placement^="bottom"] {
+  &[x-placement^='bottom'] {
     margin-top: 5px;
 
     .tooltip-arrow {
@@ -225,7 +247,7 @@ export default {
     }
   }
 
-  &[x-placement^="right"] {
+  &[x-placement^='right'] {
     margin-left: 5px;
 
     .tooltip-arrow {
@@ -240,7 +262,7 @@ export default {
     }
   }
 
-  &[x-placement^="left"] {
+  &[x-placement^='left'] {
     margin-right: 5px;
 
     .tooltip-arrow {
@@ -263,7 +285,7 @@ export default {
       color: black;
       padding: 24px;
       border-radius: 5px;
-      box-shadow: 0 5px 30px rgba(black, .1);
+      box-shadow: 0 5px 30px rgba(black, 0.1);
     }
 
     .popover-arrow {
@@ -274,13 +296,13 @@ export default {
   &[aria-hidden='true'] {
     visibility: hidden;
     opacity: 0;
-    transition: opacity .15s, visibility .15s;
+    transition: opacity 0.15s, visibility 0.15s;
   }
 
   &[aria-hidden='false'] {
     visibility: visible;
     opacity: 1;
-    transition: opacity .15s;
+    transition: opacity 0.15s;
   }
 }
 </style>
