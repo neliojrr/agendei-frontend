@@ -12,16 +12,12 @@
             </div>
             <hr />
             <ul class="items">
-              <li
-                v-for="item in sale.transactions"
-                :key="item.id"
-              >
+              <li v-for="item in sale.transactions" :key="item.id">
                 <p class="quantity has-text-grey">
-                  {{ item.quantity }} {{ item.quantity === 1 ? 'item' : 'itens' }}
+                  {{ item.quantity }}&nbsp;
+                  {{ item.quantity === 1 ? 'item' : 'itens' }}
                 </p>
-                <span
-                  class="name has-text-grey-dark has-text-weight-semibold"
-                >
+                <span class="name has-text-grey-dark has-text-weight-semibold">
                   {{ item.name }}
                 </span>
                 <span class="price has-text-grey-dark has-text-weight-semibold">
@@ -69,7 +65,8 @@
                 </span>
                 <br />
                 <span class="has-text-grey">
-                  Pagamento recebido em {{ dateCreated }} às {{ hourCreated }} horas
+                  Pagamento recebido em {{ dateCreated }} às&nbsp;
+                  {{ hourCreated }} horas
                 </span>
               </section>
               <section class="column is-full send-email">
@@ -81,7 +78,7 @@
                       class="input"
                       type="email"
                       placeholder="Email"
-                    >
+                    />
                   </p>
                   <p class="control">
                     <a class="button" @click="sendInvoice">
@@ -121,22 +118,22 @@ export default {
   data() {
     return {
       sale: {},
-      email: '',
+      email: ''
     };
   },
   props: {
     id: {
       type: Number,
-      required: true,
+      required: true
     },
     pageTitle: {
       type: String,
-      default: 'Vendas',
-    },
+      default: 'Vendas'
+    }
   },
   components: {
     Menu,
-    NavApp,
+    NavApp
   },
   computed: {
     dateCreated() {
@@ -152,8 +149,8 @@ export default {
       salon: state => state.salon,
       user: state => state.user,
       sales: state => state.sale.all,
-      isFetching: state => state.sale.isFetching,
-    }),
+      isFetching: state => state.sale.isFetching
+    })
   },
   watch: {
     isFetching(newIsFetching, oldIsFetching) {
@@ -164,7 +161,7 @@ export default {
         this.sale = this.sales.find(sale => sale.id === this.id) || {};
         this.$emit('set-loading-overlay', false);
       }
-    },
+    }
   },
   created() {
     this.sale = this.sales.find(sale => sale.id === this.id) || {};
@@ -176,37 +173,33 @@ export default {
     ...mapActions('sale', ['getSale']),
 
     sendInvoice() {
-      api.post(
-        `sales/${this.sale.id}/send-invoice/`,
-        { id: this.sale.id, email: this.email },
-      )
-        .then((response) => {
+      api
+        .post(`sales/${this.sale.id}/send-invoice/`, {
+          id: this.sale.id,
+          email: this.email
         })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-  },
+        .then(() => {})
+        .catch(() => {});
+    }
+  }
 };
 </script>
 
 <style lang="scss">
 .sale-view {
   padding: 10px;
-  overflow: none;
+  overflow-y: auto;
 
   .content {
-    height: 100%;
-
     .invoice-area {
       display: flex;
-      overflow-y: auto;
+      overflow-y: none;
 
       .invoice {
         margin: auto;
         width: 50%;
-        border: 1px solid #DEE3E7;
-        box-shadow: 0 0 10px 0 #CCC;
+        border: 1px solid #dee3e7;
+        box-shadow: 0 0 10px 0 #ccc;
         padding: 10px;
         padding-bottom: 30px;
 
@@ -233,7 +226,6 @@ export default {
         }
 
         .items {
-
           li {
             text-align: left;
             list-style: none;
@@ -266,12 +258,7 @@ export default {
     }
 
     .invoice-success {
-      height: 100%;
-
       .box {
-        height: 100%;
-        overflow-y: auto;
-
         .columns {
           height: 100%;
         }
