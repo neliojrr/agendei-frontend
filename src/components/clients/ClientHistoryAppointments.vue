@@ -17,13 +17,11 @@
         </div>
         <div class="column service is-flex">
           <span class="subtitle is-6">
-            {{ a.service.name }} com {{ a.employee.name}}
+            {{ `${a.service.name} com ${a.employee.name}` }}
           </span>
         </div>
         <div class="column price is-flex is-narrow">
-          <span class="subtitle is-5">
-            R$ {{ a.price / 100 }}
-          </span>
+          <span class="subtitle is-5">R$ {{ a.price / 100 }}</span>
         </div>
       </div>
     </template>
@@ -44,27 +42,26 @@
 import moment from 'moment';
 
 export default {
-  data() {
-    return {};
-  },
   props: {
     appointments: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
+  },
+  data() {
+    return {};
   },
   methods: {
     moment(date) {
       return moment(date);
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
-@import "~bulma/sass/utilities/_all";
+@import '~bulma/sass/utilities/_all';
 .client-history-appointments {
-
   .columns {
     border-bottom: 1px solid $grey-lighter;
 
@@ -79,7 +76,6 @@ export default {
   }
 
   .no-history-message {
-
     p {
       margin-top: 20px;
       margin-bottom: 20px;
@@ -92,4 +88,3 @@ export default {
   }
 }
 </style>
-

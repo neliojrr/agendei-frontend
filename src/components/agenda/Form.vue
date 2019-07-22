@@ -17,13 +17,16 @@
           ref="autocomplete"
           field="name"
           placeholder="Digite para pesquisar"
-          @select="setClient">
+          @select="setClient"
+        >
           <template slot="header">
             <a>
               <span> Adicionar novo cliente... </span>
             </a>
           </template>
-          <template slot="empty">Sem resultados para {{name}}</template>
+          <template slot="empty">
+            Sem resultados para {{ name }}
+          </template>
         </b-autocomplete>
       </div>
       <p v-if="errors.client" class="help is-danger">{{ errors.client }}</p>
@@ -31,20 +34,30 @@
     <div class="field columns">
       <div class="control column is-3">
         <label class="label">Início</label>
-        <div class="select is-fullwidth" :class="{ 'is-danger': errors.start_at }">
+        <div
+          class="select is-fullwidth"
+          :class="{ 'is-danger': errors.start_at }"
+        >
           <select @change="selectStartAt" :value="hourSelected">
             <option v-for="t in timeRows" :key="t" :value="getTimeInSeconds(t)">
               {{ getDisplayTime(t) }}
             </option>
           </select>
         </div>
-        <p v-for="message in errors.start_at" :key="message" class="help is-danger">
+        <p
+          v-for="message in errors.start_at"
+          :key="message"
+          class="help is-danger"
+        >
           {{ message }}
         </p>
       </div>
       <div class="control column is-9">
         <label class="label">Serviço</label>
-        <div class="select is-fullwidth" :class="{ 'is-danger': errors.service }">
+        <div
+          class="select is-fullwidth"
+          :class="{ 'is-danger': errors.service }"
+        >
           <select v-model="appointment.service" @change="setDurationAndPrice">
             <optgroup
               v-for="serviceCategory in serviceCategories"
@@ -67,34 +80,46 @@
     <div class="field columns">
       <div class="control column is-3">
         <label class="label">Duração</label>
-        <div class="select is-fullwidth" :class="{ 'is-danger': errors.duration }">
+        <div
+          class="select is-fullwidth"
+          :class="{ 'is-danger': errors.duration }"
+        >
           <select v-model="appointment.duration">
-            <option v-for="d in durationOptions" :key="d.value" :value="d.value">
+            <option
+              v-for="d in durationOptions"
+              :key="d.value"
+              :value="d.value"
+            >
               {{ d.title }}
             </option>
           </select>
         </div>
-        <p v-for="message in errors.duration" :key="message" class="help is-danger">
+        <p
+          v-for="message in errors.duration"
+          :key="message"
+          class="help is-danger"
+        >
           {{ message }}
         </p>
       </div>
       <div class="control is-9 column">
         <label class="label">Profissional</label>
-        <div class="select is-fullwidth" :class="{ 'is-danger': errors.employee }">
+        <div
+          class="select is-fullwidth"
+          :class="{ 'is-danger': errors.employee }"
+        >
           <select
             :value="appointment.employee ? appointment.employee.id : null"
             @change="setEmployeeId"
           >
-            <option
-              v-for="emp in employees"
-              :key="emp.id"
-              :value="emp.id"
-            >
+            <option v-for="emp in employees" :key="emp.id" :value="emp.id">
               {{ emp.name }}
             </option>
           </select>
         </div>
-        <p v-if="errors.employee" class="help is-danger">{{ errors.employee }}</p>
+        <p v-if="errors.employee" class="help is-danger">
+          {{ errors.employee }}
+        </p>
       </div>
     </div>
     <div class="field">
@@ -102,8 +127,8 @@
       <textarea
         v-model="appointment.notes"
         class="textarea"
-        placeholder="Escreva alguma observação sobre este agendamento">
-      </textarea>
+        placeholder="Escreva alguma observação sobre este agendamento"
+      />
     </div>
   </div>
 </template>
@@ -116,15 +141,8 @@ import moment from 'moment';
 import serviceDuration from '@/utils/serviceDuration';
 
 export default {
-  data() {
-    return {
-      ptBR,
-      appointment: this.data.appointment,
-      durationOptions: serviceDuration,
-      name: '',
-      timeRows: (this.data.end - this.data.start) * 4,
-      hourSelected: this.data.start * 3600,
-    };
+  components: {
+    Datepicker
   },
   props: {
     data: {
@@ -133,20 +151,46 @@ export default {
         appointment: {},
         employees: [],
         start: 7,
-        end: 24,
-      }),
+        end: 24
+      })
     },
     errors: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     isLoading: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
-  components: {
-    Datepicker,
+  data() {
+    return {
+      ptBR,
+      appointment: this.data.appointment,
+      durationOptions: serviceDuration,
+      name: '',
+      timeRows: (this.data.end - this.data.start) * 4,
+      hourSelected: this.data.start * 3600
+    };
+  },
+  computed: {
+    ...mapState({
+      clients: state => state.client.all,
+      employees: state => state.employee.all,
+      serviceCategories: state => state.service.serviceCategories
+    }),
+    filteredDataObj() {
+      return this.clients.filter(
+        option =>
+          option.name
+            .toString()
+            .toLowerCase()
+            .indexOf(this.name.toLowerCase()) >= 0
+      );
+    },
+    moment() {
+      return moment;
+    }
   },
   created() {
     const salon = window.localStorage.getItem('salon') || '{}';
@@ -154,28 +198,16 @@ export default {
     if (this.appointment && this.appointment.client) {
       this.name = this.appointment.client.name || '';
     }
-  },
-  computed: {
-    ...mapState({
-      clients: state => state.client.all,
-      employees: state => state.employee.all,
-      serviceCategories: state => state.service.serviceCategories,
-    }),
-    filteredDataObj() {
-      return this.clients.filter(option => option.name
-        .toString()
-        .toLowerCase()
-        .indexOf(this.name.toLowerCase()) >= 0);
-    },
-    moment() {
-      return moment;
-    },
+    if (this.employees && this.employees.length > 0) {
+      this.appointment.employee = this.employees[0];
+      this.appointment.employee_id = this.employees[0].id;
+    }
   },
   methods: {
     // Get the time based on the counting between start and end of the day (15 in 15 min)
     getTimeInSeconds(t) {
       const minutes = this.data.start * 60;
-      return (((t - 1) * 15) + minutes) * 60;
+      return ((t - 1) * 15 + minutes) * 60;
     },
 
     getDisplayTime(t) {
@@ -190,18 +222,23 @@ export default {
     },
 
     setDurationAndPrice() {
-      this.appointment.duration =
-        this.appointment.service ? this.appointment.service.duration : null;
-      this.appointment.service_id =
-        this.appointment.service ? this.appointment.service.id : null;
-      this.appointment.price =
-        this.appointment.service ? this.appointment.service.price : null;
+      this.appointment.duration = this.appointment.service
+        ? this.appointment.service.duration
+        : null;
+      this.appointment.service_id = this.appointment.service
+        ? this.appointment.service.id
+        : null;
+      this.appointment.price = this.appointment.service
+        ? this.appointment.service.price
+        : null;
     },
 
     setEmployeeId(e) {
       const id = e.target.value;
       this.appointment.employee_id = id;
-      this.appointment.employee = this.employees.find(emp => emp.id === Number(id));
+      this.appointment.employee = this.employees.find(
+        emp => emp.id === Number(id)
+      );
     },
 
     changeDate(date) {
@@ -212,31 +249,36 @@ export default {
       const currentPickedDate = this.appointment.start_at
         ? moment.unix(this.appointment.start_at)
         : moment();
-      const updatedDate = currentPickedDate.date(day).month(month).year(year);
+      const updatedDate = currentPickedDate
+        .date(day)
+        .month(month)
+        .year(year);
       this.appointment.start_at = updatedDate.unix();
     },
 
     getCalendarValue() {
-      return (
-        this.appointment.start_at
-          ? moment.unix(this.appointment.start_at)
-          : moment()
+      return (this.appointment.start_at
+        ? moment.unix(this.appointment.start_at)
+        : moment()
       ).toDate();
     },
 
     selectStartAt(e) {
       this.hourSelected = e.target.value;
-      this.appointment.start_at =
-        moment.unix(this.appointment.start_at).hour(0).minutes(0).seconds(0)
-          .seconds(this.hourSelected)
-          .unix();
-    },
-  },
+      this.appointment.start_at = moment
+        .unix(this.appointment.start_at)
+        .hour(0)
+        .minutes(0)
+        .seconds(0)
+        .seconds(this.hourSelected)
+        .unix();
+    }
+  }
 };
 </script>
 
 <style lang="scss">
-@import "../../assets/sass/variables";
+@import '../../assets/sass/variables';
 
 .appointment-form {
   text-align: left;
@@ -253,7 +295,6 @@ export default {
   }
 
   .vdp-datepicker {
-
     div:first-child {
       text-align: center;
 
@@ -270,7 +311,6 @@ export default {
         text-decoration: underline;
         cursor: pointer;
       }
-
     }
 
     .appointment-calendar {
