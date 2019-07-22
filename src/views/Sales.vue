@@ -40,35 +40,35 @@ export default {
         items: [],
         client: {},
         payment: null,
-        price: 0,
-      },
+        price: 0
+      }
     };
   },
   props: {
     pageTitle: {
       type: String,
-      default: 'Nova Venda',
+      default: 'Nova Venda'
     },
     openSelectItem: {
       type: Boolean,
-      default: false,
+      default: false
     },
     appointment: {
       type: Object,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   components: {
     Menu,
     NavApp,
     SaleItemsList,
-    CheckoutArea,
+    CheckoutArea
   },
   computed: {
     ...mapState({
       salon: state => state.salon,
-      user: state => state.user,
-    }),
+      user: state => state.user
+    })
   },
   created() {
     if (this.openSelectItem) this.openModalSelectItem();
@@ -84,7 +84,7 @@ export default {
         service_id: service.id,
         appointment_id: this.appointment.id,
         quantity: 1,
-        discount: 0,
+        discount: 0
       };
       this.addItem(item);
     }
@@ -93,12 +93,12 @@ export default {
     sale: {
       handler(newSale) {
         this.sale.price = newSale.items.reduce((sum, item) => {
-          const total = sum + (item.quantity * item.price);
+          const total = sum + item.quantity * item.price;
           return total;
         }, 0);
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   methods: {
     ...mapMutations('sale', { addSale: mutationTypes.ADD_SALE }),
@@ -108,7 +108,11 @@ export default {
     openModalSelectItem() {
       const id = modalId.SELECT_ITEM_SALE;
       const data = { addItem: this.addItem };
-      const props = { data, title: 'Selecione um item', content: FormSelectItem };
+      const props = {
+        data,
+        title: 'Selecione um item',
+        content: FormSelectItem
+      };
       this.addModal({ id, props });
     },
 
@@ -133,7 +137,7 @@ export default {
         message: 'Finalizar venda?',
         cancelText: 'Cancelar',
         confirmText: 'Ok',
-        onConfirm: () => this.checkout(),
+        onConfirm: () => this.checkout()
       });
     },
 
@@ -154,33 +158,35 @@ export default {
           service_id: transaction.service_id,
           product_id: transaction.product_id,
           quantity: transaction.quantity,
-          appointment_id: transaction.appointment_id,
-        })),
+          appointment_id: transaction.appointment_id
+        }))
       };
       this.$emit('set-loading-overlay', true);
-      api.post(`salons/${this.salon.id}/sales/`, { sale: newSale })
-        .then((response) => {
+      api
+        .post(`salons/${this.salon.id}/sales/`, { sale: newSale })
+        .then(response => {
           const sale = response.data || {};
           this.addSale(sale);
           this.$router.push(`/sales/${sale.id}`);
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
             message: 'Venda finalizada com sucesso!',
-            type: 'is-success',
+            type: 'is-success'
           });
         })
-        .catch((error) => {
-          const message = error && error.response && error.response.data ?
-            error.response.data.message :
-            null;
+        .catch(error => {
+          const message =
+            error && error.response && error.response.data
+              ? error.response.data.message
+              : null;
           this.$toast.open({
             message: `Impossível realizer o checkout para esse agendamento! ${message}`,
-            type: 'is-danger',
+            type: 'is-danger'
           });
           this.$emit('set-loading-overlay', false);
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -198,7 +204,6 @@ export default {
   }
 
   .add-new-item {
-
     button {
       text-decoration: none;
     }

@@ -24,11 +24,9 @@
         <button
           type="button"
           class="delete"
-          @click="$emit('remove-item', item)"
-        >
-        </button>
+          @click="$emit('remove-item')"
+        ></button>
       </span>
-
     </header>
     <div class="box-content field columns is-mobile is-multiline">
       <div class="column control is-one-quarter-mobile">
@@ -43,7 +41,9 @@
           />
         </div>
       </div>
-      <div class="column control is-half-desktop is-one-third-tablet is-three-quarters-mobile">
+      <div
+        class="column control is-half-desktop is-one-third-tablet is-three-quarters-mobile"
+      >
         <label class="label">Profissional</label>
         <div class="control">
           <b-autocomplete
@@ -60,7 +60,9 @@
                 <span> Adicionar novo profissional </span>
               </a>
             </template>
-            <template slot="empty">Sem resultados para {{ name }}</template>
+            <template slot="empty">
+              Sem resultados para {{ name }}
+            </template>
           </b-autocomplete>
         </div>
       </div>
@@ -102,32 +104,38 @@
 import moment from 'moment';
 
 export default {
-  data() {
-    return {
-      item: this.cartItem,
-      name: this.cartItem.employee ? this.cartItem.employee.name : '',
-    };
-  },
   props: {
     cartItem: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
+  },
+  data() {
+    return {
+      item: this.cartItem,
+      name: this.cartItem.employee ? this.cartItem.employee.name : ''
+    };
   },
   computed: {
     filteredDataObj() {
-      return this.employees.filter(option => option.name
-        .toString()
-        .toLowerCase()
-        .indexOf(this.name.toLowerCase()) >= 0);
+      return this.employees.filter(
+        option =>
+          option.name
+            .toString()
+            .toLowerCase()
+            .indexOf(this.name.toLowerCase()) >= 0
+      );
     },
     employees() {
       return this.$store.state.employee.all;
-    },
+    }
   },
   methods: {
     duration(duration) {
-      return moment.duration(duration, 's').locale('pt').humanize();
+      return moment
+        .duration(duration, 's')
+        .locale('pt')
+        .humanize();
     },
 
     setEmployee(employee) {
@@ -145,14 +153,13 @@ export default {
 
     setQuantity(e) {
       this.item.quantity = parseInt(e.target.value, 10);
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss">
 .sale-item {
-
   .box-header {
     margin-bottom: 0;
   }

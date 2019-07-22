@@ -4,10 +4,12 @@
       v-for="item in sale.items"
       :key="item.id"
       :cartItem="item"
-      @remove-item="$emit('remove-item')"
+      @remove-item="$emit('remove-item', item)"
     />
     <div class="columns" v-if="sale.items.length > 0">
-      <div class="column add-new-item has-text-left-desktop has-text-left-tablet">
+      <div
+        class="column add-new-item has-text-left-desktop has-text-left-tablet"
+      >
         <button
           @click="$emit('open-modal-select-item')"
           class="button is-text has-text-link"
@@ -23,7 +25,7 @@
             Total:
           </p>
           <p class="column is-half-mobile has-text-grey-dark">
-            {{ displayMoney(this.sale.price)}}
+            {{ displayMoney(this.sale.price) }}
           </p>
         </div>
       </div>
@@ -37,7 +39,10 @@
       <p class="has-text-grey-dark">
         Adicione algum item para realizar uma venda.
       </p>
-      <button @click="$emit('open-modal-select-item')" class="button is-primary">
+      <button
+        @click="$emit('open-modal-select-item')"
+        class="button is-primary"
+      >
         Adicionar um novo item
       </button>
     </div>
@@ -54,11 +59,11 @@ export default {
   props: {
     sale: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
   components: {
-    SaleItem,
-  },
+    SaleItem
+  }
 };
 </script>
