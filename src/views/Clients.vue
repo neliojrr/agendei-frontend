@@ -4,7 +4,7 @@
     <NavApp :title="pageTitle" />
     <div class="clients app-content">
       <div class="top-actions columns is-mobile">
-        <div class="field client-search column is-half-desktop">
+        <div class="field client-search column is-half-desktop is-full-mobile">
           <div class="control has-icons-left">
             <input
               class="input"
@@ -20,15 +20,26 @@
         <div class="column new-client">
           <button class="button is-primary" @click="openModalNewClient">
             <span class="is-hidden-touch">Novo Cliente</span>
-            <span class="is-hidden-desktop"><font-awesome-icon icon="plus" /></span>
+            <span class="is-hidden-desktop"
+              ><font-awesome-icon icon="plus"
+            /></span>
           </button>
         </div>
       </div>
-      <Table v-if="clients.length > 0" :headers="headers" :data="clients" @row-click="rowClick" />
+      <Table
+        v-if="clients.length > 0"
+        :headers="headers"
+        :data="clients"
+        @row-click="rowClick"
+      />
       <div v-else class="clients clients-empty">
         <h3 class="subtitle is-5">Não encontramos nenhum cliente.</h3>
         <p>
-          <img alt="empty results" title="Nao encontrado" src="../assets/images/empty.svg" />
+          <img
+            alt="empty results"
+            title="Nao encontrado"
+            src="../assets/images/empty.svg"
+          />
         </p>
       </div>
     </div>
@@ -61,21 +72,23 @@ export default {
         neighborhood: '',
         zip_code: '',
         city: '',
-        state: '',
+        state: ''
       },
       client: {},
       headers: [
         {
           name: 'name',
-          title: 'Nome',
-        }, {
-          name: 'phone',
-          title: 'Telefone',
-        }, {
-          name: 'email',
-          title: 'Email',
+          title: 'Nome'
         },
-      ],
+        {
+          name: 'phone',
+          title: 'Telefone'
+        },
+        {
+          name: 'email',
+          title: 'Email'
+        }
+      ]
     };
   },
   props: ['pageTitle'],
@@ -83,12 +96,12 @@ export default {
     Menu,
     NavApp,
     Table,
-    Form,
+    Form
   },
   watch: {
     query() {
       this.debounceSearch();
-    },
+    }
   },
   created() {
     this.client = { ...this.defaultClient };
@@ -103,8 +116,9 @@ export default {
     ...mapMutations('modal', ['addModal', 'removeModal']),
 
     getClients() {
-      api.get(`/salons/${this.salon.id}/clients`)
-        .then((response) => {
+      api
+        .get(`/salons/${this.salon.id}/clients`)
+        .then(response => {
           this.clients = response.data || [];
           this.$emit('set-loading-overlay', false);
         })
@@ -112,7 +126,7 @@ export default {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
             message: 'Não foi possível encontrar os clientes deste salão!',
-            type: 'is-danger',
+            type: 'is-danger'
           });
         });
     },
@@ -122,15 +136,17 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.saveNewClient,
-        },
+          action: this.saveNewClient
+        }
       ];
       this.client = { ...this.defaultClient };
       const id = modalId.NEW_CLIENT;
-      const props =
-        {
-          title: 'Novo Cliente', content: Form, data: this.client, buttons,
-        };
+      const props = {
+        title: 'Novo Cliente',
+        content: Form,
+        data: this.client,
+        buttons
+      };
       this.addModal({ id, props });
     },
 
@@ -139,10 +155,13 @@ export default {
       const data = new FormData();
       const clientAttributes = Object.keys(this.client);
       for (let i = 0; i < clientAttributes.length; i += 1) {
-        data.append(`client[${clientAttributes[i]}]`, this.client[clientAttributes[i]]);
+        data.append(
+          `client[${clientAttributes[i]}]`,
+          this.client[clientAttributes[i]]
+        );
       }
       this.addClient({ data, salon: this.salon })
-        .then((response) => {
+        .then(response => {
           const newClient = response;
           this.clients.push(newClient);
           this.client = { ...this.defaultClient };
@@ -150,10 +169,10 @@ export default {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
             message: 'Cliente cadastrado com sucesso.',
-            type: 'is-success',
+            type: 'is-success'
           });
         })
-        .catch((errors) => {
+        .catch(errors => {
           this.$emit('set-loading-overlay', false);
           this.errors = errors;
           this.$emit('set-form-errors', this.errors);
@@ -163,8 +182,9 @@ export default {
     search() {
       this.$emit('set-loading-overlay', true);
       if (this.query && this.query.length > 1) {
-        api.get(`/salons/${this.salon.id}/clients/search/${this.query}`)
-          .then((response) => {
+        api
+          .get(`/salons/${this.salon.id}/clients/search/${this.query}`)
+          .then(response => {
             this.clients = response.data || [];
             this.$emit('set-loading-overlay', false);
           })
@@ -172,7 +192,7 @@ export default {
             this.$emit('set-loading-overlay', false);
             this.$toast.open({
               message: 'Não foi possível encontrar os clientes buscados!',
-              type: 'is-danger',
+              type: 'is-danger'
             });
           });
       } else {
@@ -182,8 +202,8 @@ export default {
 
     rowClick(client) {
       this.$router.push(`/clients/${client.id}`);
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -220,7 +240,6 @@ export default {
   }
 
   .clients-empty {
-
     h3 {
       margin-bottom: 50px;
     }
