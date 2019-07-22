@@ -9,10 +9,20 @@
       @click="showButtonOptions = false"
     />
     <button
+      class="button"
+      v-if="buttons.length === 1"
+      :class="buttons[0].class ? buttons[0].class : 'is-primary'"
+      @click="buttonAction(buttons[0].action)"
+    >
+      <span>
+        <font-awesome-icon :icon="buttons[0].icon" />
+      </span>
+    </button>
+    <button
       class="button is-primary"
-      v-show="!showButtonOptions"
+      v-show="!showButtonOptions && buttons.length > 1"
       @click="showButtonOptions = true"
-      >
+    >
       <span>
         <font-awesome-icon icon="plus" />
       </span>
@@ -47,29 +57,29 @@
 export default {
   data() {
     return {
-      showButtonOptions: false,
+      showButtonOptions: false
     };
   },
   props: {
     buttons: {
       type: Array,
-      required: true,
+      required: true
     },
     classes: {
       type: String,
-      default: '',
+      default: ''
     },
     isHiddenDesktop: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   methods: {
     buttonAction(action) {
       this.showButtonOptions = false;
       action();
-    },
-  },
+    }
+  }
 };
 </script>
 

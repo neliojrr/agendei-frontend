@@ -134,7 +134,7 @@ export default {
         id: 'newService',
         title: 'Novo Serviço',
         icon: 'cut',
-        action: this.openModalNewServiceCategory
+        action: this.openModalNewService
       }
     ];
     this.$emit('set-loading-overlay', true);
@@ -145,6 +145,7 @@ export default {
   },
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal']),
+    ...mapMutations('service', ['addService']),
 
     getServiceCategories() {
       api
@@ -247,6 +248,7 @@ export default {
           });
           this.$emit('set-loading-overlay', false);
           this.removeModal({ id: modalId.NEW_SERVICE });
+          this.addService(newService);
         })
         .catch(error => {
           this.$emit('set-loading-overlay', false);

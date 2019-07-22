@@ -18,12 +18,13 @@
           </div>
         </div>
         <div class="column new-client">
-          <button class="button is-primary" @click="openModalNewClient">
-            <span class="is-hidden-touch">Novo Cliente</span>
-            <span class="is-hidden-desktop"
-              ><font-awesome-icon icon="plus"
-            /></span>
+          <button
+            class="button is-primary is-hidden-touch"
+            @click="openModalNewClient"
+          >
+            <span>Novo Cliente</span>
           </button>
+          <MobileBottomMenu :buttons="buttons" />
         </div>
       </div>
       <Table
@@ -53,10 +54,19 @@ import Table from '@/components/Table.vue';
 import Form from '@/components/clients/Form.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
+import MobileBottomMenu from '@/components/MobileBottomMenu.vue';
 import { api } from '@/utils/api-connect';
 import modalId from '@/utils/modalId';
 
 export default {
+  components: {
+    Menu,
+    NavApp,
+    Table,
+    Form,
+    MobileBottomMenu
+  },
+  props: ['pageTitle'],
   data() {
     return {
       salon: {},
@@ -91,19 +101,20 @@ export default {
       ]
     };
   },
-  props: ['pageTitle'],
-  components: {
-    Menu,
-    NavApp,
-    Table,
-    Form
-  },
   watch: {
     query() {
       this.debounceSearch();
     }
   },
   created() {
+    this.buttons = [
+      {
+        id: 'newClient',
+        title: 'Novo Client',
+        icon: 'plus',
+        action: this.openModalNewClient
+      }
+    ];
     this.client = { ...this.defaultClient };
     this.$emit('set-loading-overlay', true);
     this.debounceSearch = debounce(this.search, 500);

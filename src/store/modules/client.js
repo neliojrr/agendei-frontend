@@ -3,7 +3,7 @@ import { api } from '@/utils/api-connect';
 const client = {
   namespaced: true,
   state: {
-    all: [],
+    all: []
   },
   mutations: {
     addClient(state, newClient) {
@@ -11,13 +11,15 @@ const client = {
     },
     loadClients(state, clients) {
       state.all = clients;
-    },
+    }
   },
   actions: {
     async addClient(context, payload) {
       const { salon, data } = payload;
       try {
-        const response = await api.post(`/salons/${salon.id}/clients`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const response = await api.post(`/salons/${salon.id}/clients`, data, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
         const newClient = response.data;
         context.commit('addClient', newClient);
         return newClient;
@@ -46,8 +48,8 @@ const client = {
         }
         throw new Error(errors);
       }
-    },
-  },
+    }
+  }
 };
 
 export default client;
