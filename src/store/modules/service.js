@@ -21,6 +21,48 @@ const service = {
         }
         return sc;
       });
+    },
+    updateServiceCategory(state, serviceCategory) {
+      state.serviceCategories = state.serviceCategories.map(sc => {
+        if (sc.id === serviceCategory.id) {
+          return serviceCategory;
+        }
+        return sc;
+      });
+    },
+    deleteServiceCategory(state, serviceCategoryId) {
+      state.serviceCategories = state.serviceCategories.map(
+        sc => sc.id !== serviceCategoryId
+      );
+    },
+    updateService(state, updatedService) {
+      state.serviceCategories = state.serviceCategories.map(sc => {
+        if (sc.id === updatedService.service_category_id) {
+          const serviceCategory = sc;
+          const services = serviceCategory.services.map(s => {
+            if (s.id === updatedService.id) {
+              return updatedService;
+            }
+            return s;
+          });
+          serviceCategory.services = services;
+          return serviceCategory;
+        }
+        return sc;
+      });
+    },
+    deleteService(state, deletedService) {
+      state.serviceCategories = state.serviceCategories.map(sc => {
+        if (sc.id === deletedService.service_category_id) {
+          const serviceCategory = sc;
+          const services = serviceCategory.services.filter(
+            s => s.id !== deletedService.id
+          );
+          serviceCategory.services = services;
+          return serviceCategory;
+        }
+        return sc;
+      });
     }
   },
   actions: {

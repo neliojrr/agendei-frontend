@@ -217,6 +217,8 @@ export default {
         this.appointment.status === AppointmentStatus.STARTED;
       const canNoShow = this.appointment.status === AppointmentStatus.NEW;
       const canStart = this.appointment.status === AppointmentStatus.NEW;
+      const isCompleted =
+        this.appointment.status === AppointmentStatus.COMPLETED;
 
       const buttons = [];
       if (canComplete) {
@@ -251,6 +253,18 @@ export default {
           action: () => {
             this.appointment.status = AppointmentStatus.NO_SHOW;
             this.updateAppointment({ appointment: this.appointment });
+          }
+        });
+      }
+      const { sale_transaction: saleTransaction } = this.appointment;
+      const { sale_id: saleId } = saleTransaction;
+      if (isCompleted && saleId) {
+        dropdown.push({
+          title: 'Invoice',
+          class: 'has-text-info',
+          action: () => {
+            this.$router.push(`/sales/${saleId}`);
+            this.removeModal({ id: modalId.CHECKOUT_APPOINTMENT });
           }
         });
       }

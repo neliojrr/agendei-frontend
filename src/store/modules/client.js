@@ -9,6 +9,17 @@ const client = {
     addClient(state, newClient) {
       state.all.push(newClient);
     },
+    updateClient(state, updatedClient) {
+      state.all = state.all.map(c => {
+        if (c.id === updatedClient.id) {
+          return updatedClient;
+        }
+        return c;
+      });
+    },
+    deleteClient(state, clientId) {
+      state.all = state.all.filter(c => c.id !== clientId);
+    },
     loadClients(state, clients) {
       state.all = clients;
     }

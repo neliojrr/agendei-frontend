@@ -3,21 +3,34 @@ import { api } from '@/utils/api-connect';
 const employee = {
   namespaced: true,
   state: {
-    all: [],
+    all: []
   },
   mutations: {
-    addEmployee(state, employee) {
-      state.all.push(employee);
+    addEmployee(state, newEmployee) {
+      state.all.push(newEmployee);
+    },
+    updateEmployee(state, updatedEmployee) {
+      state.all = state.all.map(c => {
+        if (c.id === updatedEmployee.id) {
+          return updatedEmployee;
+        }
+        return c;
+      });
+    },
+    deleteEmployee(state, employeeId) {
+      state.all = state.all.filter(c => c.id !== employeeId);
     },
     loadEmployees(state, employees) {
       state.all = employees;
-    },
+    }
   },
   actions: {
     async addEmployee(context, payload) {
       const { salon, data } = payload;
       try {
-        const response = await api.post(`/salons/${salon.id}/employees`, { data });
+        const response = await api.post(`/salons/${salon.id}/employees`, {
+          data
+        });
         const newEmployee = response.data;
         context.commit('addEmployee', newEmployee);
         return newEmployee;
@@ -47,8 +60,8 @@ const employee = {
         }
         throw new Error(errors);
       }
-    },
-  },
+    }
+  }
 };
 
 export default employee;

@@ -40,9 +40,9 @@ export default {
         phone: '',
         services: [],
         color: '#ef1554',
-        agendei_access: true,
+        agendei_access: true
       },
-      employee: {},
+      employee: {}
     };
   },
   props: ['pageTitle'],
@@ -50,7 +50,7 @@ export default {
     Menu,
     NavApp,
     StaffList,
-    Form,
+    Form
   },
   created() {
     this.employee = { ...this.defaultEmployee };
@@ -61,10 +61,16 @@ export default {
   },
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal']),
+    ...mapMutations('employee', {
+      addEmployee: 'addEmployee',
+      updateEmployeeStore: 'updateEmployee',
+      deleteEmployeeStore: 'deleteEmployee'
+    }),
 
     getStaff() {
-      api.get(`/salons/${this.salon.id}/employees`)
-        .then((response) => {
+      api
+        .get(`/salons/${this.salon.id}/employees`)
+        .then(response => {
           this.allEmployees = response.data;
           this.employees = response.data || [];
           this.$emit('set-loading-overlay', false);
@@ -72,8 +78,9 @@ export default {
         .catch(() => {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
-            message: 'Não foi possível encontrar os profissionais para este salão!',
-            type: 'is-danger',
+            message:
+              'Não foi possível encontrar os profissionais para este salão!',
+            type: 'is-danger'
           });
         });
     },
@@ -83,31 +90,37 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.saveNewEmployee,
-        },
+          action: this.saveNewEmployee
+        }
       ];
       this.employee = { ...this.defaultEmployee };
       const id = modalId.NEW_STAFF;
       const data = this.employee;
-      const props =
-        {
-          title: 'Novo Profissional', content: Form, data, buttons,
-        };
+      const props = {
+        data,
+        buttons,
+        title: 'Novo Profissional',
+        content: Form
+      };
       this.addModal({ id, props });
     },
 
     saveNewEmployee() {
       this.$emit('set-loading-overlay', true);
-      this.employee.service_ids = this.employee.services.map(service => service.id);
-      api.post(`/salons/${this.salon.id}/employees`, { employee: this.employee })
-        .then((response) => {
+      this.employee.service_ids = this.employee.services.map(
+        service => service.id
+      );
+      api
+        .post(`/salons/${this.salon.id}/employees`, { employee: this.employee })
+        .then(response => {
           const newEmployee = response.data;
           this.employees.push(newEmployee);
           this.employee = { ...this.defaultEmployee };
+          this.addEmployee(newEmployee);
           this.$emit('set-loading-overlay', false);
           this.removeModal({ id: modalId.NEW_STAFF });
         })
-        .catch((error) => {
+        .catch(error => {
           this.$emit('set-loading-overlay', false);
           let errors = {};
           if (error.response) {
@@ -125,43 +138,50 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.updateEmployee,
+          action: this.updateEmployee
         },
         {
           title: 'Deletar',
           class: 'is-danger',
-          action: this.deleteEmployee,
-        },
+          action: this.deleteEmployee
+        }
       ];
       const data = { ...employee };
       const id = modalId.EDIT_STAFF;
-      const props =
-        {
-          title: 'Editar Profissional', content: Form, data, buttons,
-        };
+      const props = {
+        data,
+        buttons,
+        title: 'Editar Profissional',
+        content: Form
+      };
       this.addModal({ id, props });
     },
 
     deleteEmployee(employee) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
-        api.delete(`/employees/${employee.id}`)
+        api
+          .delete(`/employees/${employee.id}`)
           .then(() => {
-            this.employees = this.employees.filter(emp => emp.id !== employee.id);
+            this.employees = this.employees.filter(
+              emp => emp.id !== employee.id
+            );
             this.$toast.open({
               message: 'O profissional foi excluído!',
-              type: 'is-success',
+              type: 'is-success'
             });
+            this.deleteEmployeeStore(employee.id);
             this.$emit('set-loading-overlay', false);
             this.removeModal({ id: modalId.EDIT_STAFF });
           })
-          .catch((error) => {
-            const message = error && error.response && error.response.data ?
-              error.response.data.message :
-              null;
+          .catch(error => {
+            const message =
+              error && error.response && error.response.data
+                ? error.response.data.message
+                : null;
             this.$toast.open({
               message: `Impossível deletar este profissional! ${message}`,
-              type: 'is-danger',
+              type: 'is-danger'
             });
             this.$emit('set-loading-overlay', false);
           });
@@ -172,19 +192,21 @@ export default {
       this.$emit('set-loading-overlay', true);
       const newEmployee = employee;
       newEmployee.service_ids = newEmployee.services.map(service => service.id);
-      api.put(`/employees/${employee.id}`, { employee: { ...newEmployee } })
-        .then((response) => {
+      api
+        .put(`/employees/${employee.id}`, { employee: { ...newEmployee } })
+        .then(response => {
           const updatedEmployee = response.data || {};
-          this.employees = this.employees.map((emp) => {
+          this.employees = this.employees.map(emp => {
             if (emp.id === updatedEmployee.id) {
               return updatedEmployee;
             }
             return emp;
           });
+          this.updateEmployeeStore(updatedEmployee);
           this.$emit('set-loading-overlay', false);
           this.removeModal({ id: modalId.EDIT_STAFF });
         })
-        .catch((error) => {
+        .catch(error => {
           this.$emit('set-loading-overlay', false);
           let errors = {};
           if (error.response) {
@@ -195,8 +217,8 @@ export default {
           this.errors = errors;
           this.$emit('set-form-errors', this.errors);
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

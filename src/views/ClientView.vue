@@ -33,19 +33,19 @@ export default {
   data() {
     return {
       client: {
-        avatar: {},
+        avatar: {}
       },
-      title: this.pageTitle,
+      title: this.pageTitle
     };
   },
   props: {
     pageTitle: {
-      type: String,
+      type: String
     },
     id: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
   components: {
     Menu,
@@ -54,18 +54,23 @@ export default {
     ClientInfo,
     ClientSales,
     ClientHistory,
-    Form,
+    Form
   },
   created() {
     this.$emit('set-loading-overlay', true);
     this.getClient(this.id);
   },
   methods: {
+    ...mapMutations('client', {
+      updateClientStore: 'updateClient',
+      deleteClientStore: 'deleteClient'
+    }),
     ...mapMutations('modal', ['addModal', 'removeModal']),
 
     getClient(clientId) {
-      api.get(`/clients/${clientId}`)
-        .then((response) => {
+      api
+        .get(`/clients/${clientId}`)
+        .then(response => {
           this.client = response.data || {};
           if (this.client.avatar === null) {
             delete this.client.avatar;
@@ -76,7 +81,7 @@ export default {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
             message: 'Não foi possível encontrar o cliente deste salão!',
-            type: 'is-danger',
+            type: 'is-danger'
           });
         });
     },
@@ -86,18 +91,21 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.updateClient,
+          action: this.updateClient
         },
         {
           title: 'Deletar',
           class: 'is-danger',
-          action: this.deleteClient,
-        },
+          action: this.deleteClient
+        }
       ];
       const data = { ...this.client };
       const id = modalId.EDIT_CLIENT;
       const props = {
-        title: 'Editar Cliente', content: Form, data, buttons,
+        data,
+        buttons,
+        title: 'Editar Cliente',
+        content: Form
       };
       this.addModal({ id, props });
     },
@@ -106,19 +114,28 @@ export default {
       const updatedClient = { ...client };
       this.$emit('set-loading-overlay', true);
       delete updatedClient.salon;
-      if (updatedClient.avatar && !updatedClient.avatar.name) delete updatedClient.avatar;
+      if (updatedClient.avatar && !updatedClient.avatar.name) {
+        delete updatedClient.avatar;
+      }
       const data = new FormData();
       const clientAttributes = Object.keys(updatedClient);
       for (let i = 0; i < clientAttributes.length; i += 1) {
-        data.append(`client[${clientAttributes[i]}]`, updatedClient[clientAttributes[i]]);
+        data.append(
+          `client[${clientAttributes[i]}]`,
+          updatedClient[clientAttributes[i]]
+        );
       }
-      api.put(`/clients/${updatedClient.id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
-        .then((response) => {
+      api
+        .put(`/clients/${updatedClient.id}`, data, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        .then(response => {
           this.client = response.data || {};
+          this.updateClientStore(response.data);
           this.$emit('set-loading-overlay', false);
           this.removeModal({ id: modalId.EDIT_CLIENT });
         })
-        .catch((error) => {
+        .catch(error => {
           this.$emit('set-loading-overlay', false);
           let errors = {};
           if (error.response) {
@@ -134,29 +151,32 @@ export default {
     deleteClient(client) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
-        api.delete(`/clients/${client.id}`)
+        api
+          .delete(`/clients/${client.id}`)
           .then(() => {
             this.$toast.open({
               message: 'O cliente foi excluído!',
-              type: 'is-success',
+              type: 'is-success'
             });
+            this.deleteClientStore(client.id);
             this.$emit('set-loading-overlay', false);
             this.removeModal({ id: modalId.EDIT_CLIENT });
             this.$router.replace('/clients');
           })
-          .catch((error) => {
-            const message = error && error.response && error.response.data ?
-              error.response.data.message :
-              null;
+          .catch(error => {
+            const message =
+              error && error.response && error.response.data
+                ? error.response.data.message
+                : null;
             this.$toast.open({
               message: `Impossível deletar este cliente! ${message}`,
-              type: 'is-danger',
+              type: 'is-danger'
             });
             this.$emit('set-loading-overlay', false);
           });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -167,8 +187,5 @@ export default {
   overflow-y: scroll;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-
-  .client-sales-column {
-  }
 }
 </style>

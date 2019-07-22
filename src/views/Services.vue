@@ -145,7 +145,14 @@ export default {
   },
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal']),
-    ...mapMutations('service', ['addService']),
+    ...mapMutations('service', {
+      addService: 'addService',
+      updateServiceStore: 'updateService',
+      deleteServiceStore: 'deleteService',
+      addServiceCategory: 'addServiceCategory',
+      updateServiceCategoryStore: 'updateServiceCategory',
+      deleteServiceCategoryStore: 'deleteServiceCategory'
+    }),
 
     getServiceCategories() {
       api
@@ -173,6 +180,7 @@ export default {
         .then(response => {
           this.serviceCategories.push(response.data);
           this.$emit('set-loading-overlay', false);
+          this.addServiceCategory(response.data);
           this.removeModal({ id: modalId.NEW_SERVICE_CATEGORY });
         })
         .catch(error => {
@@ -205,6 +213,7 @@ export default {
           });
           this.$emit('set-loading-overlay', false);
           this.removeModal({ id: modalId.EDIT_SERVICE_CATEGORY });
+          this.updateServiceCategoryStore(updatedServiceCategory);
         });
     },
 
@@ -221,6 +230,7 @@ export default {
               message: 'A categoria foi excluída!',
               type: 'is-success'
             });
+            this.deleteServiceCategoryStore(serviceCategoryId);
             this.$emit('set-loading-overlay', false);
           })
           .catch(() => {
@@ -299,6 +309,7 @@ export default {
           }
           return sc;
         });
+        this.updateServiceStore(updatedService);
         this.$emit('set-loading-overlay', false);
         this.removeModal({ id: modalId.EDIT_SERVICE });
       });
@@ -323,6 +334,7 @@ export default {
               message: 'O serviço foi excluído!',
               type: 'is-success'
             });
+            this.deleteServiceStore(service);
             this.$emit('set-loading-overlay', false);
             this.removeModal({ id: modalId.EDIT_SERVICE });
           })
