@@ -152,6 +152,7 @@ export default {
         client_id: this.sale.client ? this.sale.client.id : null,
         price: this.sale.price,
         transactions_attributes: this.sale.items.map(transaction => ({
+          client_id: this.sale.client ? this.sale.client.id : null,
           user_id: transaction.employee ? transaction.employee.id : null,
           value: transaction.price,
           discount: transaction.discount,

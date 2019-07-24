@@ -6,7 +6,8 @@
           <figure class="image is-128x128">
             <img
               v-if="client.avatar && client.avatar.path"
-              class="is-rounded" :src="client.avatar.path"
+              class="is-rounded"
+              :src="client.avatar.path"
             />
             <div
               v-else
@@ -18,7 +19,9 @@
         </div>
         <div>
           <b-tag type="is-info">
-            {{ client.bookings ? client.bookings.length : 0 }} agendamentos
+            <b-tooltip label="Agendamentos com status igual a novo">
+              {{ appointments ? appointments.length : 0 }} agendamentos
+            </b-tooltip>
           </b-tag>
         </div>
         <div class="content">
@@ -49,28 +52,31 @@
 
 <script>
 export default {
-  data() {
-    return {
-      format: '24',
-    };
-  },
   props: {
     client: {
       type: Object,
-      required: true,
+      required: true
     },
+    appointments: {
+      type: Array,
+      required: false,
+      default: () => []
+    }
   },
+  data() {
+    return {
+      format: '24',
+      futureAppointments: []
+    };
+  }
 };
 </script>
 
 <style scoped lang="scss">
-@import "~bulma/sass/utilities/_all";
+@import '~bulma/sass/utilities/_all';
 .client-info {
-
   .card {
-
     .card-content {
-
       div {
         margin-bottom: 15px;
       }
@@ -93,10 +99,13 @@ export default {
           font-size: 42px;
         }
       }
+
+      .tooltip {
+        box-shadow: none;
+      }
     }
 
     .card-footer {
-
       button {
         height: 98%;
         text-decoration: none;
@@ -118,4 +127,3 @@ export default {
   }
 }
 </style>
-

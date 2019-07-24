@@ -12,7 +12,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     salon: {},
-    user: {},
+    user: {}
   },
   mutations: {
     addSalon(state, salon) {
@@ -20,9 +20,7 @@ export default new Vuex.Store({
     },
     addUser(state, user) {
       state.user = user;
-    },
-  },
-  actions: {
+    }
   },
   modules: {
     modal,
@@ -30,6 +28,6 @@ export default new Vuex.Store({
     service,
     product,
     employee,
-    sale,
-  },
+    sale
+  }
 });

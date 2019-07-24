@@ -5,12 +5,24 @@
     <div class="client-view app-content">
       <div class="columns">
         <div class="column is-one-third">
-          <ClientInfo :client="client" @edit-client="editClient" />
+          <ClientInfo
+            :client="client"
+            :appointments="newAppointments"
+            @edit-client="editClient"
+          />
         </div>
         <div class="column client-sales-column">
-          <ClientSales :client="client" />
+          <ClientSales
+            :appointments="appointments"
+            :statistics="statistics"
+            :client="client"
+          />
           <br />
-          <ClientHistory :client="client" />
+          <ClientHistory
+            :appointments="appointments"
+            :transactions="transactions"
+            :client="client"
+          />
         </div>
       </div>
     </div>
@@ -18,7 +30,8 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
+import AppointmentStatus from '@/utils/AppointmentStatus';
 import { api } from '@/utils/api-connect';
 import modalId from '@/utils/modalId';
 import Table from '@/components/Table.vue';
@@ -30,13 +43,14 @@ import ClientHistory from '@/components/clients/ClientHistory.vue';
 import Form from '@/components/clients/Form.vue';
 
 export default {
-  data() {
-    return {
-      client: {
-        avatar: {}
-      },
-      title: this.pageTitle
-    };
+  components: {
+    Menu,
+    NavApp,
+    Table,
+    ClientInfo,
+    ClientSales,
+    ClientHistory,
+    Form
   },
   props: {
     pageTitle: {
@@ -47,18 +61,45 @@ export default {
       required: true
     }
   },
-  components: {
-    Menu,
-    NavApp,
-    Table,
-    ClientInfo,
-    ClientSales,
-    ClientHistory,
-    Form
+  data() {
+    return {
+      client: {
+        avatar: {}
+      },
+      statistics: {
+        prospection: 0,
+        salesTotal: 0
+      },
+      appointments: [],
+      newAppointments: [],
+      transactions: {
+        service: [],
+        product: []
+      },
+      title: this.pageTitle
+    };
+  },
+  computed: {
+    ...mapState({
+      clients: state => state.client.all,
+      salon: state => state.salon
+    })
+  },
+  watch: {
+    client() {
+      if (this.client.id) {
+        this.getStatistics(this.client.id);
+        this.getAppointments(this.client.id);
+        this.getTransactions(this.client.id);
+      }
+    }
   },
   created() {
     this.$emit('set-loading-overlay', true);
-    this.getClient(this.id);
+    this.client = this.clients.find(c => c.id === this.id) || {};
+    if (!this.client || !this.client.id) {
+      this.getClient(this.id);
+    }
   },
   methods: {
     ...mapMutations('client', {
@@ -175,6 +216,66 @@ export default {
             this.$emit('set-loading-overlay', false);
           });
       }
+    },
+
+    getStatistics(clientId) {
+      this.$emit('set-loading-overlay', true);
+      api
+        .get(`/clients/${clientId}/statistics`)
+        .then(response => {
+          const { data = {} } = response;
+          this.statistics = {
+            prospection: data.prospection,
+            salesTotal: data.sales_total
+          };
+          this.$emit('set-loading-overlay', false);
+        })
+        .catch(() => {
+          this.$emit('set-loading-overlay', false);
+          this.$toast.open({
+            message: 'Não foi possível baixar os dados do cliente!',
+            type: 'is-danger'
+          });
+        });
+    },
+
+    getAppointments(clientId) {
+      this.$emit('set-loading-overlay', true);
+      api
+        .get(`/clients/${clientId}/appointments`)
+        .then(response => {
+          const { data = [] } = response;
+          this.appointments = data;
+          this.newAppointments = this.appointments.filter(
+            appointment => appointment.status === AppointmentStatus.NEW
+          );
+          this.$emit('set-loading-overlay', false);
+        })
+        .catch(() => {
+          this.$emit('set-loading-overlay', false);
+          this.$toast.open({
+            message: 'Não foi possível baixar os dados do cliente!',
+            type: 'is-danger'
+          });
+        });
+    },
+
+    getTransactions(clientId) {
+      this.$emit('set-loading-overlay', true);
+      api
+        .get(`/clients/${clientId}/transactions`)
+        .then(response => {
+          const { data = {} } = response;
+          this.transactions = data;
+          this.$emit('set-loading-overlay', false);
+        })
+        .catch(() => {
+          this.$emit('set-loading-overlay', false);
+          this.$toast.open({
+            message: 'Não foi possível baixar os dados do cliente!',
+            type: 'is-danger'
+          });
+        });
     }
   }
 };

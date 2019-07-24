@@ -4,25 +4,25 @@
       <div class="columns is-mobile" v-for="p in products" :key="p.id">
         <div class="column date is-narrow">
           <span class="subtitle is-5">
-            {{ moment(p.date).format('DD') }}
+            {{ moment(p.created_at).format('DD') }}
           </span>
           <div class="subtitle is-5">
-            {{ moment(p.date).format('MMM') }}
+            {{ moment(p.created_at).format('MMM') }}
           </div>
         </div>
         <div class="column time is-flex is-narrow">
           <span class="subtitle is-6">
-            {{ moment(p.date).format('H:mm') }}
+            {{ moment(p.created_at).format('H:mm') }}
           </span>
         </div>
         <div class="column service is-flex">
           <span class="subtitle is-6">
-            {{ p.name }}
+            {{ productName(p.product_id) }}
           </span>
         </div>
         <div class="column price is-flex is-narrow">
           <span class="subtitle is-5">
-            R$ {{ p.price / 100 }}
+            {{ displayMoney(p.value) }}
           </span>
         </div>
       </div>
@@ -42,28 +42,46 @@
 
 <script>
 import moment from 'moment';
+import { mapState } from 'vuex';
 
 export default {
-  data() {
-    return {};
-  },
   props: {
     products: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapState({
+      productCategories: state => state.product.productCategories
+    })
   },
   methods: {
     moment(date) {
       return moment(date);
     },
-  },
+    productName(id) {
+      let productName = '';
+      this.productCategories.forEach(productCategory => {
+        const product = productCategory.products.find(s => s.id === id);
+        if (product) {
+          productName = product.name;
+        }
+      });
+      return productName;
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
-@import "~bulma/sass/utilities/_all";
+@import '~bulma/sass/utilities/_all';
 .client-history-products {
+  max-height: 300px;
+  overflow-y: auto;
 
   .columns {
     border-bottom: 1px solid $grey-lighter;
@@ -79,7 +97,6 @@ export default {
   }
 
   .no-history-message {
-
     p {
       margin-top: 20px;
       margin-bottom: 20px;
@@ -92,4 +109,3 @@ export default {
   }
 }
 </style>
-

@@ -4,15 +4,15 @@
       <div class="columns is-mobile" v-for="a in appointments" :key="a.id">
         <div class="column date is-narrow">
           <span class="subtitle is-5">
-            {{ moment(a.date).format('DD') }}
+            {{ moment(a.start_at).format('DD') }}
           </span>
           <div class="subtitle is-5">
-            {{ moment(a.date).format('MMM') }}
+            {{ moment(a.start_at).format('MMM') }}
           </div>
         </div>
         <div class="column time is-flex is-narrow">
           <span class="subtitle is-6">
-            {{ moment(a.date).format('H:mm') }}
+            {{ moment(a.start_at).format('H:mm') }}
           </span>
         </div>
         <div class="column service is-flex">
@@ -21,7 +21,7 @@
           </span>
         </div>
         <div class="column price is-flex is-narrow">
-          <span class="subtitle is-5">R$ {{ a.price / 100 }}</span>
+          <span class="subtitle is-5">{{ displayMoney(a.price || 0) }}</span>
         </div>
       </div>
     </template>
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     moment(date) {
-      return moment(date);
+      return moment.unix(date);
     }
   }
 };
@@ -62,6 +62,9 @@ export default {
 <style scoped lang="scss">
 @import '~bulma/sass/utilities/_all';
 .client-history-appointments {
+  max-height: 300px;
+  overflow-y: auto;
+
   .columns {
     border-bottom: 1px solid $grey-lighter;
 
