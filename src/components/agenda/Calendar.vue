@@ -30,7 +30,10 @@
         v-for="n in timeRows"
         :key="n"
       >
-        <div class="column is-1-and-half" :class="{ 'full-hour': isFullHour(n) }">
+        <div
+          class="column is-1-and-half"
+          :class="{ 'full-hour': isFullHour(n) }"
+        >
           <span v-if="isFullHour(n)">{{ fullHour(n) }}h</span>
         </div>
         <template v-if="showStaffOnHeader">
@@ -39,34 +42,65 @@
               class="column is-booking-type"
               :class="{
                 'full-hour': isFullHour(n),
-                'is-booked': columnsBooked[getColumnId(n, daySelected, employeeSelected)],
+                'is-booked':
+                  columnsBooked[getColumnId(n, daySelected, employeeSelected)]
               }"
-              :style="!!columnsBooked[getColumnId(n, daySelected, employeeSelected)]
-                ? {
-                  backgroundColor: columnsBooked[getColumnId(n, daySelected, employeeSelected)].status === 'no-show'
-                    ? 'hsl(348, 100%, 61%)'
-                    : columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.color,
-                  borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.borderColor}`,
-                  opacity: columnsBooked[getColumnId(n, daySelected, employeeSelected)].status === 'no-show' ||
-                           columnsBooked[getColumnId(n, daySelected, employeeSelected)].status === 'completed'
-                            ? 0.6
-                            : 1,
-                }
-                : {}
+              :style="
+                !!columnsBooked[getColumnId(n, daySelected, employeeSelected)]
+                  ? {
+                      backgroundColor:
+                        columnsBooked[
+                          getColumnId(n, daySelected, employeeSelected)
+                        ].status === 'no-show'
+                          ? 'hsl(348, 100%, 61%)'
+                          : columnsBooked[
+                              getColumnId(n, daySelected, employeeSelected)
+                            ].employee.color,
+                      borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, employeeSelected)].employee.borderColor}`,
+                      opacity:
+                        columnsBooked[
+                          getColumnId(n, daySelected, employeeSelected)
+                        ].status === 'no-show' ||
+                        columnsBooked[
+                          getColumnId(n, daySelected, employeeSelected)
+                        ].status === 'completed'
+                          ? 0.6
+                          : 1
+                    }
+                  : {}
               "
             >
               <template
-                v-if="!!columnsBooked[getColumnId(n, daySelected, employeeSelected)]"
+                v-if="
+                  !!columnsBooked[getColumnId(n, daySelected, employeeSelected)]
+                "
               >
                 <span
-                  v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, daySelected, employeeSelected)]) }"
+                  v-tooltip="{
+                    content: tooltipContent(
+                      columnsBooked[
+                        getColumnId(n, daySelected, employeeSelected)
+                      ]
+                    )
+                  }"
                   class="booking-description"
                 >
                   <button
-                    @click="$emit('open-modal-checkout', columnsBooked[getColumnId(n, daySelected, employeeSelected)])"
+                    @click="
+                      $emit(
+                        'open-modal-checkout',
+                        columnsBooked[
+                          getColumnId(n, daySelected, employeeSelected)
+                        ]
+                      )
+                    "
                     class="has-text-white has-text-weight-semibold"
                   >
-                    {{ bookingInfo[getColumnId(n, daySelected, employeeSelected)] }}&nbsp;
+                    {{
+                      bookingInfo[
+                        getColumnId(n, daySelected, employeeSelected)
+                      ]
+                    }}&nbsp;
                   </button>
                 </span>
               </template>
@@ -82,31 +116,45 @@
               class="column is-booking-type"
               :class="{
                 'full-hour': isFullHour(n),
-                'is-booked': !!columnsBooked[getColumnId(n, daySelected, s)],
+                'is-booked': !!columnsBooked[getColumnId(n, daySelected, s)]
               }"
-              :style="!!columnsBooked[getColumnId(n, daySelected, s)]
-                ? {
-                  backgroundColor: columnsBooked[getColumnId(n, daySelected, s)].status === 'no-show'
-                    ? 'hsl(348, 100%, 61%)'
-                    : columnsBooked[getColumnId(n, daySelected, s)].employee.color,
-                  borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, s)].employee.borderColor}`,
-                  opacity: columnsBooked[getColumnId(n, daySelected, s)].status === 'no-show' ||
-                           columnsBooked[getColumnId(n, daySelected, s)].status === 'completed'
-                            ? 0.6
-                            : 1,
-                }
-                : {}
+              :style="
+                !!columnsBooked[getColumnId(n, daySelected, s)]
+                  ? {
+                      backgroundColor:
+                        columnsBooked[getColumnId(n, daySelected, s)].status ===
+                        'no-show'
+                          ? 'hsl(348, 100%, 61%)'
+                          : columnsBooked[getColumnId(n, daySelected, s)]
+                              .employee.color,
+                      borderLeft: `2px solid ${columnsBooked[getColumnId(n, daySelected, s)].employee.borderColor}`,
+                      opacity:
+                        columnsBooked[getColumnId(n, daySelected, s)].status ===
+                          'no-show' ||
+                        columnsBooked[getColumnId(n, daySelected, s)].status ===
+                          'completed'
+                          ? 0.6
+                          : 1
+                    }
+                  : {}
               "
             >
-              <template
-                v-if="columnsBooked[getColumnId(n, daySelected, s)]"
-              >
+              <template v-if="columnsBooked[getColumnId(n, daySelected, s)]">
                 <span
-                  v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, daySelected, s)]) }"
+                  v-tooltip="{
+                    content: tooltipContent(
+                      columnsBooked[getColumnId(n, daySelected, s)]
+                    )
+                  }"
                   class="booking-description has-text-white has-text-weight-semibold"
                 >
                   <button
-                    @click="$emit('open-modal-checkout', columnsBooked[getColumnId(n, daySelected, s)])"
+                    @click="
+                      $emit(
+                        'open-modal-checkout',
+                        columnsBooked[getColumnId(n, daySelected, s)]
+                      )
+                    "
                     class="has-text-white has-text-weight-semibold"
                   >
                     {{ bookingInfo[getColumnId(n, daySelected, s)] }}&nbsp;
@@ -124,33 +172,41 @@
             class="column is-booking-type"
             :class="{
               'full-hour': isFullHour(n),
-              'is-booked': !!columnsBooked[getColumnId(n, d)],
+              'is-booked': !!columnsBooked[getColumnId(n, d)]
             }"
             v-for="d in daysOfWeek"
             :key="getColumnId(n, d)"
-            :style="!!columnsBooked[getColumnId(n, d)]
-              ? {
-                backgroundColor: columnsBooked[getColumnId(n, d)].status === 'no-show'
-                  ? 'hsl(348, 100%, 61%)'
-                  : columnsBooked[getColumnId(n, d)].employee.color,
-                borderLeft: `2px solid ${columnsBooked[getColumnId(n, d)].employee.borderColor}`,
-                opacity: columnsBooked[getColumnId(n, d)].status === 'no-show' ||
-                         columnsBooked[getColumnId(n, d)].status === 'completed'
-                          ? 0.6
-                          : 1,
-              }
-              : {}
+            :style="
+              !!columnsBooked[getColumnId(n, d)]
+                ? {
+                    backgroundColor:
+                      columnsBooked[getColumnId(n, d)].status === 'no-show'
+                        ? 'hsl(348, 100%, 61%)'
+                        : columnsBooked[getColumnId(n, d)].employee.color,
+                    borderLeft: `2px solid ${columnsBooked[getColumnId(n, d)].employee.borderColor}`,
+                    opacity:
+                      columnsBooked[getColumnId(n, d)].status === 'no-show' ||
+                      columnsBooked[getColumnId(n, d)].status === 'completed'
+                        ? 0.6
+                        : 1
+                  }
+                : {}
             "
           >
-            <template
-              v-if="!!columnsBooked[getColumnId(n, d)]"
-            >
+            <template v-if="!!columnsBooked[getColumnId(n, d)]">
               <span
-                v-tooltip="{ content: tooltipContent(columnsBooked[getColumnId(n, d)]) }"
+                v-tooltip="{
+                  content: tooltipContent(columnsBooked[getColumnId(n, d)])
+                }"
                 class="booking-description has-text-white has-text-weight-semibold"
               >
                 <button
-                  @click="$emit('open-modal-checkout', columnsBooked[getColumnId(n, d)])"
+                  @click="
+                    $emit(
+                      'open-modal-checkout',
+                      columnsBooked[getColumnId(n, d)]
+                    )
+                  "
                   class="has-text-white has-text-weight-semibold"
                 >
                   {{ bookingInfo[getColumnId(n, d)] || '' }}&nbsp;
@@ -175,7 +231,7 @@ export default {
   data() {
     return {
       timeRows: (this.end - this.start) * 4,
-      daysOfWeek: [],
+      daysOfWeek: []
     };
   },
   props: [
@@ -187,12 +243,12 @@ export default {
     'columnsBooked',
     'bookingInfo',
     'start',
-    'end',
+    'end'
   ],
   watch: {
     daySelected() {
       this.fillWeekDays(this.daySelected);
-    },
+    }
   },
   created() {
     this.fillWeekDays();
@@ -216,29 +272,38 @@ export default {
       return ((rowTime - 1) * 15) % 4 === 0;
     },
     fullHour(rowTime) {
-      return parseInt(((rowTime - 1) / 4) + this.start, 10);
+      return parseInt((rowTime - 1) / 4 + this.start, 10);
     },
     fullMinute(rowTime) {
       const quarter = ((rowTime - 1) * 15) % 4;
-      return quarter > 0 ? 60 - (quarter * 15) : 0;
+      return quarter > 0 ? 60 - quarter * 15 : 0;
     },
     getColumnId(rowTime, header, employee) {
       if (employee) {
-        return `${employee.id}_${moment(header).format('MM_DD')}_${this.fullHour(rowTime)}_${this.fullMinute(rowTime)}`;
+        return `${employee.id}_${moment(header).format(
+          'MM_DD'
+        )}_${this.fullHour(rowTime)}_${this.fullMinute(rowTime)}`;
       }
-      return `${moment(header).format('MM_DD')}_${this.fullHour(rowTime)}_${this.fullMinute(rowTime)}`;
+      return `${moment(header).format('MM_DD')}_${this.fullHour(
+        rowTime
+      )}_${this.fullMinute(rowTime)}`;
     },
     tooltipContent(appointment) {
       if (appointment) {
-        return (
-          `<div class="columns">
+        return `<div class="columns">
             <div class="column is-3">
               <span class="figure">
-                ${appointment.client ? appointment.client.name.substr(0, 1) : 'A'}
+                ${
+                  appointment.client
+                    ? appointment.client.name.substr(0, 1)
+                    : 'A'
+                }
               </span>
             </div>
             <div class="column is-9 client-name">
-              <h1 class="subtitle">${appointment.client ? appointment.client.name : 'Desconhecido'}
+              <h1 class="subtitle">${
+                appointment.client ? appointment.client.name : 'Desconhecido'
+              }
               </h1>
             </div>
           </div>
@@ -246,7 +311,10 @@ export default {
             <div class="column is-8 appointment-time">
               ${moment.unix(appointment.start_at).format('HH:mm')}
               <span>às</span>
-              ${moment.unix(appointment.start_at).add(appointment.duration, 's').format('HH:mm')}
+              ${moment
+                .unix(appointment.start_at)
+                .add(appointment.duration, 's')
+                .format('HH:mm')}
             </div>
             <div class="column is-4 appointment-price">
               ${this.displayMoney(appointment.price)}
@@ -256,25 +324,25 @@ export default {
               <span>com</span>
               ${appointment.employee.name}
             </div>
-            <div class="column is-4 appointment-status appointment-status-${appointment.status}">
+            <div class="column is-4 appointment-status appointment-status-${
+              appointment.status
+            }">
               ${appointment.status_display}
             </div>
             <div class="column is-12 appointment-notes">
               ${appointment.notes || ''}
             </div>
-          </div>`
-        );
+          </div>`;
       }
       return null;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss">
 .calendar {
   .columns {
-
     .column {
       border: 1px solid #cccccc;
       border-right: 0;
@@ -310,7 +378,6 @@ export default {
     }
 
     .columns {
-
       .column {
         padding-top: 3px;
         padding-bottom: 3px;
@@ -319,8 +386,14 @@ export default {
 
       .is-booking-type {
         background-size: 8px 8px;
-        background-image: linear-gradient(45deg, transparent 46%, rgba(36, 51, 74, .2) 49%, rgba(36, 51, 74, .2) 51%, transparent 55%);
-        background-color: #EEF0F2;
+        background-image: linear-gradient(
+          45deg,
+          transparent 46%,
+          rgba(36, 51, 74, 0.2) 49%,
+          rgba(36, 51, 74, 0.2) 51%,
+          transparent 55%
+        );
+        background-color: #eef0f2;
       }
     }
   }

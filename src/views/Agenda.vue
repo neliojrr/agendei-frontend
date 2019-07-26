@@ -165,6 +165,35 @@ export default {
       this.fillColumnsBooked();
     },
 
+    roundMinutes(time) {
+      const minutes = time.minutes();
+      if (minutes > 0 && minutes < 8) {
+        time.minutes(0);
+      }
+      if (minutes > 8 && minutes < 15) {
+        time.minutes(15);
+      }
+      if (minutes > 15 && minutes < 22) {
+        time.minutes(15);
+      }
+      if (minutes > 22 && minutes < 30) {
+        time.minutes(30);
+      }
+      if (minutes > 30 && minutes < 38) {
+        time.minutes(30);
+      }
+      if (minutes > 38 && minutes < 45) {
+        time.minutes(45);
+      }
+      if (minutes > 45 && minutes < 53) {
+        time.minutes(45);
+      }
+      if (minutes > 53 && minutes <= 59) {
+        time.minutes(0);
+      }
+      return time;
+    },
+
     fillColumnsBooked() {
       let allAppointments = this.appointments.slice(0);
       const { employeeSelected, showStaffOnHeader } = this;
@@ -176,18 +205,21 @@ export default {
         );
       }
       allAppointments.forEach(book => {
-        const start = moment.unix(book.start_at);
-        const end = moment.unix(book.start_at).add(book.duration, 's');
+        const start = this.roundMinutes(moment.unix(book.start_at));
+        const end = this.roundMinutes(
+          moment.unix(book.start_at).add(book.duration, 's')
+        );
         let infoOrder = 0;
-        while (start.isBefore(end)) {
-          const ref = showStaffOnHeader
-            ? `${book.employee.id}_${start.format('MM_DD_H_m')}`
-            : start.format('MM_DD_H_m');
-          bookingInfo[ref] = this.fillBookingInfo(infoOrder, book);
-          columnsBooked[ref] = book;
-          start.add(15, 'm');
-          infoOrder += 1;
-        }
+        if (start.minute() > 0 && start.minute())
+          while (start.isBefore(end)) {
+            const ref = showStaffOnHeader
+              ? `${book.employee.id}_${start.format('MM_DD_H_m')}`
+              : start.format('MM_DD_H_m');
+            bookingInfo[ref] = this.fillBookingInfo(infoOrder, book);
+            columnsBooked[ref] = book;
+            start.add(15, 'm');
+            infoOrder += 1;
+          }
       });
       this.columnsBooked = columnsBooked;
       this.bookingInfo = bookingInfo;
@@ -256,17 +288,19 @@ export default {
           }
         });
       }
-      const { sale_transaction: saleTransaction } = this.appointment;
-      const { sale_id: saleId } = saleTransaction;
-      if (isCompleted && saleId) {
-        dropdown.push({
-          title: 'Invoice',
-          class: 'has-text-info',
-          action: () => {
-            this.$router.push(`/sales/${saleId}`);
-            this.removeModal({ id: modalId.CHECKOUT_APPOINTMENT });
-          }
-        });
+      if (isCompleted) {
+        const saleTransaction = this.appointment.sale_transaction || {};
+        const { sale_id: saleId } = saleTransaction;
+        if (saleId) {
+          dropdown.push({
+            title: 'Invoice',
+            class: 'has-text-info',
+            action: () => {
+              this.$router.push(`/sales/${saleId}`);
+              this.removeModal({ id: modalId.CHECKOUT_APPOINTMENT });
+            }
+          });
+        }
       }
       dropdown.push({
         title: 'Deletar',
