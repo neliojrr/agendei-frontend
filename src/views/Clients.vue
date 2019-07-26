@@ -42,6 +42,11 @@
           />
         </p>
       </div>
+      <Pagination
+        @change-page="p => $router.push(`?page=${p}`)"
+        :page="page"
+        :itemsCount="clients.length"
+      />
       <MobileBottomMenu :buttons="buttons" />
     </div>
   </div>
@@ -55,6 +60,7 @@ import Form from '@/components/clients/Form.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
 import MobileBottomMenu from '@/components/MobileBottomMenu.vue';
+import Pagination from '@/components/Pagination.vue';
 import { api } from '@/utils/api-connect';
 import modalId from '@/utils/modalId';
 
@@ -64,9 +70,21 @@ export default {
     NavApp,
     Table,
     Form,
-    MobileBottomMenu
+    MobileBottomMenu,
+    Pagination
   },
-  props: ['pageTitle'],
+  props: {
+    pageTitle: {
+      type: String,
+      required: false,
+      default: 'Clientes'
+    },
+    page: {
+      type: Number,
+      required: false,
+      default: 1
+    }
+  },
   data() {
     return {
       salon: {},
@@ -104,6 +122,9 @@ export default {
   watch: {
     query() {
       this.debounceSearch();
+    },
+    page() {
+      this.getClients();
     }
   },
   created() {
@@ -116,7 +137,6 @@ export default {
       }
     ];
     this.client = { ...this.defaultClient };
-    this.$emit('set-loading-overlay', true);
     this.debounceSearch = debounce(this.search, 500);
     const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
@@ -127,8 +147,11 @@ export default {
     ...mapMutations('modal', ['addModal', 'removeModal']),
 
     getClients() {
+      this.$emit('set-loading-overlay', true);
       api
-        .get(`/salons/${this.salon.id}/clients`)
+        .get(`/salons/${this.salon.id}/clients`, {
+          params: { page: this.page }
+        })
         .then(response => {
           this.clients = response.data || [];
           this.$emit('set-loading-overlay', false);

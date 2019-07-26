@@ -75,7 +75,10 @@ const router = new Router({
       path: '/clients',
       name: 'clients',
       component: Clients,
-      props: { pageTitle: 'Clientes' },
+      props: route => ({
+        page: Number(route.query.page) || 1,
+        pageTitle: 'Clientes'
+      }),
       meta: { loadData: true }
     },
     {
