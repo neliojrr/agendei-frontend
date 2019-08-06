@@ -2,7 +2,12 @@
   <nav class="panel form-select-item">
     <div class="panel-block search-block">
       <p class="control has-icons-left">
-        <input class="input" type="text" placeholder="search">
+        <input
+          class="input"
+          type="text"
+          placeholder="search"
+          @input="$emit('search', $event.target.value.toLowerCase())"
+        />
         <span class="icon is-left">
           <font-awesome-icon icon="search" />
         </span>
@@ -10,11 +15,8 @@
     </div>
     <transition :name="transitionName" mode="out-in">
       <div v-if="show">
-        <a
-          class="panel-block back-button"
-          v-if="back"
-          @click="goBack"
-        >
+        <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
+        <a class="panel-block back-button" v-if="back" @click="goBack">
           <span class="panel-icon">
             <font-awesome-icon icon="chevron-left" />
           </span>
@@ -49,21 +51,25 @@
 
 <script>
 export default {
-  data() {
-    return {
-      show: false,
-      transitionName: 'slide-in',
-    };
-  },
   props: {
     items: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     back: {
       type: Boolean,
-      default: false,
+      default: false
     },
+    isLoading: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      show: false,
+      transitionName: 'slide-in'
+    };
   },
   created() {
     this.show = true;
@@ -86,8 +92,8 @@ export default {
         this.show = false;
         item.action();
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
