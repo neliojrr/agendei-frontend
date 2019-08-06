@@ -6,9 +6,11 @@ import service from './modules/service';
 import product from './modules/product';
 import employee from './modules/employee';
 import sale from './modules/sale';
+import report from './modules/report';
 
 Vue.use(Vuex);
 
+/* eslint no-param-reassign: "error" */
 export default new Vuex.Store({
   state: {
     salon: {},
@@ -28,6 +30,7 @@ export default new Vuex.Store({
     service,
     product,
     employee,
-    sale
+    sale,
+    report
   }
 });

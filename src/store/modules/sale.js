@@ -1,12 +1,13 @@
 import { api } from '@/utils/api-connect';
 import mutationTypes from '@/constants/mutation-types';
 
+/* eslint no-param-reassign: "error" */
 const sale = {
   namespaced: true,
   state: {
     all: [],
     isFetching: false,
-    error: null,
+    error: null
   },
   mutations: {
     GET_SALES(state, sales) {
@@ -27,7 +28,7 @@ const sale = {
     CHECKOUT_ERROR(state, error) {
       state.isFetching = true;
       state.error = error;
-    },
+    }
   },
   actions: {
     async getSales(context, payload) {
@@ -70,7 +71,9 @@ const sale = {
     async checkout(context, payload) {
       const { salon, sale: saleObject } = payload;
       try {
-        const response = await api.post(`salons/${salon.id}/sales/`, { sale: saleObject });
+        const response = await api.post(`salons/${salon.id}/sales/`, {
+          sale: saleObject
+        });
         const newSale = response.data || {};
         context.commit(mutationTypes.ADD_SALE, newSale);
       } catch (error) {
@@ -83,8 +86,8 @@ const sale = {
         context.commit(mutationTypes.CHECKOUT_ERROR, errors);
         throw new Error(errors);
       }
-    },
-  },
+    }
+  }
 };
 
 export default sale;
