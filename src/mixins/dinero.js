@@ -13,13 +13,15 @@ export default {
         return null;
       }
       const dinero = this.createMoney(amount);
-      return dinero.hasCents() ? dinero.toFormat('$0.00') : dinero.toFormat('$0');
+      return dinero.hasCents()
+        ? dinero.toFormat('$0.00').replace('.', ',')
+        : dinero.toFormat('$0');
     },
     displayRawMoney(amount) {
       if (amount === null || amount === undefined || amount === '') {
         return null;
       }
       return this.createMoney(amount).toUnit();
-    },
-  },
+    }
+  }
 };
