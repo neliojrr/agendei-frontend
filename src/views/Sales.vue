@@ -117,7 +117,19 @@ export default {
     },
 
     addItem(item) {
-      this.sale.items.push(item);
+      const itemAdded = this.sale.items.find(i => i.id === item.id);
+      if (itemAdded) {
+        this.sale.items = this.sale.items.map(i => {
+          if (i.id === itemAdded.id) {
+            const newItem = i;
+            newItem.quantity += 1;
+            return newItem;
+          }
+          return i;
+        });
+      } else {
+        this.sale.items.push(item);
+      }
       this.sale.price += item.price;
       const id = modalId.SELECT_ITEM_SALE;
       if (this.isModalOpen(id)) this.removeModal({ id });
