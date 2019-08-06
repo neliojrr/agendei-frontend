@@ -2,85 +2,104 @@
   <div class="date-selector">
     <div class="field has-addons">
       <p class="control">
-        <a class="button is-medium" @click="isYesterday">
+        <button class="button is-medium" @click="isYesterday">
           <font-awesome-icon icon="arrow-left" />
-        </a>
+        </button>
       </p>
       <p class="control">
-        <a class="button is-medium" @click="isToday">
+        <button class="button is-medium" @click="isToday">
           <span>Hoje</span>
-        </a>
+        </button>
       </p>
       <p class="control">
-        <a class="button is-medium" @click="toggleDatePicker">
-          <font-awesome-icon icon="calendar-alt" />
-        </a>
-        <Datepicker
-          ref="datepicker"
-          input-class="is-hidden-desktop is-hidden-touch"
-          calendar-class="date-picker-calendar"
-          :language="ptBR"
-          :value="daySelected.format('YYYY-MM-DD')"
-          @selected="changeDate"
-        />
+        <v-date-picker
+          mode="range"
+          v-model="calendarDate"
+          locale="pt-BR"
+          :popover="{ placement: 'bottom-end', visibility: 'click' }"
+        >
+          <button
+            slot-scope="{ inputProps, inputEvents, isDragging }"
+            v-bind="inputProps"
+            v-on="inputEvents"
+            class="button is-medium calendar-button"
+          >
+            <font-awesome-icon icon="calendar-alt" />
+          </button>
+        </v-date-picker>
       </p>
       <p class="control">
-        <a class="button is-medium" @click="isTomorrow">
+        <button class="button is-medium" @click="isTomorrow">
           <font-awesome-icon icon="arrow-right" />
-        </a>
+        </button>
       </p>
     </div>
   </div>
 </template>
 
 <script>
-import Datepicker from 'vuejs-datepicker';
-import { ptBR } from 'vuejs-datepicker/dist/locale';
 import moment from 'moment';
 
 export default {
+  props: {
+    selectedDate: {
+      type: Object,
+      required: true,
+      default: () => ({
+        start: moment().toDate(),
+        end: moment().toDate()
+      })
+    }
+  },
   data() {
     return {
-      ptBR,
+      calendarDate: this.selectedDate
     };
   },
-  props: {
-    daySelected: {
-      type: Object,
-      default: moment(),
-    },
-  },
-  components: {
-    Datepicker,
+  watch: {
+    calendarDate() {
+      this.$emit('change-date', this.calendarDate);
+    }
   },
   methods: {
-    changeDate(date) {
-      this.$emit('change-date', date);
-    },
-    toggleDatePicker() {
-      this.$refs.datepicker.showCalendar();
-    },
     isToday() {
-      this.$emit('change-date', moment());
+      this.calendarDate = {
+        start: moment().toDate(),
+        end: moment().toDate()
+      };
     },
     isYesterday() {
-      const yesterday = this.daySelected.subtract(1, 'day');
-      this.$emit('change-date', yesterday);
+      this.calendarDate = {
+        start: moment(this.calendarDate.start)
+          .subtract(1, 'day')
+          .toDate(),
+        end: moment(this.calendarDate.start)
+          .subtract(1, 'day')
+          .toDate()
+      };
     },
     isTomorrow() {
-      const tomorrow = this.daySelected.add(1, 'day');
-      this.$emit('change-date', tomorrow);
-    },
-  },
+      this.calendarDate = {
+        start: moment(this.calendarDate.start)
+          .add(1, 'day')
+          .toDate(),
+        end: moment(this.calendarDate.start)
+          .add(1, 'day')
+          .toDate()
+      };
+    }
+  }
 };
 </script>
 
-
 <style lang="scss">
 .date-selector {
+  button {
+    outline: none;
+  }
 
-  .date-picker-calendar {
-    left: -15.6em;
+  .calendar-button {
+    border: 1px solid #dbdbdb;
   }
 }
 </style>

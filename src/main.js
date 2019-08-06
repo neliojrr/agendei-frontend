@@ -4,6 +4,7 @@ import VueI18n from 'vue-i18n';
 import Buefy from 'buefy';
 import VueAnalytics from 'vue-analytics';
 import VTooltip from 'v-tooltip';
+import VCalendar from 'v-calendar';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
   faCalendarAlt,
@@ -32,12 +33,12 @@ import {
   faChevronLeft,
   faDollarSign,
   faEdit,
-  faTrashAlt,
+  faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookSquare,
   faTwitterSquare,
-  faInstagram,
+  faInstagram
 } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import dinero from './mixins/dinero';
@@ -77,7 +78,7 @@ library.add(
   faChevronLeft,
   faDollarSign,
   faEdit,
-  faTrashAlt,
+  faTrashAlt
 );
 /* end icons */
 
@@ -90,22 +91,23 @@ Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(Buefy, {
   defaultIconComponent: 'font-awesome-icon',
-  defaultIconPack: 'fa',
+  defaultIconPack: 'fa'
 });
 Vue.use(VueAnalytics, {
   id: 'UA-36204274-9',
-  router,
+  router
 });
 Vue.use(VTooltip);
 VTooltip.enabled = window.innerWidth > 768;
+Vue.use(VCalendar);
 
 const i18n = new VueI18n({
-  locale: 'pt-br',
+  locale: 'pt-br'
 });
 
 new Vue({
   router,
   store,
   i18n,
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app');
