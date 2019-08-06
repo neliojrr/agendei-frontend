@@ -92,7 +92,11 @@ const router = new Router({
       path: '/reports',
       name: 'reports',
       component: Report,
-      props: { pageTitle: 'Relatórios' },
+      props: route => ({
+        start: route.query.start,
+        end: route.query.end,
+        pageTitle: 'Relatórios'
+      }),
       meta: { loadData: true }
     },
     {

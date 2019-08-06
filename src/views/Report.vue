@@ -6,16 +6,27 @@
       <div class="columns is-mobile top-actions">
         <div class="column">&nbsp;</div>
         <div class="column is-narrow">
-          <DateSelector :daySelected="daySelected" @change-date="changeDate" />
+          <DateSelector
+            :selectedDate="selectedDate"
+            @change-date="changeDate"
+          />
         </div>
       </div>
       <div class="columns report-title">
         <div class="column">
           <h2 class="title is-4">
-            Vendas Diárias
+            Vendas
           </h2>
-          <p class="subtitle is-5">
-            {{ daySelected.format('dddd, D MMM YYYY') }}
+          <p
+            v-if="selectedDate.start.isSame(selectedDate.end)"
+            class="subtitle is-5"
+          >
+            {{ selectedDate.start.format('dddd, D MMM YYYY') }}
+          </p>
+          <p v-else class="subtitle is-5">
+            {{ selectedDate.start.format('D MMM YYYY') }}
+            à
+            {{ selectedDate.end.format('D MMM YYYY') }}
           </p>
         </div>
       </div>
@@ -26,7 +37,7 @@
             :isBordered="true"
             :isStriped="true"
             :headers="summaryHeaders"
-            :data="summaryData"
+            :data="summaryReport"
             :mobileHidden="2"
           />
         </div>
@@ -36,7 +47,7 @@
             :isBordered="true"
             :isStriped="true"
             :headers="serviceHeaders"
-            :data="serviceData"
+            :data="servicesReport"
             :mobileHidden="2"
           />
         </div>
@@ -46,27 +57,7 @@
             :isBordered="true"
             :isStriped="true"
             :headers="serviceHeaders"
-            :data="serviceData"
-            :mobileHidden="2"
-          />
-        </div>
-        <div class="column is-half">
-          <h2 class="subtitle is-5">Principais Pacotes</h2>
-          <Table
-            :isBordered="true"
-            :isStriped="true"
-            :headers="serviceHeaders"
-            :data="serviceData"
-            :mobileHidden="2"
-          />
-        </div>
-        <div class="column is-half">
-          <h2 class="subtitle is-5">Comissões</h2>
-          <Table
-            :isBordered="true"
-            :isStriped="true"
-            :headers="serviceHeaders"
-            :data="serviceData"
+            :data="productsReport"
             :mobileHidden="2"
           />
         </div>
@@ -80,102 +71,130 @@
 
 <script>
 import moment from 'moment';
-import { api } from '@/utils/api-connect';
+import { mapState, mapActions } from 'vuex';
 import Table from '@/components/Table.vue';
 import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
 import DateSelector from '@/components/DateSelector.vue';
 
 export default {
-  data() {
-    return {
-      title: this.pageTitle,
-      daySelected: moment(),
-      summaryHeaders: [
-        {
-          name: 'type',
-          title: 'Tipo',
-        },
-        {
-          name: 'report',
-          title: 'Qtd Vendas',
-        },
-        {
-          name: 'total',
-          title: 'Total Bruto',
-        },
-      ],
-      summaryData: [
-        {
-          id: 1,
-          type: 'Serviços',
-          report: '9',
-          total: 'R$ 270',
-        },
-        {
-          id: 2,
-          type: 'Pacotes',
-          report: '2',
-          total: 'R$ 420',
-        },
-        {
-          id: 3,
-          type: 'Total',
-          report: '11',
-          total: 'R$ 710',
-        },
-      ],
-      serviceHeaders: [
-        {
-          name: 'name',
-          title: 'Nome',
-        },
-        {
-          name: 'report',
-          title: 'Qtd Vendas',
-        },
-        {
-          name: 'total',
-          title: 'Total Bruto',
-        },
-      ],
-      serviceData: [
-        {
-          id: 1,
-          name: 'Corte de Cabelo',
-          report: '6',
-          total: 'R$ 180',
-        },
-        {
-          id: 2,
-          name: 'Sobrancelha',
-          report: '3',
-          total: 'R$ 90',
-        },
-        {
-          id: 3,
-          name: 'Total',
-          report: '9',
-          total: 'R$ 270',
-        },
-      ],
-    };
-  },
-  props: ['pageTitle'],
   components: {
     Menu,
     NavApp,
     Table,
-    DateSelector,
+    DateSelector
+  },
+  props: {
+    pageTitle: {
+      type: String,
+      required: false,
+      default: 'Relatórios'
+    },
+    start: {
+      type: String,
+      required: false,
+      default: null
+    },
+    end: {
+      type: String,
+      required: false,
+      default: null
+    }
+  },
+  data() {
+    return {
+      title: this.pageTitle,
+      selectedDate: {
+        start: this.start ? moment(this.start) : moment(),
+        end: this.start ? moment(this.end) : moment()
+      },
+      summaryHeaders: [
+        {
+          name: 'name',
+          title: 'Tipo'
+        },
+        {
+          name: 'quantity',
+          title: 'Qtd Vendas'
+        },
+        {
+          name: 'value',
+          title: 'Total Bruto',
+          format: this.displayMoney
+        }
+      ],
+      serviceHeaders: [
+        {
+          name: 'name',
+          title: 'Nome'
+        },
+        {
+          name: 'quantity',
+          title: 'Qtd Vendas'
+        },
+        {
+          name: 'value',
+          title: 'Total Bruto',
+          format: this.displayMoney
+        }
+      ]
+    };
+  },
+  computed: {
+    ...mapState({
+      salon: state => state.salon,
+      user: state => state.user,
+      services: state => state.report.services,
+      products: state => state.report.products
+    }),
+    summaryReport() {
+      return this.$store.getters['report/summaryReport'] || [];
+    },
+    servicesReport() {
+      const report = this.$store.getters['report/servicesReport'] || {};
+      const values = Object.values(report);
+      if (values.length > 3) {
+        return values.slice(0, 2).concat(report.total);
+      }
+      return values;
+    },
+    productsReport() {
+      const report = this.$store.getters['report/productsReport'] || {};
+      const values = Object.values(report);
+      if (values.length > 3) {
+        return values.slice(0, 2).concat(report.total);
+      }
+      return values;
+    }
+  },
+  watch: {
+    selectedDate() {
+      const { start, end } = this.selectedDate;
+      this.$router.push(
+        `/reports?start=${start.format('YYYY-MM-DD')}&end=${end.format(
+          'YYYY-MM-DD'
+        )}`
+      );
+      this.getReports({ ...this.selectedDate, salon: this.salon });
+    }
+  },
+  created() {
+    this.getReports({ ...this.selectedDate, salon: this.salon });
   },
   methods: {
-    changeDate(date) {
-      this.daySelected = moment(date);
+    ...mapActions('report', ['getReports']),
+
+    changeDate(dates) {
+      this.selectedDate = {
+        start: moment(dates.start),
+        end: moment(dates.end)
+      };
     },
+
     moment(date = moment()) {
       return moment(date);
-    },
-  },
+    }
+  }
 };
 </script>
 
