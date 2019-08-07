@@ -64,6 +64,9 @@ export default {
 .client-history-appointments {
   max-height: 300px;
   overflow-y: auto;
+  overflow-x: hidden;
+  padding-left: 5px;
+  padding-right: 5px;
 
   .columns {
     border-bottom: 1px solid $grey-lighter;
