@@ -2,10 +2,10 @@
   <div class="client-history-appointments">
     <template v-if="appointments.length > 0">
       <div class="columns is-mobile" v-for="a in appointments" :key="a.id">
-        <div class="column date is-narrow">
-          <span class="subtitle is-5">
+        <div class="column date is-flex is-narrow">
+          <div class="subtitle is-5">
             {{ moment(a.start_at).format('DD') }}
-          </span>
+          </div>
           <div class="subtitle is-5">
             {{ moment(a.start_at).format('MMM') }}
           </div>
@@ -90,6 +90,18 @@ export default {
     svg {
       font-size: 42px;
       color: $grey-light;
+    }
+  }
+
+  .date {
+    flex-direction: column;
+
+    div {
+      margin-bottom: 0;
+    }
+
+    div {
+      margin-bottom: inherit;
     }
   }
 }
