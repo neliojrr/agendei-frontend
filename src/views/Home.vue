@@ -2,17 +2,16 @@
   <div class="home">
     <Nav :transparent="transparent" />
     <section class="top">
-      <div class="overlay">
-      </div>
-      <div class="mask">
-      </div>
+      <div class="overlay"></div>
+      <div class="mask"></div>
       <div class="content section">
         <h1 class="title is-1 is-size-3-touch has-text-white-ter">
           Gerencie seu salão no computador ou celular
         </h1>
         <h2 class="subtitle is-4 is-size-6-touch has-text-white-ter">
-          Simples, fácil e intuitivo software para salões e barbearias com agendamento,
-          controle de clientes e profissionais, relatórios de vendas e muito mais.
+          Simples, fácil e intuitivo software para salões e barbearias com
+          agendamento, controle de clientes e profissionais, relatórios de
+          vendas e muito mais.
         </h2>
         <button
           title="Experimente gratis"
@@ -31,19 +30,19 @@
       <div class="columns is-multiline">
         <div class="column is-half">
           <p>
-            <img alt="Agendamento" src="../assets/images/schedule.svg">
+            <img alt="Agendamento" src="../assets/images/schedule.svg" />
           </p>
           <h3 class="subtitle is-4">
             Agendamento
           </h3>
           <p>
-            Agendamento descomplicado e rápido para que você possa ter mais tempo
-            e focar no cliente
+            Agendamento descomplicado e rápido para que você possa ter mais
+            tempo e focar no cliente
           </p>
         </div>
         <div class="column is-half">
           <p>
-            <img alt="Clientes" src="../assets/images/clients.svg">
+            <img alt="Clientes" src="../assets/images/clients.svg" />
           </p>
           <h3 class="subtitle is-4">
             Gerencie seus clientes
@@ -55,7 +54,10 @@
         </div>
         <div class="column is-half">
           <p>
-            <img alt="Relatorio de Vendas" src="../assets/images/sales_report.svg">
+            <img
+              alt="Relatorio de Vendas"
+              src="../assets/images/sales_report.svg"
+            />
           </p>
           <h3 class="subtitle is-4">
             Aumente suas vendas
@@ -67,14 +69,14 @@
         </div>
         <div class="column is-half">
           <p>
-            <img alt="Mensagens" src="../assets/images/messages.svg">
+            <img alt="Mensagens" src="../assets/images/messages.svg" />
           </p>
           <h3 class="subtitle is-4">
             Reduza o não comparecimento
           </h3>
           <p>
-            O agendei envia lembretes automaticamente para seus clientes reduzindo
-            as chances de não comparecimento
+            O agendei envia lembretes automaticamente para seus clientes
+            reduzindo as chances de não comparecimento
           </p>
         </div>
       </div>
@@ -131,12 +133,12 @@ import Footer from '@/components/Footer.vue';
 export default {
   data() {
     return {
-      transparent: 0,
+      transparent: 0
     };
   },
   components: {
     Nav,
-    Footer,
+    Footer
   },
   created() {
     window.addEventListener('scroll', this.handleScroll);
@@ -152,12 +154,12 @@ export default {
     },
     handleScroll() {
       this.transparent = window.pageYOffset;
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 .home {
   position: absolute;
   top: 0;
@@ -168,11 +170,11 @@ export default {
     position: relative;
     height: 80vh;
     width: 100%;
-    box-shadow: 0 4px 11px rgba(124,146,169,.5);
-    color: #FFFFFF;
+    box-shadow: 0 4px 11px rgba(124, 146, 169, 0.5);
+    color: #ffffff;
 
     .overlay {
-      background: linear-gradient(90deg,#6c63ff,#4641ff);
+      background: linear-gradient(90deg, #6c63ff, #4641ff);
       position: absolute;
       height: 100%;
       width: 100%;
@@ -215,9 +217,7 @@ export default {
     margin-top: 2em;
 
     .column {
-
       p {
-
         img {
           height: 150px;
         }
@@ -234,7 +234,7 @@ export default {
       max-width: 1444px;
 
       img {
-        box-shadow: 4px 10px 20px rgba(124,146,169,.5);
+        box-shadow: 4px 10px 20px rgba(124, 146, 169, 0.5);
         position: relative;
         z-index: 1;
         max-width: 100%;
@@ -246,7 +246,12 @@ export default {
 
   .contact-form {
     padding-top: 80px;
-    padding-bottom: 180px;
+    padding-bottom: 20em;
+
+    @media screen and (max-width: 768px) {
+      padding-bottom: 30em;
+      border: 0;
+    }
 
     input {
       width: 50%;

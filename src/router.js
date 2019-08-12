@@ -4,6 +4,8 @@ import Home from './views/Home.vue';
 import Signup from './views/Signup.vue';
 import ForgotPassword from './views/ForgotPassword.vue';
 import ResetPassword from './views/ResetPassword.vue';
+import Privacy from './views/Privacy.vue';
+import Terms from './views/Terms.vue';
 import Login from './views/Login.vue';
 import Agenda from './views/Agenda.vue';
 import Staff from './views/Staff.vue';
@@ -47,6 +49,18 @@ const router = new Router({
       name: 'forgot',
       component: ForgotPassword,
       props: { pageTitle: 'Esqueceu sua senha' }
+    },
+    {
+      path: '/termos',
+      name: 'terms',
+      component: Terms,
+      props: { pageTitle: 'Termos de uso' }
+    },
+    {
+      path: '/privacidade',
+      name: 'privacy',
+      component: Privacy,
+      props: { pageTitle: 'Política de Privacidade' }
     },
     {
       path: '/reset-password',
@@ -163,6 +177,9 @@ const router = new Router({
 
 let firstTimeLoading = true;
 router.beforeEach((to, from, next) => {
+  if (from.name === 'login') {
+    firstTimeLoading = true;
+  }
   const user = JSON.parse(window.localStorage.getItem('user')) || {};
   const salon = JSON.parse(window.localStorage.getItem('salon')) || {};
   const loadData = to.matched.some(record => record.meta.loadData);
