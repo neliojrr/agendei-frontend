@@ -207,7 +207,7 @@ export default {
   },
   data() {
     return {
-      transparent: 100
+      transparent: -1
     };
   }
 };

@@ -42,7 +42,7 @@
               <a href="https://agendei.io/cadastrar">Cadastrar</a>
             </li>
             <li>
-              <a href="https://agendei.io/entrar">Entrar</a>
+              <a href="https://agendei.io/login">Entrar</a>
             </li>
             <li>
               <a href="https://agendei.io/precos">Preços</a>
