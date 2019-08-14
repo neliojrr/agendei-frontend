@@ -69,6 +69,16 @@ import AppointmentView from '../components/agenda/AppointmentView.vue';
 */
 
 export default {
+  components: {
+    Menu,
+    NavApp,
+    MobileBottomMenu,
+    CalendarHeader,
+    Calendar,
+    Form,
+    AppointmentView
+  },
+  props: ['pageTitle'],
   data() {
     return {
       start: 7,
@@ -88,15 +98,10 @@ export default {
       buttons: []
     };
   },
-  props: ['pageTitle'],
-  components: {
-    Menu,
-    NavApp,
-    MobileBottomMenu,
-    CalendarHeader,
-    Calendar,
-    Form,
-    AppointmentView
+  computed: {
+    ...mapState({
+      employees: state => state.employee.all
+    })
   },
   mixins: [log],
   created() {
@@ -128,11 +133,6 @@ export default {
     const salon = window.localStorage.getItem('salon') || '{}';
     this.salon = JSON.parse(salon) || {};
     this.getAppointments();
-  },
-  computed: {
-    ...mapState({
-      employees: state => state.employee.all
-    })
   },
   methods: {
     ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
@@ -210,16 +210,15 @@ export default {
           moment.unix(book.start_at).add(book.duration, 's')
         );
         let infoOrder = 0;
-        if (start.minute() > 0 && start.minute())
-          while (start.isBefore(end)) {
-            const ref = showStaffOnHeader
-              ? `${book.employee.id}_${start.format('MM_DD_H_m')}`
-              : start.format('MM_DD_H_m');
-            bookingInfo[ref] = this.fillBookingInfo(infoOrder, book);
-            columnsBooked[ref] = book;
-            start.add(15, 'm');
-            infoOrder += 1;
-          }
+        while (start.isBefore(end)) {
+          const ref = showStaffOnHeader
+            ? `${book.employee.id}_${start.format('MM_DD_k_m')}`
+            : start.format('MM_DD_k_m');
+          bookingInfo[ref] = this.fillBookingInfo(infoOrder, book);
+          columnsBooked[ref] = book;
+          start.add(15, 'm');
+          infoOrder += 1;
+        }
       });
       this.columnsBooked = columnsBooked;
       this.bookingInfo = bookingInfo;
@@ -399,7 +398,7 @@ export default {
 
     saveNewAppointment() {
       this.$emit('set-loading-overlay', true);
-      const startAt = moment.unix(this.appointment.start_at);
+      const startAt = moment.unix(this.appointment.start_at).format();
       api
         .post(`/salons/${this.salon.id}/appointments`, {
           ...this.appointment,
