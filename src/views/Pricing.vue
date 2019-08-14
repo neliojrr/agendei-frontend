@@ -135,7 +135,7 @@ export default {
           priceAnnual: 63,
           image: 'pricing_team.svg',
           title: 'Team',
-          subtitle: 'Ideal pequenos salões',
+          subtitle: 'Ideal para pequenos salões',
           features: [
             '5 profissionais',
             'Agenda',

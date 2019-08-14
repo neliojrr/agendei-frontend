@@ -153,10 +153,9 @@ export default {
       justify-content: center;
 
       span {
-        width: 10%;
+        width: 5%;
         text-align: right;
-        margin-right: 5%;
-        margin-left: 15%;
+        margin-left: 30%;
       }
 
       span + span {
@@ -165,6 +164,10 @@ export default {
         margin-right: 0;
         width: 60%;
       }
+    }
+
+    li:last-child {
+      margin-top: 1em;
     }
   }
 
