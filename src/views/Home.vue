@@ -23,7 +23,7 @@
         </button>
       </div>
     </section>
-    <section class="app-info container section">
+    <section class="app-features container section">
       <h2 class="subtitle is-2 is-size-3-touch">
         Funcionalidades para facilitar o seu dia a dia
       </h2>
@@ -213,7 +213,7 @@ export default {
     }
   }
 
-  .app-info {
+  .app-features {
     margin-top: 2em;
 
     .column {
@@ -248,7 +248,7 @@ export default {
     padding-top: 80px;
     padding-bottom: 20em;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 1090px) {
       padding-bottom: 30em;
       border: 0;
     }

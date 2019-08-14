@@ -5,6 +5,7 @@ import Signup from './views/Signup.vue';
 import ForgotPassword from './views/ForgotPassword.vue';
 import ResetPassword from './views/ResetPassword.vue';
 import Privacy from './views/Privacy.vue';
+import Pricing from './views/Pricing.vue';
 import Terms from './views/Terms.vue';
 import Login from './views/Login.vue';
 import Agenda from './views/Agenda.vue';
@@ -61,6 +62,12 @@ const router = new Router({
       name: 'privacy',
       component: Privacy,
       props: { pageTitle: 'Política de Privacidade' }
+    },
+    {
+      path: '/precos',
+      name: 'pricing',
+      component: Pricing,
+      props: { pageTitle: 'Preços' }
     },
     {
       path: '/reset-password',
