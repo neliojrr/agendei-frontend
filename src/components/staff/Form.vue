@@ -11,9 +11,13 @@
               :class="{ 'is-danger': errors.name }"
               type="text"
               placeholder="Lucia Maria"
-            >
+            />
           </div>
-          <p v-for="message in errors.name" :key="message" class="help is-danger">
+          <p
+            v-for="message in errors.name"
+            :key="message"
+            class="help is-danger"
+          >
             {{ message }}
           </p>
         </div>
@@ -26,8 +30,12 @@
               :class="{ 'is-danger': errors.email }"
               type="email"
               placeholder="email@exemplo.com"
+            />
+            <p
+              v-for="message in errors.email"
+              :key="message"
+              class="help is-danger"
             >
-            <p v-for="message in errors.email" :key="message" class="help is-danger">
               {{ message }}
             </p>
           </div>
@@ -39,8 +47,12 @@
               :class="{ 'is-danger': errors.phone }"
               type="tel"
               placeholder="64999900000"
+            />
+            <p
+              v-for="message in errors.phone"
+              :key="message"
+              class="help is-danger"
             >
-            <p v-for="message in errors.phone" :key="message" class="help is-danger">
               {{ message }}
             </p>
           </div>
@@ -49,7 +61,9 @@
           <div class="control is-expanded">
             <label class="label">Acesso</label>
             <b-field>
-              <b-switch v-model="employee.agendei_access">Liberar acesso ao Agendei</b-switch>
+              <b-switch v-model="employee.agendei_access"
+                >Liberar acesso ao Agendei</b-switch
+              >
             </b-field>
           </div>
         </div>
@@ -57,67 +71,80 @@
           <label class="label">Cor na agenda</label>
           <div class="control">
             <div class="columns is-mobile is-multiline colors-list">
-              <div
-                v-for="(c) in colors"
-                :key="c"
-                class="column"
-              >
+              <div v-for="c in colors" :key="c" class="column">
                 <span
                   class="single-color"
                   @click="changeColor(c)"
                   :style="{ backgroundColor: c }"
                 >
-                  <font-awesome-icon
-                    v-if="employee.color === c"
-                    icon="check"
-                  />
+                  <font-awesome-icon v-if="employee.color === c" icon="check" />
                 </span>
               </div>
             </div>
-            <p v-for="message in errors.color" :key="message" class="help is-danger">
+            <p
+              v-for="message in errors.color"
+              :key="message"
+              class="help is-danger"
+            >
               {{ message }}
             </p>
           </div>
         </div>
       </b-tab-item>
       <b-tab-item label="Serviços">
-        <div class="content">
-          <p class="services-tip">
-            Selecione os serviços efetuados por este profissional
-          </p>
-        </div>
-        <div class="field">
-          <div class="control is-expanded">
-            <label class="checkbox">
-              <input
-                type="checkbox"
-                :checked="employee.services && services.length === employee.services.length"
-                @change="toggleAll"
-              >
-              Selecionar Todos
-            </label>
+        <template v-if="services.length === 0">
+          <div class="content">
+            <p class="services-tip">
+              Selecione os serviços efetuados por este profissional
+            </p>
           </div>
-        </div>
-        <hr />
-        <div
-          class="field columns is-mobile is-multiline"
-          v-if="services.length > 0"
-        >
+          <div class="field">
+            <div class="control is-expanded">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  :checked="
+                    employee.services &&
+                      services.length === employee.services.length
+                  "
+                  @change="toggleAll"
+                />
+                Selecionar Todos
+              </label>
+            </div>
+          </div>
+          <hr />
           <div
-            class="control is-expanded column is-half"
-            v-for="service in services"
-            :key="service.id"
+            class="field columns is-mobile is-multiline"
+            v-if="services.length > 0"
           >
-            <label class="checkbox" >
-              <input
-                type="checkbox"
-                :checked="employee.services && employee.services.find(s => service.id === s.id)"
-                @change="toggleService(service)"
-              >
-              {{ service.name }}
-            </label>
+            <div
+              class="control is-expanded column is-half"
+              v-for="service in services"
+              :key="service.id"
+            >
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  :checked="
+                    employee.services &&
+                      employee.services.find(s => service.id === s.id)
+                  "
+                  @change="toggleService(service)"
+                />
+                {{ service.name }}
+              </label>
+            </div>
           </div>
-        </div>
+        </template>
+        <template v-else>
+          <div class="content">
+            <p class="services-tip">
+              Nenhum serviço foi cadastrado.<br />
+              <a href="/services">Ir para página de serviços</a>
+            </p>
+          </div>
+        </template>
       </b-tab-item>
     </b-tabs>
   </div>
@@ -143,19 +170,19 @@ export default {
         '#61f6bc',
         '#4d5795',
         '#769ee9',
-        '#7a07a1',
-      ],
+        '#7a07a1'
+      ]
     };
   },
   props: {
     data: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     errors: {
       type: Object,
-      default: () => ({}),
-    },
+      default: () => ({})
+    }
   },
   created() {
     this.$emit('set-loading-overlay', true);
@@ -176,15 +203,19 @@ export default {
       }
     },
     toggleAll() {
-      if (this.employee.services && this.employee.services.length === this.services.length) {
+      if (
+        this.employee.services &&
+        this.employee.services.length === this.services.length
+      ) {
         this.employee.services = [];
       } else {
         this.employee.services = this.services;
       }
     },
     getServices() {
-      api.get(`/salons/${this.salon.id}/services`)
-        .then((response) => {
+      api
+        .get(`/salons/${this.salon.id}/services`)
+        .then(response => {
           this.services = response.data;
           this.$emit('set-loading-overlay', false);
         })
@@ -192,16 +223,16 @@ export default {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
             message: 'Não foi possível encontrar os serviços disponíveis!',
-            type: 'is-danger',
+            type: 'is-danger'
           });
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss">
-@import "../../assets/sass/variables";
+@import '../../assets/sass/variables';
 
 .staff-form {
   text-align: left;
@@ -223,7 +254,6 @@ export default {
   }
 
   .colors {
-
     .colors-list {
       display: flex;
 
@@ -235,7 +265,7 @@ export default {
         width: 35px;
         height: 35px;
         border-radius: 50%;
-        border: 1px solid #DDDDDD;
+        border: 1px solid #dddddd;
         color: white;
         cursor: pointer;
       }
@@ -247,9 +277,7 @@ export default {
   }
 
   .tabs {
-
     li.is-active {
-
       a {
         color: $primary !important;
         border-bottom-color: $primary;
@@ -262,4 +290,3 @@ export default {
   }
 }
 </style>
-
