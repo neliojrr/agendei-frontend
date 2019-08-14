@@ -185,6 +185,8 @@ export default {
   },
   computed: {
     ...mapState({
+      user: state => state.user,
+      salon: state => state.salon,
       clients: state => state.client.all,
       employees: state => state.employee.all,
       serviceCategories: state => state.service.serviceCategories
@@ -203,14 +205,19 @@ export default {
     }
   },
   created() {
-    const salon = window.localStorage.getItem('salon') || '{}';
-    this.salon = JSON.parse(salon) || {};
     if (this.appointment && this.appointment.client) {
       this.name = this.appointment.client.name || '';
     }
     if (this.employees && this.employees.length > 0) {
-      this.appointment.employee = this.employees[0];
-      this.appointment.employee_id = this.employees[0].id;
+      if (this.user) {
+        this.appointment.employee = this.employees.find(
+          employee => employee.id === this.user.id
+        );
+        this.appointment.employee_id = this.user.id;
+      } else {
+        this.appointment.employee = this.employees[0];
+        this.appointment.employee_id = this.employees[0].id;
+      }
     }
   },
   methods: {
@@ -274,7 +281,7 @@ export default {
     },
 
     selectStartAt(e) {
-      this.hourSelected = e.target.value;
+      this.hourSelected = Number(e.target.value);
       this.appointment.start_at = moment
         .unix(this.appointment.start_at)
         .hour(0)
