@@ -24,7 +24,7 @@
         <div class="navbar-end">
           <a
             name="blog"
-            href="https://agendei.io/blog"
+            href="https://blog.agendei.io"
             class="navbar-item is-flex"
           >
             <span>{{ $t('blog') }}</span>
