@@ -53,7 +53,8 @@
           <span>
             <strong>Agendei</strong>
             por <a href="mailto:nelio@firstbits.com.br">FirstBits</a>.<br />
-            Todos os direitos reservados.
+            Todos os direitos reservados. <br />
+            <span class="cnpj">CNPJ: 30.294.913/0001-29</span>
           </span>
         </div>
       </div>
@@ -134,7 +135,7 @@
     .copyright {
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 13px;
 
       strong {
         color: #ffffff;
@@ -147,6 +148,10 @@
 
       a:hover {
         text-decoration: underline;
+      }
+
+      .cnpj {
+        font-size: 11px;
       }
     }
   }
