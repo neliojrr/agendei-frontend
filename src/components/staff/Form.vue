@@ -92,7 +92,7 @@
         </div>
       </b-tab-item>
       <b-tab-item label="Serviços">
-        <template v-if="services.length === 0">
+        <template v-if="services.length > 0">
           <div class="content">
             <p class="services-tip">
               Selecione os serviços efetuados por este profissional
@@ -141,7 +141,9 @@
           <div class="content">
             <p class="services-tip">
               Nenhum serviço foi cadastrado.<br />
-              <a href="/services">Ir para página de serviços</a>
+              <button @click="goToServices" class="button is-text">
+                Ir para página de serviços
+              </button>
             </p>
           </div>
         </template>
@@ -151,7 +153,9 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 import { api } from '@/utils/api-connect';
+import modalId from '@/utils/modalId';
 
 export default {
   data() {
@@ -191,6 +195,11 @@ export default {
     this.getServices();
   },
   methods: {
+    ...mapMutations('modal', ['removeModal']),
+    goToServices() {
+      this.removeModal({ id: modalId.EDIT_STAFF });
+      this.$router.push('/services');
+    },
     changeColor(color) {
       this.employee.color = color;
     },
