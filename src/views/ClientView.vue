@@ -106,7 +106,7 @@ export default {
       updateClientStore: 'updateClient',
       deleteClientStore: 'deleteClient'
     }),
-    ...mapMutations('modal', ['addModal', 'removeModal']),
+    ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
 
     getClient(clientId) {
       api
@@ -185,7 +185,10 @@ export default {
             errors.message = error.message;
           }
           this.errors = errors;
-          this.$emit('set-form-errors', this.errors);
+          this.updateModalProps({
+            id: modalId.EDIT_CLIENT,
+            errors: this.errors
+          });
         });
     },
 

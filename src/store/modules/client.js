@@ -1,5 +1,6 @@
 import { api } from '@/utils/api-connect';
 
+/* eslint no-param-reassign: "error" */
 const client = {
   namespaced: true,
   state: {
@@ -41,7 +42,7 @@ const client = {
         } else {
           errors.message = error.message;
         }
-        throw new Error(errors);
+        return Promise.reject(errors);
       }
     },
     async getClients(context, payload) {
@@ -50,6 +51,7 @@ const client = {
         const response = await api.get(`/salons/${salon.id}/clients`);
         const clients = response.data || [];
         context.commit('loadClients', clients);
+        return;
       } catch (error) {
         let errors = {};
         if (error.response) {
@@ -57,7 +59,7 @@ const client = {
         } else {
           errors.message = error.message;
         }
-        throw new Error(errors);
+        return Promise.reject(errors);
       }
     }
   }

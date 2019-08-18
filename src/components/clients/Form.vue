@@ -23,36 +23,80 @@
               >
               </b-loading>
             </figure>
-            <input type="file" ref="avatar" style="display: none" @change="setAvatar" />
-            <button class="button is-text" @click="$refs.avatar.click()">Adicionar foto</button>
+            <input
+              type="file"
+              ref="avatar"
+              style="display: none"
+              @change="setAvatar"
+            />
+            <button class="button is-text" @click="$refs.avatar.click()">
+              Adicionar foto
+            </button>
           </div>
         </div>
         <div class="field">
           <label class="label">Nome</label>
           <div class="control">
-            <input class="input" type="text" placeholder="Lucia Maria" v-model="client.name" />
+            <input
+              class="input"
+              :class="{ 'is-danger': errors.name }"
+              type="text"
+              placeholder="Lucia Maria"
+              v-model="client.name"
+            />
           </div>
-          <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
+          <p
+            v-for="message in errors.name"
+            :key="message"
+            class="help is-danger"
+          >
+            {{ message }}
+          </p>
         </div>
         <div class="field columns">
-          <div class="control is-expanded column">
+          <div
+            class="control is-expanded column"
+            :class="{ 'is-danger': errors.email }"
+          >
             <label class="label">Email</label>
             <input
               class="input"
+              :class="{ 'is-danger': errors.email }"
               type="email"
               placeholder="email@exemplo.com"
               v-model="client.email"
+            />
+            <p
+              v-for="message in errors.email"
+              :key="message"
+              class="help is-danger"
             >
-            <p v-if="errors.email" class="help is-danger">{{ errors.email }}</p>
+              {{ message }}
+            </p>
           </div>
           <div class="control is-expanded column">
             <label class="label">Telefone</label>
-            <input class="input" type="tel" placeholder="64999900000" v-model="client.phone" />
-            <p v-if="errors.phone" class="help is-danger">{{ errors.phone }}</p>
+            <input
+              class="input"
+              :class="{ 'is-danger': errors.phone }"
+              type="tel"
+              placeholder="64999900000"
+              v-model="client.phone"
+            />
+            <p
+              v-for="message in errors.phone"
+              :key="message"
+              class="help is-danger"
+            >
+              {{ message }}
+            </p>
           </div>
         </div>
         <div class="field columns">
-          <div class="control is-expanded column">
+          <div
+            class="control is-expanded column"
+            :class="{ 'is-danger': errors.phone }"
+          >
             <label class="label">Gênero</label>
             <div class="select is-fullwidth">
               <select v-model="client.gender">
@@ -69,10 +113,16 @@
               :mask="Date"
               :unmask="true"
               @accept="onAccept"
-              placeholder='01/10/1987'
+              placeholder="01/10/1987"
               class="input"
             />
-            <p v-if="errors.birth" class="help is-danger">{{ errors.birth }}</p>
+            <p
+              v-for="message in errors.birth"
+              :key="message"
+              class="help is-danger"
+            >
+              {{ message }}
+            </p>
           </div>
         </div>
       </b-tab-item>
@@ -82,37 +132,60 @@
           <div class="control">
             <input
               class="input"
+              :class="{ 'is-danger': errors.address }"
               type="text"
               placeholder="Rua das Flores, 134"
               v-model="client.address"
             />
           </div>
-          <p v-if="errors.address" class="help is-danger">{{ errors.address }}</p>
+          <p v-if="errors.address" class="help is-danger">
+            {{ errors.address }}
+          </p>
         </div>
         <div class="field columns">
           <div class="control is-expanded column">
             <label class="label">Bairro</label>
             <input
               class="input"
+              :class="{ 'is-danger': errors.neighborhood }"
               type="text"
               placeholder="Setor Oeste"
               v-model="client.neighborhood"
             />
-            <p v-if="errors.neighborhood" class="help is-danger">{{ errors.neighborhood }}</p>
+            <p v-if="errors.neighborhood" class="help is-danger">
+              {{ errors.neighborhood }}
+            </p>
           </div>
           <div class="control is-expanded column">
             <label class="label">CEP</label>
-            <input class="input" type="text" placeholder="72030-201" v-model="client.zip_code" />
-            <p v-if="errors.zip_code" class="help is-danger">{{ errors.zip_code }}</p>
+            <input
+              class="input"
+              :class="{ 'is-danger': errors.zip_code }"
+              type="text"
+              placeholder="72030-201"
+              v-model="client.zip_code"
+            />
+            <p v-if="errors.zip_code" class="help is-danger">
+              {{ errors.zip_code }}
+            </p>
           </div>
         </div>
         <div class="field columns">
           <div class="control is-expanded column is-four-fifths">
             <label class="label">Cidade</label>
-            <input class="input" type="text" placeholder="Rio de Janeiro" v-model="client.city" />
+            <input
+              class="input"
+              :class="{ 'is-danger': errors.city }"
+              type="text"
+              placeholder="Rio de Janeiro"
+              v-model="client.city"
+            />
             <p v-if="errors.city" class="help is-danger">{{ errors.city }}</p>
           </div>
-          <div class="control is-expanded column">
+          <div
+            class="control is-expanded column"
+            :class="{ 'is-danger': errors.city }"
+          >
             <label class="label">Estado</label>
             <div class="select is-fullwidth">
               <select v-model="client.state">
@@ -157,28 +230,28 @@ import { IMaskComponent } from 'vue-imask';
 import moment from 'moment';
 
 export default {
-  data() {
-    return {
-      client: this.data,
-      activeTab: 0,
-    };
+  components: {
+    'imask-input': IMaskComponent
   },
   props: {
     data: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     errors: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     isLoading: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
-  components: {
-    'imask-input': IMaskComponent,
+  data() {
+    return {
+      client: this.data,
+      activeTab: 0
+    };
   },
   computed: {
     birthday() {
@@ -186,7 +259,7 @@ export default {
         return moment(this.client.birth).format('DD.MM.YYYY');
       }
       return null;
-    },
+    }
   },
   methods: {
     onAccept() {},
@@ -196,13 +269,13 @@ export default {
         this.client.avatar = e.target.files[0];
         this.client.avatar.path = path;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
-@import "../../assets/sass/variables";
+@import '../../assets/sass/variables';
 
 .client-form {
   text-align: left;
@@ -219,7 +292,6 @@ export default {
   }
 
   .field {
-
     .client-photo {
       text-align: center;
 

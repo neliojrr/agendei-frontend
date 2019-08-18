@@ -144,7 +144,7 @@ export default {
   },
   methods: {
     ...mapActions('client', ['addClient']),
-    ...mapMutations('modal', ['addModal', 'removeModal']),
+    ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
 
     getClients() {
       this.$emit('set-loading-overlay', true);
@@ -189,10 +189,12 @@ export default {
       const data = new FormData();
       const clientAttributes = Object.keys(this.client);
       for (let i = 0; i < clientAttributes.length; i += 1) {
-        data.append(
-          `client[${clientAttributes[i]}]`,
-          this.client[clientAttributes[i]]
-        );
+        if (clientAttributes[i] !== '' && clientAttributes[i] !== null) {
+          data.append(
+            `client[${clientAttributes[i]}]`,
+            this.client[clientAttributes[i]]
+          );
+        }
       }
       this.addClient({ data, salon: this.salon })
         .then(response => {
@@ -206,10 +208,13 @@ export default {
             type: 'is-success'
           });
         })
-        .catch(errors => {
+        .catch(error => {
           this.$emit('set-loading-overlay', false);
-          this.errors = errors;
-          this.$emit('set-form-errors', this.errors);
+          this.errors = error;
+          this.updateModalProps({
+            id: modalId.NEW_CLIENT,
+            errors: this.errors
+          });
         });
     },
 
