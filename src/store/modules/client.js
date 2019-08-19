@@ -51,7 +51,7 @@ const client = {
         const response = await api.get(`/salons/${salon.id}/clients`);
         const clients = response.data || [];
         context.commit('loadClients', clients);
-        return;
+        return clients;
       } catch (error) {
         let errors = {};
         if (error.response) {
