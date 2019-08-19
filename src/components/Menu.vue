@@ -20,14 +20,14 @@ import menuItems from '../utils/menuItems';
 export default {
   data() {
     return {
-      items: menuItems,
+      items: menuItems
     };
-  },
+  }
 };
 </script>
 
 <style lang="scss">
-@import "../assets/sass/variables";
+@import '../assets/sass/variables';
 
 .menu {
   position: fixed;
@@ -41,21 +41,20 @@ export default {
   }
 
   .menu-list {
-
     li {
       text-align: left;
 
       a {
         width: 100%;
-        font-size: 18px;
+        font-size: 17px;
         color: white;
 
         svg {
-          margin-right: 5px;
+          width: 15%;
         }
 
         span {
-          margin-left: 5px;
+          margin-left: 10px;
         }
       }
 
