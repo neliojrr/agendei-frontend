@@ -13,7 +13,7 @@
               placeholder="Pesquisar um produto"
               title="Digite parte do nome ou descrição pressione enter"
               v-model="query"
-            >
+            />
             <div class="icon is-medium is-left">
               <font-awesome-icon icon="search" />
             </div>
@@ -25,10 +25,16 @@
             class="is-hidden-desktop mobile-action-background"
             @click="showButtonOptions = false"
           />
-          <button class="button is-info is-hidden-touch" @click="openModalNewProductCategory">
+          <button
+            class="button is-info is-hidden-touch"
+            @click="openModalNewProductCategory"
+          >
             <span>Nova Categoria</span>
           </button>
-          <button class="button is-primary is-hidden-touch" @click="openModalNewProduct">
+          <button
+            class="button is-primary is-hidden-touch"
+            @click="openModalNewProduct"
+          >
             <span>Novo Produto</span>
           </button>
           <button
@@ -40,21 +46,30 @@
               <font-awesome-icon icon="plus" />
             </span>
           </button>
-          <div v-show="showButtonOptions" class="is-hidden-desktop mobile-buttons">
+          <div
+            v-show="showButtonOptions"
+            class="is-hidden-desktop mobile-buttons"
+          >
             <b-tooltip
               label="Nova Categoria"
               position="is-left"
               type="is-black"
               :always="showButtonOptions"
             >
-              <button class="button is-info" @click="openModalNewProductCategory">
+              <button
+                class="button is-info"
+                @click="openModalNewProductCategory"
+              >
                 <span>
                   <font-awesome-icon icon="clipboard-list" />
                 </span>
               </button>
             </b-tooltip>
           </div>
-          <div v-show="showButtonOptions" class="is-hidden-desktop mobile-buttons">
+          <div
+            v-show="showButtonOptions"
+            class="is-hidden-desktop mobile-buttons"
+          >
             <b-tooltip
               label="Novo Produto"
               position="is-left"
@@ -83,10 +98,17 @@
           @edit-product="editProduct"
         />
       </div>
-      <div class="categories categories-empty" v-if="productCategories.length === 0">
+      <div
+        class="categories categories-empty"
+        v-if="productCategories.length === 0"
+      >
         <h3 class="subtitle is-5">Não encontramos nenhum produto.</h3>
         <p>
-          <img alt="empty results" title="Nao encontrado" src="../assets/images/empty.svg" />
+          <img
+            alt="empty results"
+            title="Nao encontrado"
+            src="../assets/images/empty.svg"
+          />
         </p>
       </div>
     </div>
@@ -111,19 +133,19 @@ export default {
       showButtonOptions: false,
       productCategory: {
         name: '',
-        description: '',
+        description: ''
       },
       product: {
         name: '',
         description: '',
         duration: null,
         price: null,
-        cost: null,
+        cost: null
       },
       productCategories: [],
       allProductCategories: [],
       errors: {},
-      query: '',
+      query: ''
     };
   },
   props: ['pageTitle'],
@@ -132,12 +154,12 @@ export default {
     NavApp,
     Form,
     FormProduct,
-    ProductCategoryRow,
+    ProductCategoryRow
   },
   watch: {
     query() {
       this.debounceSearch();
-    },
+    }
   },
   created() {
     this.$emit('set-loading-overlay', true);
@@ -147,11 +169,12 @@ export default {
     this.getProductCategories();
   },
   methods: {
-    ...mapMutations('modal', ['addModal', 'removeModal']),
+    ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
 
     getProductCategories() {
-      api.get(`/salons/${this.salon.id}/product_categories`)
-        .then((response) => {
+      api
+        .get(`/salons/${this.salon.id}/product_categories`)
+        .then(response => {
           this.allProductCategories = response.data;
           this.productCategories = response.data || [];
           this.$emit('set-loading-overlay', false);
@@ -160,20 +183,23 @@ export default {
           this.$emit('set-loading-overlay', false);
           this.$toast.open({
             message: 'Não foi possível encontrar as categorias de produtos!',
-            type: 'is-danger',
+            type: 'is-danger'
           });
         });
     },
 
     saveNewProductCategory(productCategory) {
       this.$emit('set-loading-overlay', true);
-      api.post(`/salons/${this.salon.id}/product_categories`, { ...productCategory })
-        .then((response) => {
+      api
+        .post(`/salons/${this.salon.id}/product_categories`, {
+          ...productCategory
+        })
+        .then(response => {
           this.productCategories.push(response.data);
           this.$emit('set-loading-overlay', false);
-          this.removeModal({ id: modalId.NEW_SERVICE_CATEGORY });
+          this.removeModal({ id: modalId.NEW_PRODUCT_CATEGORY });
         })
-        .catch((error) => {
+        .catch(error => {
           this.$emit('set-loading-overlay', false);
           let errors = {};
           if (error.response) {
@@ -182,44 +208,66 @@ export default {
             errors.message = error.message;
           }
           this.errors = errors;
-          this.$emit('set-form-errors', this.errors);
+          this.updateModalProps({
+            id: modalId.NEW_PRODUCT_CATEGORY,
+            errors: this.errors
+          });
         });
     },
 
     updateProductCategory(productCategory) {
       this.$emit('set-loading-overlay', true);
-      api.put(`/product_categories/${productCategory.id}`, { ...productCategory })
-        .then((response) => {
+      api
+        .put(`/product_categories/${productCategory.id}`, {
+          ...productCategory
+        })
+        .then(response => {
           const allProductCategories = this.productCategories.slice(0);
           const updatedProductCategory = response.data;
-          this.productCategories = allProductCategories.map((sc) => {
+          this.productCategories = allProductCategories.map(sc => {
             if (sc.id === updatedProductCategory.id) {
               return updatedProductCategory;
             }
             return sc;
           });
           this.$emit('set-loading-overlay', false);
-          this.removeModal({ id: modalId.EDIT_SERVICE_CATEGORY });
+          this.removeModal({ id: modalId.EDIT_PRODUCT_CATEGORY });
+        })
+        .catch(error => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.updateModalProps({
+            id: modalId.EDIT_PRODUCT_CATEGORY,
+            errors: this.errors
+          });
         });
     },
 
     deleteProductCategory(productCategoryId) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
-        api.delete(`/product_categories/${productCategoryId}`)
+        api
+          .delete(`/product_categories/${productCategoryId}`)
           .then(() => {
-            this.productCategories =
-              this.productCategories.filter(sc => sc.id !== productCategoryId);
+            this.productCategories = this.productCategories.filter(
+              sc => sc.id !== productCategoryId
+            );
             this.$toast.open({
               message: 'A categoria foi excluída!',
-              type: 'is-success',
+              type: 'is-success'
             });
             this.$emit('set-loading-overlay', false);
           })
           .catch(() => {
             this.$toast.open({
               message: 'Delete todos os produtos antes de deletar a categoria!',
-              type: 'is-danger',
+              type: 'is-danger'
             });
             this.$emit('set-loading-overlay', false);
           });
@@ -229,19 +277,20 @@ export default {
     saveNewProduct({ product }) {
       this.$emit('set-loading-overlay', true);
       const data = { ...product };
-      api.post(`/salons/${this.salon.id}/products`, { product: data })
-        .then((response) => {
+      api
+        .post(`/salons/${this.salon.id}/products`, { product: data })
+        .then(response => {
           const newProduct = response.data;
-          this.productCategories = this.productCategories.map((sc) => {
+          this.productCategories = this.productCategories.map(sc => {
             if (sc.id === newProduct.product_category_id) {
               sc.products.push(newProduct);
             }
             return sc;
           });
           this.$emit('set-loading-overlay', false);
-          this.removeModal({ id: modalId.NEW_SERVICE });
+          this.removeModal({ id: modalId.NEW_PRODUCT });
         })
-        .catch((error) => {
+        .catch(error => {
           this.$emit('set-loading-overlay', false);
           let errors = {};
           if (error.response) {
@@ -250,22 +299,29 @@ export default {
             errors.message = error.message;
           }
           this.errors = errors;
-          this.$emit('set-form-errors', this.errors);
+          this.updateModalProps({
+            id: modalId.NEW_PRODUCT,
+            errors: this.errors
+          });
         });
     },
 
     updateProduct({ product, productCategoryId }) {
       this.$emit('set-loading-overlay', true);
       const newProduct = { ...product };
-      api.put(`/products/${product.id}`, { ...newProduct })
-        .then((response) => {
+      api
+        .put(`/products/${product.id}`, { ...newProduct })
+        .then(response => {
           const updatedProduct = response.data || {};
-          const productCategory = this.productCategories
-            .find(sc => sc.id === updatedProduct.product_category_id);
+          const productCategory = this.productCategories.find(
+            sc => sc.id === updatedProduct.product_category_id
+          );
           let oldProductCategory = {};
-          const index = productCategory.products.findIndex(s => s.id === updatedProduct.id);
+          const index = productCategory.products.findIndex(
+            s => s.id === updatedProduct.id
+          );
           if (index > -1) {
-            productCategory.products = productCategory.products.map((s) => {
+            productCategory.products = productCategory.products.map(s => {
               if (s.id === updatedProduct.id) {
                 return updatedProduct;
               }
@@ -273,12 +329,14 @@ export default {
             });
           } else {
             productCategory.products.push(updatedProduct);
-            oldProductCategory =
-              this.productCategories.find(sc => sc.id === productCategoryId);
-            oldProductCategory.products =
-              oldProductCategory.products.filter(s => s.id !== product.id);
+            oldProductCategory = this.productCategories.find(
+              sc => sc.id === productCategoryId
+            );
+            oldProductCategory.products = oldProductCategory.products.filter(
+              s => s.id !== product.id
+            );
           }
-          this.productCategories = this.productCategories.map((sc) => {
+          this.productCategories = this.productCategories.map(sc => {
             if (sc.id === productCategory.id) {
               return productCategory;
             }
@@ -288,26 +346,42 @@ export default {
             return sc;
           });
           this.$emit('set-loading-overlay', false);
-          this.removeModal({ id: modalId.EDIT_SERVICE });
+          this.removeModal({ id: modalId.EDIT_PRODUCT });
+        })
+        .catch(error => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.updateModalProps({
+            id: modalId.EDIT_PRODUCT,
+            errors: this.errors
+          });
         });
     },
 
     deleteProduct({ product }) {
       if (window.confirm('Você tem certeza?')) {
         this.$emit('set-loading-overlay', true);
-        api.delete(`/products/${product.id}`)
+        api
+          .delete(`/products/${product.id}`)
           .then(() => {
-            this.productCategories =
-              this.productCategories.map((productCategory) => {
+            this.productCategories = this.productCategories.map(
+              productCategory => {
                 const sc = productCategory;
                 if (sc.id === product.product_category_id) {
                   sc.products = sc.products.filter(s => s.id !== product.id);
                 }
                 return sc;
-              });
+              }
+            );
             this.$toast.open({
               message: 'O produto foi excluído!',
-              type: 'is-success',
+              type: 'is-success'
             });
             this.$emit('set-loading-overlay', false);
             this.removeModal({ id: modalId.EDIT_SERVICE });
@@ -315,7 +389,7 @@ export default {
           .catch(() => {
             this.$toast.open({
               message: 'Impossível deletar este produto!',
-              type: 'is-danger',
+              type: 'is-danger'
             });
             this.$emit('set-loading-overlay', false);
           });
@@ -328,17 +402,20 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.saveNewProductCategory,
-        },
+          action: this.saveNewProductCategory
+        }
       ];
       this.productCategory = {
         name: '',
-        description: '',
+        description: ''
       };
-      const id = modalId.NEW_SERVICE_CATEGORY;
+      const id = modalId.NEW_PRODUCT_CATEGORY;
       const data = { ...this.productCategory };
       const props = {
-        title: 'Nova Categoria', content: Form, data, buttons,
+        title: 'Nova Categoria',
+        content: Form,
+        data,
+        buttons
       };
       this.addModal({ id, props });
     },
@@ -348,13 +425,16 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.updateProductCategory,
-        },
+          action: this.updateProductCategory
+        }
       ];
-      const id = modalId.EDIT_SERVICE_CATEGORY;
+      const id = modalId.EDIT_PRODUCT_CATEGORY;
       const data = { ...productCategory };
       const props = {
-        title: 'Editar Categoria', content: Form, data, buttons,
+        title: 'Editar Categoria',
+        content: Form,
+        data,
+        buttons
       };
       this.addModal({ id, props });
     },
@@ -365,8 +445,8 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.saveNewProduct,
-        },
+          action: this.saveNewProduct
+        }
       ];
       this.product = {
         name: '',
@@ -376,17 +456,19 @@ export default {
         product_category_id: productCategoryId,
         barcode: '',
         brand: '',
-        quantity: 0,
+        quantity: 0
       };
       const data = {
         product: this.product,
-        productCategories: this.allProductCategories,
+        productCategories: this.allProductCategories
       };
-      const id = modalId.NEW_SERVICE;
-      const props =
-        {
-          title: 'Novo Produto', content: FormProduct, data, buttons,
-        };
+      const id = modalId.NEW_PRODUCT;
+      const props = {
+        title: 'Novo Produto',
+        content: FormProduct,
+        data,
+        buttons
+      };
       this.addModal({ id, props });
     },
 
@@ -395,32 +477,35 @@ export default {
         {
           title: 'Salvar',
           class: 'is-success',
-          action: this.updateProduct,
+          action: this.updateProduct
         },
         {
           title: 'Deletar',
           class: 'is-danger',
-          action: this.deleteProduct,
-        },
+          action: this.deleteProduct
+        }
       ];
       const data = {
         product: Object.assign({}, product),
         productCategoryId: product.product_category_id,
-        productCategories: this.allProductCategories,
+        productCategories: this.allProductCategories
       };
-      const id = modalId.EDIT_SERVICE;
-      const props =
-        {
-          title: 'Editar Produto', content: FormProduct, data, buttons,
-        };
+      const id = modalId.EDIT_PRODUCT;
+      const props = {
+        title: 'Editar Produto',
+        content: FormProduct,
+        data,
+        buttons
+      };
       this.addModal({ id, props });
     },
 
     search() {
       this.$emit('set-loading-overlay', true);
       if (this.query && this.query.length > 1) {
-        api.get(`/salons/${this.salon.id}/products/search/${this.query}`)
-          .then((response) => {
+        api
+          .get(`/salons/${this.salon.id}/products/search/${this.query}`)
+          .then(response => {
             this.productCategories = response.data || [];
             this.$emit('set-loading-overlay', false);
           })
@@ -428,14 +513,14 @@ export default {
             this.$emit('set-loading-overlay', false);
             this.$toast.open({
               message: 'Não foi possível encontrar os produtos buscados!',
-              type: 'is-danger',
+              type: 'is-danger'
             });
           });
       } else {
         this.getProductCategories();
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -495,7 +580,6 @@ export default {
   }
 
   .categories-empty {
-
     h3 {
       margin-bottom: 50px;
     }

@@ -28,6 +28,13 @@ import Menu from '@/components/Menu.vue';
 import NavApp from '@/components/NavApp.vue';
 
 export default {
+  components: {
+    Menu,
+    NavApp,
+    StaffList,
+    Form
+  },
+  props: ['pageTitle'],
   data() {
     return {
       salon: {},
@@ -45,13 +52,6 @@ export default {
       employee: {}
     };
   },
-  props: ['pageTitle'],
-  components: {
-    Menu,
-    NavApp,
-    StaffList,
-    Form
-  },
   created() {
     this.employee = { ...this.defaultEmployee };
     this.$emit('set-loading-overlay', true);
@@ -60,7 +60,7 @@ export default {
     this.getStaff();
   },
   methods: {
-    ...mapMutations('modal', ['addModal', 'removeModal']),
+    ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
     ...mapMutations('employee', {
       addEmployee: 'addEmployee',
       updateEmployeeStore: 'updateEmployee',
@@ -129,7 +129,10 @@ export default {
             errors.message = error.message;
           }
           this.errors = errors;
-          this.$emit('set-form-errors', this.errors);
+          this.updateModalProps({
+            id: modalId.NEW_STAFF,
+            errors: this.errors
+          });
         });
     },
 
@@ -215,7 +218,10 @@ export default {
             errors.message = error.message;
           }
           this.errors = errors;
-          this.$emit('set-form-errors', this.errors);
+          this.updateModalProps({
+            id: modalId.EDIT_STAFF,
+            errors: this.errors
+          });
         });
     }
   }

@@ -201,6 +201,7 @@ export default {
       this.$router.push('/services');
     },
     changeColor(color) {
+      console.log(color);
       this.employee.color = color;
     },
     toggleService(service) {

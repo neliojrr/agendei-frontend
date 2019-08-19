@@ -9,7 +9,7 @@
           :class="{ 'is-danger': errors.name }"
           type="text"
           placeholder="Cabelo"
-        >
+        />
       </div>
       <p v-for="message in errors.name" :key="message" class="help is-danger">
         {{ message }}
@@ -24,7 +24,11 @@
           :class="{ 'is-danger': errors.description }"
           placeholder="Serviços relacionados a corte e penteados de cabelos"
         />
-        <p v-for="message in errors.description" :key="message" class="help is-danger">
+        <p
+          v-for="message in errors.description"
+          :key="message"
+          class="help is-danger"
+        >
           {{ message }}
         </p>
       </div>
@@ -36,19 +40,19 @@
 export default {
   data() {
     return {
-      serviceCategory: this.data,
+      serviceCategory: this.data
     };
   },
   props: {
     data: {
       type: Object,
-      required: true,
+      required: true
     },
     errors: {
       type: Object,
-      default: () => ({}),
-    },
-  },
+      default: () => ({})
+    }
+  }
 };
 </script>
 
@@ -68,4 +72,3 @@ export default {
   }
 }
 </style>
-

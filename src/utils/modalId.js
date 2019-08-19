@@ -14,10 +14,15 @@ const modalId = {
   EDIT_SERVICE: 'editService',
   EDIT_SERVICE_CATEGORY: 'editServiceCategory',
 
+  NEW_PRODUCT: 'newProduct',
+  NEW_PRODUCT_CATEGORY: 'newProductCategory',
+  EDIT_PRODUCT: 'editProduct',
+  EDIT_PRODUCT_CATEGORY: 'editProductCategory',
+
   NEW_SALE: 'newSale',
   EDIT_SALE: 'editSale',
 
-  SELECT_ITEM_SALE: 'selectItemSale',
+  SELECT_ITEM_SALE: 'selectItemSale'
 };
 
 export default modalId;

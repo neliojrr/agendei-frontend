@@ -144,7 +144,7 @@ export default {
     this.getServiceCategories();
   },
   methods: {
-    ...mapMutations('modal', ['addModal', 'removeModal']),
+    ...mapMutations('modal', ['addModal', 'removeModal', 'updateModalProps']),
     ...mapMutations('service', {
       addService: 'addService',
       updateServiceStore: 'updateService',
@@ -192,7 +192,10 @@ export default {
             errors.message = error.message;
           }
           this.errors = errors;
-          this.$emit('set-form-errors', this.errors);
+          this.updateModalProps({
+            id: modalId.NEW_SERVICE_CATEGORY,
+            errors: this.errors
+          });
         });
     },
 
@@ -214,6 +217,20 @@ export default {
           this.$emit('set-loading-overlay', false);
           this.removeModal({ id: modalId.EDIT_SERVICE_CATEGORY });
           this.updateServiceCategoryStore(updatedServiceCategory);
+        })
+        .catch(error => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
+          }
+          this.errors = errors;
+          this.updateModalProps({
+            id: modalId.EDIT_SERVICE_CATEGORY,
+            errors: this.errors
+          });
         });
     },
 
@@ -269,50 +286,70 @@ export default {
             errors.message = error.message;
           }
           this.errors = errors;
+          this.updateModalProps({
+            id: modalId.NEW_SERVICE,
+            errors: this.errors
+          });
         });
     },
 
     updateService({ service, serviceCategoryId }) {
       this.$emit('set-loading-overlay', true);
       const newService = { ...service };
-      api.put(`/services/${service.id}`, { ...newService }).then(response => {
-        const updatedService = response.data || {};
-        const serviceCategory = this.serviceCategories.find(
-          sc => sc.id === updatedService.service_category_id
-        );
-        let oldServiceCategory = {};
-        const index = serviceCategory.services.findIndex(
-          s => s.id === updatedService.id
-        );
-        if (index > -1) {
-          serviceCategory.services = serviceCategory.services.map(s => {
-            if (s.id === updatedService.id) {
-              return updatedService;
+      api
+        .put(`/services/${service.id}`, { ...newService })
+        .then(response => {
+          const updatedService = response.data || {};
+          const serviceCategory = this.serviceCategories.find(
+            sc => sc.id === updatedService.service_category_id
+          );
+          let oldServiceCategory = {};
+          const index = serviceCategory.services.findIndex(
+            s => s.id === updatedService.id
+          );
+          if (index > -1) {
+            serviceCategory.services = serviceCategory.services.map(s => {
+              if (s.id === updatedService.id) {
+                return updatedService;
+              }
+              return s;
+            });
+          } else {
+            serviceCategory.services.push(updatedService);
+            oldServiceCategory = this.serviceCategories.find(
+              sc => sc.id === serviceCategoryId
+            );
+            oldServiceCategory.services = oldServiceCategory.services.filter(
+              s => s.id !== service.id
+            );
+          }
+          this.serviceCategories = this.serviceCategories.map(sc => {
+            if (sc.id === serviceCategory.id) {
+              return serviceCategory;
             }
-            return s;
+            if (sc.id === oldServiceCategory.id) {
+              return oldServiceCategory;
+            }
+            return sc;
           });
-        } else {
-          serviceCategory.services.push(updatedService);
-          oldServiceCategory = this.serviceCategories.find(
-            sc => sc.id === serviceCategoryId
-          );
-          oldServiceCategory.services = oldServiceCategory.services.filter(
-            s => s.id !== service.id
-          );
-        }
-        this.serviceCategories = this.serviceCategories.map(sc => {
-          if (sc.id === serviceCategory.id) {
-            return serviceCategory;
+          this.updateServiceStore(updatedService);
+          this.$emit('set-loading-overlay', false);
+          this.removeModal({ id: modalId.EDIT_SERVICE });
+        })
+        .catch(error => {
+          this.$emit('set-loading-overlay', false);
+          let errors = {};
+          if (error.response) {
+            errors = error.response.data || {};
+          } else {
+            errors.message = error.message;
           }
-          if (sc.id === oldServiceCategory.id) {
-            return oldServiceCategory;
-          }
-          return sc;
+          this.errors = errors;
+          this.updateModalProps({
+            id: modalId.EDIT_SERVICE,
+            errors: this.errors
+          });
         });
-        this.updateServiceStore(updatedService);
-        this.$emit('set-loading-overlay', false);
-        this.removeModal({ id: modalId.EDIT_SERVICE });
-      });
     },
 
     deleteService({ service }) {
