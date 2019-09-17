@@ -20,6 +20,8 @@ import Products from './views/Products.vue';
 // import PackageView from './views/PackageView.vue';
 import Sales from './views/Sales.vue';
 import SaleView from './views/SaleView.vue';
+import Salon from './views/Salon.vue';
+import MyPlan from './views/MyPlan.vue';
 import store from './store';
 
 Vue.use(Router);
@@ -169,6 +171,20 @@ const router = new Router({
         id: Number(route.params.id),
         pageTitle: 'Vendas'
       }),
+      meta: { loadData: true }
+    },
+    {
+      path: '/meu-salao/pefil',
+      name: 'salon',
+      component: Salon,
+      props: { pageTitle: 'Meu salão' },
+      meta: { loadData: true }
+    },
+    {
+      path: '/meu-salao/plano',
+      name: 'salon-plan',
+      component: MyPlan,
+      props: { pageTitle: 'Meu Plano' },
       meta: { loadData: true }
     },
 

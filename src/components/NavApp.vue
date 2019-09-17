@@ -15,9 +15,31 @@
       <div class="navbar-title">
         <h2>{{ title }}</h2>
         <div class="right-icons">
-          <router-link class="button is-text" title="Meu salão" to="/salon">
-            <font-awesome-icon icon="store" />
-          </router-link>
+          <b-dropdown position="is-bottom-left" hoverable aria-role="list">
+            <button class="button is-text" slot="trigger">
+              <font-awesome-icon icon="store" />
+            </button>
+            <b-dropdown-item
+              has-link
+              aria-role="listitem"
+              class="menu-dropdown-item"
+            >
+              <router-link title="Meu perfil" to="/meu-salao/perfil">
+                <font-awesome-icon icon="edit" />
+                Perfil
+              </router-link>
+            </b-dropdown-item>
+            <b-dropdown-item
+              has-link
+              class="menu-dropdown-item"
+              aria-role="listitem"
+            >
+              <router-link title="Meu perfil" to="/meu-salao/plano">
+                <font-awesome-icon icon="money-check-alt" />
+                Meu plano
+              </router-link>
+            </b-dropdown-item>
+          </b-dropdown>
           <router-link class="button is-text" title="Meu perfil" to="/profile">
             <font-awesome-icon icon="user" />
           </router-link>
@@ -131,6 +153,14 @@ export default {
       .right-icons {
         position: absolute;
         right: 0;
+
+        .menu-dropdown-item {
+          a {
+            color: #4a4a4a;
+            font-size: 18px;
+            text-align: left;
+          }
+        }
 
         a,
         button {

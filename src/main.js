@@ -33,7 +33,8 @@ import {
   faChevronLeft,
   faDollarSign,
   faEdit,
-  faTrashAlt
+  faTrashAlt,
+  faMoneyCheckAlt
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookSquare,
@@ -78,7 +79,8 @@ library.add(
   faChevronLeft,
   faDollarSign,
   faEdit,
-  faTrashAlt
+  faTrashAlt,
+  faMoneyCheckAlt
 );
 /* end icons */
 
